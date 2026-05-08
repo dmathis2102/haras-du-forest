@@ -1220,7 +1220,7 @@
 
   <!-- ══ INNER : COURS PARTICULIER ══ -->
   <div class="page" id="page-cours-particulier">
-    <button class="back-btn" onclick="showPage('cours')">
+    <button class="back-btn" onclick="showPage('mes-reservations')">
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 2L4 7l5 5"/></svg>
       Retour
     </button>
@@ -1274,7 +1274,7 @@
 
   <!-- ══ INNER : COURS COLLECTIF ══ -->
   <div class="page" id="page-cours-collectif">
-    <button class="back-btn" onclick="showPage('cours')">
+    <button class="back-btn" onclick="showPage('mes-reservations')">
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 2L4 7l5 5"/></svg>
       Retour
     </button>
@@ -1323,7 +1323,7 @@
 
   <!-- ══ INNER : COURS ENFANTS ══ -->
   <div class="page" id="page-cours-enfant">
-    <button class="back-btn" onclick="showPage('cours')">
+    <button class="back-btn" onclick="showPage('mes-reservations')">
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 2L4 7l5 5"/></svg>
       Retour
     </button>
@@ -1360,7 +1360,7 @@
 
   <!-- ══ INNER : STAGE ══ -->
   <div class="page" id="page-stage">
-    <button class="back-btn" onclick="showPage('cours')">
+    <button class="back-btn" onclick="showPage('mes-reservations')">
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 2L4 7l5 5"/></svg>
       Retour
     </button>
@@ -1418,7 +1418,7 @@
         <div class="recap-line"><span class="rl-key">Points débités</span><span class="rl-val gold">− 10 pts</span></div>
         <div class="recap-line"><span class="rl-key">Nouveau solde</span><span class="rl-val green">70 pts</span></div>
       </div>
-      <button class="btn btn-outline" style="max-width:300px" onclick="showPage('cours')">Retour à l'accueil</button>
+      <button class="btn btn-outline" style="max-width:300px" onclick="showPage('mes-reservations')">Retour à l'accueil</button>
     </div>
   </div>
 
@@ -1935,7 +1935,7 @@
   function deconnexion() {
     document.getElementById('auth-screen').classList.remove('hidden');
     closeSidebar();
-    showPage('cours');
+    showPage('mes-reservations');
   }
 
   function switchAuthTab(tab) {
