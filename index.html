@@ -80,9 +80,9 @@
       overflow: hidden;
     }
 
-    /* Logo entier caché quand sidebar fermée */
+    /* Logo sidebar */
     .sidebar.collapsed .sidebar-top { justify-content: center; padding: 20px 0; }
-    .sidebar.collapsed .logo-wrap { display: none; }
+    .sidebar.collapsed .logo-text { display: none; }
     .sidebar.collapsed .toggle-btn { display: none; }
 
     .logo-wrap {
@@ -91,6 +91,7 @@
       gap: 11px;
       overflow: hidden;
       white-space: nowrap;
+      min-width: 0;
     }
 
     .logo-img-wrap {
@@ -111,7 +112,7 @@
       padding: 3px;
     }
 
-    .logo-text { overflow: hidden; }
+    .logo-text { overflow: hidden; min-width: 0; }
 
     .logo-name {
       color: #FFFFFF;
