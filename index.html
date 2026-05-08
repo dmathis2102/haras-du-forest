@@ -506,6 +506,76 @@
 
     .back-btn:hover { color: var(--text-1); }
 
+    /* ══════════ PHOTO CARDS ══════════ */
+    .photo-card {
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      height: 150px;
+      margin-bottom: 14px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .photo-card-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+      transition: transform 0.3s ease;
+    }
+    .photo-card:active .photo-card-img { transform: scale(1.03); }
+    .photo-card-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(10,20,10,0.08) 0%,
+        rgba(10,20,10,0.55) 55%,
+        rgba(10,20,10,0.78) 100%
+      );
+      display: flex;
+      align-items: flex-end;
+      padding: 14px 16px;
+      gap: 10px;
+    }
+    .photo-card-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: var(--gold);
+      color: #fff;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 20px;
+      letter-spacing: 0.04em;
+    }
+    .photo-card-badge-muted {
+      background: rgba(255,255,255,0.25);
+      backdrop-filter: blur(4px);
+    }
+    .photo-card-body { flex: 1; }
+    .photo-card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.2;
+      margin-bottom: 4px;
+    }
+    .photo-card-desc {
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.82);
+      line-height: 1.4;
+    }
+    .photo-card-arrow {
+      font-size: 1.4rem;
+      color: rgba(255,255,255,0.7);
+      flex-shrink: 0;
+      line-height: 1;
+    }
+
     /* ══════════ HERO IMAGE ══════════ */
     .pres-hero {
       position: relative;
