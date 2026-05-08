@@ -93,7 +93,23 @@
       white-space: nowrap;
     }
 
-    .logo-monogram { display: none; }
+    .logo-img-wrap {
+      flex-shrink: 0;
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .logo-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 3px;
+    }
 
     .logo-text { overflow: hidden; }
 
