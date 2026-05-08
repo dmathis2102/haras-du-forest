@@ -505,6 +505,57 @@
 
     .back-btn:hover { color: var(--text-1); }
 
+    /* ══════════ HERO IMAGE ══════════ */
+    .pres-hero {
+      position: relative;
+      width: calc(100% + 32px);
+      margin: -20px -16px 24px;
+      height: 220px;
+      overflow: hidden;
+    }
+    .pres-hero-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 40%;
+      display: block;
+    }
+    .pres-hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(20,31,21,0.3) 0%, rgba(20,31,21,0.75) 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 20px;
+      text-align: center;
+    }
+    .pres-hero-logo { margin-bottom: 8px; }
+    .pres-hero-logo-img {
+      width: 52px;
+      height: 52px;
+      object-fit: contain;
+      background: rgba(255,255,255,0.12);
+      border-radius: 10px;
+      padding: 4px;
+    }
+    .pres-hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #fff;
+      margin: 0 0 4px;
+      letter-spacing: 0.02em;
+    }
+    .pres-hero-sub {
+      font-size: 0.78rem;
+      color: var(--gold);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin: 0;
+    }
+
     /* ══════════ PRÉSENTATION PAGE ══════════ */
     .pres-intro {
       font-family: 'Playfair Display', serif;
