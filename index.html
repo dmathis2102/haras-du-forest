@@ -583,6 +583,97 @@
       margin-bottom: 16px;
     }
 
+    /* ══════════ CLUB PAGE ══════════ */
+    .club-block {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      padding: 4px 0;
+    }
+    .club-block-icon {
+      flex-shrink: 0;
+      width: 38px;
+      height: 38px;
+      background: var(--sidebar-bg);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gold);
+    }
+    .club-block-icon svg { width: 18px; height: 18px; }
+    .club-block-content { flex: 1; }
+    .club-block-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-1);
+      margin-bottom: 6px;
+      letter-spacing: 0.01em;
+    }
+    .club-block-text {
+      font-size: 0.88rem;
+      line-height: 1.65;
+      color: var(--text-2);
+    }
+    .club-link {
+      display: inline-block;
+      margin-top: 6px;
+      font-size: 0.82rem;
+      color: var(--gold);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(196,163,90,0.3);
+      padding-bottom: 1px;
+    }
+    .club-link-big {
+      font-size: 1.05rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      border-bottom: none;
+      color: var(--text-1);
+    }
+    .club-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 20px 0;
+    }
+    .club-horaires { display: flex; flex-direction: column; gap: 6px; }
+    .club-horaire-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .club-horaire-day { font-size: 0.85rem; color: var(--text-2); }
+    .club-horaire-time {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-1);
+    }
+    .club-social-btn {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      padding: 14px 18px;
+      border-radius: 14px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-decoration: none;
+      margin-bottom: 12px;
+      letter-spacing: 0.01em;
+      transition: opacity 0.15s;
+    }
+    .club-social-btn:active { opacity: 0.8; }
+    .club-social-btn svg { width: 22px; height: 22px; flex-shrink: 0; }
+    .club-social-insta {
+      background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045);
+      color: #fff;
+    }
+    .club-social-fb {
+      background: #1877F2;
+      color: #fff;
+    }
+
     /* ══════════ POINTS BANNER ══════════ */
     .pts-banner {
       background: var(--sidebar-bg);
