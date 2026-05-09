@@ -3131,9 +3131,22 @@
     el.value = v;
   }
 
+  let currentPack = { name: 'Pack Appoint', price: '30 €', detail: '30 points · 3 séances collectives ou particulières' };
+
   function selectPack(el) {
     document.querySelectorAll('.pack').forEach(p => p.classList.remove('selected'));
     el.classList.add('selected');
+    currentPack = {
+      name:   el.dataset.name,
+      price:  el.dataset.price,
+      detail: el.dataset.detail
+    };
+    const lbl = document.getElementById('pay-pack-label');
+    if (lbl) lbl.textContent = currentPack.price;
+  }
+
+  function openPaiementPack() {
+    openPaiement(currentPack.name, currentPack.price, currentPack.detail, 'credits');
   }
 
   // Init calendars au chargement
