@@ -2882,6 +2882,31 @@
   </div>
 </div>
 
+<!-- ══ POPUP ANNULATION ══ -->
+<div class="confirm-overlay" id="cancel-overlay" onclick="closeCancelConfirm(event)">
+  <div class="confirm-sheet">
+    <div class="confirm-handle"></div>
+    <div class="confirm-header">
+      <div class="confirm-icon" style="border-color:#F5E0DE; color:var(--red)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15 9l-6 6M9 9l6 6"/></svg>
+      </div>
+      <div>
+        <div class="confirm-title" style="color:var(--red)">Annuler la réservation</div>
+        <div class="confirm-sub">Cette action est irréversible</div>
+      </div>
+    </div>
+    <div class="confirm-body">
+      <div class="confirm-row"><span class="cr-key">Cours</span><span class="cr-val" id="cc-titre">—</span></div>
+      <div class="confirm-row"><span class="cr-key">Date &amp; heure</span><span class="cr-val" id="cc-date">—</span></div>
+      <div class="confirm-row"><span class="cr-key">Remboursement</span><span class="cr-val" style="color:var(--green-ok)">Points recrédités</span></div>
+    </div>
+    <div class="confirm-actions">
+      <button class="btn btn-outline" onclick="closeCancelConfirm()">Garder</button>
+      <button class="btn" style="background:var(--red);color:#fff" onclick="doCancelConfirm()">Annuler le cours</button>
+    </div>
+  </div>
+</div>
+
 <script>
   function enterApp() {
     document.getElementById('auth-screen').classList.add('hidden');
