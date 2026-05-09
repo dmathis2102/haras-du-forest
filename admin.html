@@ -1527,7 +1527,10 @@
 
   function renderMoniteurCards() {
     document.querySelector('#page-moniteurs .monitor-cards').innerHTML = moniteurs.map(m => `
-      <div class="monitor-card">
+      <div class="monitor-card" style="position:relative">
+        <button class="btn btn-outline btn-sm"
+          style="position:absolute;top:14px;right:14px;font-size:11px;padding:4px 10px"
+          onclick="openMonitorStats('${m.id}')">Récap</button>
         <div class="monitor-card-top">
           <div class="monitor-card-avatar">${m.initials}</div>
           <div>
