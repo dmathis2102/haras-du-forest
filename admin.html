@@ -1115,6 +1115,16 @@
   </div><!-- /content -->
 </div><!-- /main -->
 
+<!-- ══ PANNEAU DÉTAIL JOUR ══ -->
+<div class="day-panel-overlay" id="day-panel-overlay" onclick="closeDayPanel()"></div>
+<div class="day-panel" id="day-panel">
+  <div class="dp-header">
+    <div class="dp-title" id="day-panel-title">—</div>
+    <button class="modal-close" onclick="closeDayPanel()">✕</button>
+  </div>
+  <div class="dp-body" id="day-panel-body" style="overflow-y:auto;flex:1;padding:20px 24px"></div>
+</div>
+
 <!-- ══ PLANNING MENSUEL ══ -->
 <div class="month-modal-overlay" id="month-modal" onclick="if(event.target===this)closeMonthCalendar()">
   <div class="month-modal">
