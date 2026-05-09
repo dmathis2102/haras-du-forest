@@ -3209,6 +3209,12 @@
       if (btnEl) { btnEl.disabled = true; btnEl.textContent = 'Complet'; btnEl.className = 'btn btn-outline btn-sm'; }
     } else {
       if (subEl) subEl.textContent = `${remaining} / ${s.max} places disponibles`;
+      if (item)  item.style.opacity = '';
+      if (btnEl && btnEl.disabled) {
+        btnEl.disabled = false;
+        btnEl.textContent = s.label || 'Rejoindre';
+        btnEl.className = 'btn btn-dark btn-sm';
+      }
     }
   }
 
