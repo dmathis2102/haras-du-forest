@@ -3003,6 +3003,58 @@
     if (m) m.textContent = recap.moniteur;
   }
 
+  /* ══ DISPONIBILITÉS COURS PARTICULIER ══ */
+  const MONITORS_LIST = ['sophie', 'thomas', 'camille'];
+  const MONITOR_KEY_MAP = {
+    'Sans préférence':                null,
+    'Sophie L. — Débutants & enfants': 'sophie',
+    'Thomas D. — Confirmés':           'thomas',
+    'Camille R. — Tous niveaux':       'camille'
+  };
+  const MONITOR_NAME_MAP = { sophie: 'Sophie L.', thomas: 'Thomas D.', camille: 'Camille R.' };
+  const ALL_TIMES = ['09h00','10h00','11h00','14h00','15h00','16h00','17h00','18h00'];
+  const SYS_UNAVAILABLE = new Set(['11h00','16h00']);
+  const bookings = new Set(); // "isoDate_time_monitorId"
+  let selectedDateISO = '';
+
+  function getSelectedMonitorKey() {
+    const sel = document.getElementById('select-moniteur');
+    if (!sel) return null;
+    return MONITOR_KEY_MAP[sel.value] ?? null;
+  }
+
+  function isSlotUnavailable(time) {
+    if (SYS_UNAVAILABLE.has(time)) return true;
+    if (!selectedDateISO) return false;
+    const mk = getSelectedMonitorKey();
+    if (mk) return bookings.has(`${selectedDateISO}_${time}_${mk}`);
+    return MONITORS_LIST.every(m => bookings.has(`${selectedDateISO}_${time}_${m}`));
+  }
+
+  function renderParticulierSlots() {
+    const grid = document.getElementById('slot-grid-particulier');
+    if (!grid) return;
+    const prevTime = recap.time || '09h00';
+    grid.innerHTML = ALL_TIMES.map(time => {
+      const unavail = isSlotUnavailable(time);
+      const isSel   = !unavail && time === prevTime;
+      return `<div class="slot${unavail ? ' unavailable' : (isSel ? ' selected' : '')}"
+        ${unavail ? '' : `onclick="selectTimeSlot(this,'particulier')" data-time="${time}"`}>
+        <div class="slot-time">${time}</div>
+        <div class="slot-info">${unavail ? 'Réservé' : 'Disponible'}</div>
+      </div>`;
+    }).join('');
+    if (!grid.querySelector('.slot.selected')) {
+      const first = grid.querySelector('.slot:not(.unavailable)');
+      if (first) { first.classList.add('selected'); recap.time = first.dataset.time; updateRecapParticulier(); }
+    }
+  }
+
+  function onMonitorChange() {
+    updateRecapParticulier();
+    renderParticulierSlots();
+  }
+
   /* ══ WEEK CALENDAR ══ */
   const calOffsets = {};
   const MONTHS = ['jan','fév','mar','avr','mai','juin','juil','aoû','sep','oct','nov','déc'];
