@@ -2679,6 +2679,20 @@
   }
 
   function doConfirm() {
+    const type = document.getElementById('c-title').textContent;
+    const date = document.getElementById('c-date').textContent;
+    const pts  = document.getElementById('c-pts').textContent;
+    const courseMap = {
+      'Cours particulier': 'Particulier · 45 min',
+      'Cours collectif':   'Collectif · 1h',
+      'Cours enfants':     'Enfants · 45 min'
+    };
+    const confCours = document.getElementById('conf-cours');
+    const confDate  = document.getElementById('conf-date');
+    const confPts   = document.getElementById('conf-pts');
+    if (confCours) confCours.textContent = courseMap[type] || type;
+    if (confDate)  confDate.textContent  = date;
+    if (confPts)   confPts.textContent   = pts;
     document.getElementById('confirm-overlay').classList.remove('open');
     showInner('confirmation');
   }
