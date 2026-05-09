@@ -1752,32 +1752,45 @@
     </button>
     <div class="page-header">
       <h1>Cours enfants</h1>
-      <p>Dès 5 ans · Poney &amp; cheval · 8 points par séance</p>
+      <p>Poney &amp; cheval · Encadrement spécialisé · 8 points</p>
     </div>
-    <div class="info-card">
-      <div class="info-card-title">Programme</div>
-      <p>Nos moniteurs diplômés accueillent les enfants dans un cadre sécurisé et bienveillant. Chaque enfant progresse à son rythme, sur poney ou cheval selon son niveau et son âge.</p>
-      <div class="tag-wrap">
-        <span class="tag">Dès 5 ans</span>
-        <span class="tag">Poney</span>
-        <span class="tag">Cheval</span>
-        <span class="tag">Casque fourni</span>
-        <span class="tag">Moniteurs BPJEPS</span>
-      </div>
-    </div>
+
     <div class="section">
-      <div class="section-title">Informations de l'enfant</div>
-      <div class="form-group"><label>Prénom</label><input type="text" placeholder="Emma" /></div>
-      <div class="form-group"><label>Âge</label><input type="number" placeholder="8" /></div>
-      <div class="form-group"><label>Niveau</label>
-        <select>
-          <option>Première fois</option>
-          <option>Galop 1–2</option>
-          <option>Galop 3–4</option>
-        </select>
+      <div class="section-title">Niveau de l'enfant</div>
+      <div class="slot-grid" style="grid-template-columns: repeat(2,1fr)">
+        <div class="slot selected" onclick="selectSlot(this)"><div class="slot-time">5 ans −</div><div class="slot-info">Éveil poney</div></div>
+        <div class="slot" onclick="selectSlot(this)"><div class="slot-time">6 – 8 ans</div><div class="slot-info">Initiation</div></div>
+        <div class="slot" onclick="selectSlot(this)"><div class="slot-time">Galop 1–2</div><div class="slot-info">Débutant</div></div>
+        <div class="slot" onclick="selectSlot(this)"><div class="slot-time">Galop 3+</div><div class="slot-info">Confirmé</div></div>
       </div>
-      <br/>
-      <button class="btn btn-dark">Voir les créneaux</button>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Prochaines séances</div>
+      <div class="list-item">
+        <div class="li-dot green"></div>
+        <div class="li-content">
+          <div class="li-title">Mercredi 14 mai · 14h00</div>
+          <div class="li-sub">3 / 6 places disponibles</div>
+        </div>
+        <button class="btn btn-dark btn-sm">Rejoindre</button>
+      </div>
+      <div class="list-item">
+        <div class="li-dot green"></div>
+        <div class="li-content">
+          <div class="li-title">Samedi 17 mai · 10h00</div>
+          <div class="li-sub">5 / 6 places disponibles</div>
+        </div>
+        <button class="btn btn-dark btn-sm">Rejoindre</button>
+      </div>
+      <div class="list-item" style="opacity:0.5">
+        <div class="li-dot red"></div>
+        <div class="li-content">
+          <div class="li-title">Mercredi 21 mai · 14h00</div>
+          <div class="li-sub">Complet</div>
+        </div>
+        <button class="btn btn-outline btn-sm" disabled>Complet</button>
+      </div>
     </div>
   </div>
 
