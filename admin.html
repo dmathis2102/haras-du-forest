@@ -2026,7 +2026,7 @@
     document.getElementById('ns-group-fields').style.display  = type !== 'particulier' ? '' : 'none';
   }
 
-  function saveNewSlot() {
+  function saveNewSlot(prefillInscrit) {
     const type  = document.getElementById('ns-type').value;
     const date  = document.getElementById('ns-date').value;
     const heure = document.getElementById('ns-heure').value;
@@ -2036,7 +2036,8 @@
     if (type === 'particulier') {
       coursParMoniteur[activeCoursMoniteur][date][heure] = { type, client: document.getElementById('ns-client').value.trim() || 'À définir', status: 'reserve' };
     } else {
-      coursParMoniteur[activeCoursMoniteur][date][heure] = { type, label: document.getElementById('ns-label').value.trim() || (type==='collectif'?'Collectif':'Enfants'), maxPlaces: parseInt(document.getElementById('ns-max').value)||6, inscrits: [] };
+      const initInscrits = prefillInscrit ? [prefillInscrit] : [];
+      coursParMoniteur[activeCoursMoniteur][date][heure] = { type, label: document.getElementById('ns-label').value.trim() || (type==='collectif'?'Collectif':type==='stage'?'Stage':'Enfants'), maxPlaces: parseInt(document.getElementById('ns-max').value)||6, inscrits: initInscrits };
     }
     closeDetail();
     renderCoursMoniteur();
