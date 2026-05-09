@@ -493,6 +493,74 @@
   .cours-indispo { background:#F1F3F7;        color:var(--t3);     border:1px solid var(--border); cursor:default; opacity:1 !important; }
   .cours-complet { background:var(--orange-l);color:var(--orange); border:1px solid rgba(217,119,6,0.25); }
 
+  /* ── PLANNING MENSUEL ── */
+  .month-modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(14,28,53,0.55); z-index: 300;
+    align-items: flex-start; justify-content: center;
+    padding: 32px 24px; overflow-y: auto;
+  }
+  .month-modal-overlay.open { display: flex; }
+  .month-modal {
+    background: var(--card); border-radius: 16px;
+    width: 100%; max-width: 1140px; margin: auto;
+    box-shadow: 0 24px 70px rgba(0,0,0,0.28);
+    overflow: hidden;
+  }
+  .month-modal-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 24px; border-bottom: 1px solid var(--border);
+  }
+  .month-nav { display: flex; align-items: center; gap: 10px; }
+  .month-nav-btn {
+    width: 32px; height: 32px; border-radius: 8px;
+    border: 1.5px solid var(--border); background: none;
+    cursor: pointer; font-size: 15px; color: var(--t2);
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+  .month-nav-btn:hover { border-color: var(--navy); color: var(--navy); background: var(--blue-l); }
+  .month-label { font-size: 16px; font-weight: 700; color: var(--t1); min-width: 180px; text-align: center; text-transform: capitalize; }
+  .month-legend { display: flex; gap: 16px; font-size: 12px; color: var(--t2); }
+  .month-legend span { display: flex; align-items: center; gap: 5px; }
+  .month-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; }
+  .month-dow-row {
+    display: grid; grid-template-columns: repeat(7,1fr);
+    background: #F8F9FC; border-bottom: 1px solid var(--border);
+  }
+  .month-dow {
+    padding: 8px 6px; text-align: center;
+    font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.5px; color: var(--t3);
+  }
+  .month-grid {
+    display: grid; grid-template-columns: repeat(7,1fr);
+    border-left: 1px solid var(--border);
+  }
+  .month-cell {
+    min-height: 108px; padding: 6px 5px;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .month-cell.empty { background: #FAFBFD; }
+  .month-cell.is-today { background: #EEF2FB; }
+  .month-day-num {
+    font-size: 12px; font-weight: 700; color: var(--t3);
+    margin-bottom: 4px; width: 22px; height: 22px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .month-cell.is-today .month-day-num {
+    background: var(--navy); color: #fff; border-radius: 50%; font-size: 11px;
+  }
+  .month-slot {
+    font-size: 10px; padding: 2px 4px; border-radius: 3px;
+    margin-bottom: 2px; font-weight: 500;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    cursor: default;
+  }
+  .month-more { font-size: 10px; color: var(--t3); padding: 1px 4px; cursor: pointer; }
+  .month-more:hover { color: var(--navy); }
+
   /* ── SCROLLBAR ── */
   ::-webkit-scrollbar { width: 6px; }
   ::-webkit-scrollbar-track { background: transparent; }
