@@ -3184,16 +3184,16 @@
 
   /* ══ PLACES COURS COLLECTIFS / ENFANTS / STAGES ══ */
   const coursSpots = {
-    c1:  { max: 6, booked: 2, label: 'Rejoindre' }, // 4/6 dispo
-    c2:  { max: 6, booked: 4, label: 'Rejoindre' }, // 2/6 dispo
-    e1:  { max: 6, booked: 3, label: 'Rejoindre' }, // 3/6 dispo
-    e2:  { max: 6, booked: 1, label: 'Rejoindre' }, // 5/6 dispo
-    sd1: { max: 6, booked: 4, label: 'Demande'   }, // 2 restantes
-    sd2: { max: 6, booked: 0, label: 'Demande'   }, // 6 dispo
-    sd3: { max: 6, booked: 0, label: 'Demande'   }, // 6 dispo
-    sp1: { max: 6, booked: 5, label: 'Demande'   }, // 1 restante
-    sp2: { max: 6, booked: 2, label: 'Demande'   }, // 4 dispo
-    sp3: { max: 6, booked: 0, label: 'Demande'   }, // 6 dispo
+    c1:  { max: 6, booked: 2, label: 'Rejoindre', sortDate: new Date('2026-05-13T17:30:00').getTime() },
+    c2:  { max: 6, booked: 4, label: 'Rejoindre', sortDate: new Date('2026-05-15T18:00:00').getTime() },
+    e1:  { max: 6, booked: 3, label: 'Rejoindre', sortDate: new Date('2026-05-14T14:00:00').getTime() },
+    e2:  { max: 6, booked: 1, label: 'Rejoindre', sortDate: new Date('2026-05-17T10:00:00').getTime() },
+    sd1: { max: 6, booked: 4, label: 'Demande',   sortDate: new Date('2026-05-07T09:00:00').getTime() },
+    sd2: { max: 6, booked: 0, label: 'Demande',   sortDate: new Date('2026-07-07T09:00:00').getTime() },
+    sd3: { max: 6, booked: 0, label: 'Demande',   sortDate: new Date('2026-08-04T09:00:00').getTime() },
+    sp1: { max: 6, booked: 5, label: 'Demande',   sortDate: new Date('2026-05-04T09:00:00').getTime() },
+    sp2: { max: 6, booked: 2, label: 'Demande',   sortDate: new Date('2026-07-06T09:00:00').getTime() },
+    sp3: { max: 6, booked: 0, label: 'Demande',   sortDate: new Date('2026-08-03T09:00:00').getTime() },
   };
   let currentCourseKey = null;
 
