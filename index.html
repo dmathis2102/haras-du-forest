@@ -3111,7 +3111,9 @@
           grid.querySelectorAll('.day-slot').forEach(s => s.classList.remove('selected'));
           this.classList.add('selected');
           if (calId === 'particulier') {
+            selectedDateISO = day.toISOString().slice(0, 10);
             recap.day = `${DAY_FULL[i]}. ${day.getDate()} ${MONTHS[day.getMonth()]}`;
+            renderParticulierSlots();
             updateRecapParticulier();
           }
         };
