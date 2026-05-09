@@ -1855,7 +1855,7 @@
           const pct    = max ? Math.round(booked/max*100) : 0;
           return `<td style="padding:4px 6px">
             <div class="cours-cell-rich ${s.type}" onclick="openSlotDetail('${date}','${heure}')">
-              <div class="cours-cell-type">${s.type === 'particulier' ? 'Particulier' : s.type === 'collectif' ? 'Collectif' : 'Enfants'}</div>
+              <div class="cours-cell-type">${s.type === 'particulier' ? 'Particulier' : s.type === 'collectif' ? 'Collectif' : s.type === 'stage' ? 'Stage' : 'Enfants'}</div>
               ${s.type === 'particulier'
                 ? `<div class="cours-cell-client">${s.client}</div>`
                 : `<div class="cours-cell-spots">${s.label} · <strong>${booked}/${max}</strong></div>
