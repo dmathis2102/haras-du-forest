@@ -3215,12 +3215,26 @@
     if (confDate)  confDate.textContent  = date;
     if (confPts)   confPts.textContent   = pts;
 
+    // Réservation cours particulier : bloquer le créneau
+    let assignedMonitor = recap.moniteur;
+    if (type === 'Cours particulier' && selectedDateISO) {
+      let mk = getSelectedMonitorKey();
+      if (!mk) {
+        mk = MONITORS_LIST.find(m => !bookings.has(`${selectedDateISO}_${recap.time}_${m}`)) || null;
+        if (mk) assignedMonitor = MONITOR_NAME_MAP[mk];
+      }
+      if (mk) {
+        bookings.add(`${selectedDateISO}_${recap.time}_${mk}`);
+        renderParticulierSlots();
+      }
+    }
+
     // Ajout à la liste À venir
-    const moniteur = (type === 'Cours particulier' && recap.moniteur !== 'Sans préférence')
-      ? ' · ' + recap.moniteur : '';
+    const moniteurLabel = (type === 'Cours particulier' && assignedMonitor && assignedMonitor !== 'Sans préférence')
+      ? ' · ' + assignedMonitor : '';
     reservations.push({
       id:    nextResaId++,
-      titre: type + moniteur,
+      titre: type + moniteurLabel,
       date:  date
     });
     renderReservations();
