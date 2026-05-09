@@ -3313,6 +3313,7 @@
 
     // Réservation cours particulier : bloquer le créneau
     let assignedMonitor = recap.moniteur;
+    let usedMk = null;
     if (type === 'Cours particulier' && selectedDateISO) {
       let mk = getSelectedMonitorKey();
       if (!mk) {
@@ -3320,6 +3321,7 @@
         if (mk) assignedMonitor = MONITOR_NAME_MAP[mk];
       }
       if (mk) {
+        usedMk = mk;
         bookings.add(`${selectedDateISO}_${recap.time}_${mk}`);
         renderParticulierSlots();
       }
@@ -3329,9 +3331,13 @@
     const moniteurLabel = (type === 'Cours particulier' && assignedMonitor && assignedMonitor !== 'Sans préférence')
       ? ' · ' + assignedMonitor : '';
     reservations.push({
-      id:    nextResaId++,
-      titre: type + moniteurLabel,
-      date:  date
+      id:        nextResaId++,
+      titre:     type + moniteurLabel,
+      date:      date,
+      courseKey: currentCourseKey,
+      dateISO:   type === 'Cours particulier' ? selectedDateISO : null,
+      time:      type === 'Cours particulier' ? recap.time : null,
+      monitorKey: usedMk,
     });
     // Décrémenter les places pour cours collectifs / enfants / stages
     if (currentCourseKey && coursSpots[currentCourseKey]) {
