@@ -3123,9 +3123,35 @@
       </div>`).join('');
   }
 
+  let pendingCancelId = null;
+
+  function openCancelConfirm(id) {
+    const r = reservations.find(r => r.id === id);
+    if (!r) return;
+    pendingCancelId = id;
+    document.getElementById('cc-titre').textContent = r.titre;
+    document.getElementById('cc-date').textContent  = r.date;
+    document.getElementById('cancel-overlay').classList.add('open');
+  }
+
+  function closeCancelConfirm(e) {
+    if (!e || e.target === document.getElementById('cancel-overlay')) {
+      document.getElementById('cancel-overlay').classList.remove('open');
+      pendingCancelId = null;
+    }
+  }
+
+  function doCancelConfirm() {
+    if (pendingCancelId !== null) {
+      reservations = reservations.filter(r => r.id !== pendingCancelId);
+      renderReservations();
+      pendingCancelId = null;
+    }
+    document.getElementById('cancel-overlay').classList.remove('open');
+  }
+
   function annulerReservation(id) {
-    reservations = reservations.filter(r => r.id !== id);
-    renderReservations();
+    openCancelConfirm(id);
   }
 
   function doConfirm() {
