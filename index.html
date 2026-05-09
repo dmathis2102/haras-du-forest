@@ -3284,6 +3284,19 @@
 
   function doCancelConfirm() {
     if (pendingCancelId !== null) {
+      const r = reservations.find(r => r.id === pendingCancelId);
+      if (r) {
+        // Redonner la place pour cours collectif / enfants / stages
+        if (r.courseKey && coursSpots[r.courseKey]) {
+          coursSpots[r.courseKey].booked--;
+          updateCourseSpot(r.courseKey);
+        }
+        // Libérer le créneau pour cours particulier
+        if (r.dateISO && r.time && r.monitorKey) {
+          bookings.delete(`${r.dateISO}_${r.time}_${r.monitorKey}`);
+          renderParticulierSlots();
+        }
+      }
       reservations = reservations.filter(r => r.id !== pendingCancelId);
       renderReservations();
       pendingCancelId = null;
