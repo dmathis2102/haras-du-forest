@@ -1159,6 +1159,49 @@
   </div><!-- /content -->
 </div><!-- /main -->
 
+<!-- ══ MODAL STATS MONITEUR ══ -->
+<div class="stats-modal-overlay" id="stats-modal" onclick="if(event.target===this)closeMonitorStats()">
+  <div class="stats-modal">
+    <div class="stats-modal-header">
+      <div class="stats-monitor-identity">
+        <div class="stats-monitor-avatar" id="sm-avatar"></div>
+        <div>
+          <div style="font-size:17px;font-weight:800;color:var(--t1)" id="sm-name"></div>
+          <div style="font-size:12px;color:var(--t3)" id="sm-spec"></div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="display:inline-flex;align-items:center;gap:5px;background:#FEF3C7;color:#92400E;font-size:14px;font-weight:800;padding:5px 12px;border-radius:8px" id="sm-note-badge"></div>
+        <button class="modal-close" onclick="closeMonitorStats()">✕</button>
+      </div>
+    </div>
+    <div class="stats-modal-body">
+
+      <!-- KPIs -->
+      <div>
+        <div class="stats-section-title">Statistiques — Mai 2026</div>
+        <div class="stats-kpi-row" id="sm-kpis"></div>
+      </div>
+
+      <!-- Activité par semaine -->
+      <div>
+        <div class="stats-section-title">Activité par semaine</div>
+        <div class="activity-bars" id="sm-bars"></div>
+        <div style="display:flex;gap:8px" id="sm-bar-labels"></div>
+      </div>
+
+      <!-- Avis clients -->
+      <div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+          <div class="stats-section-title" style="margin-bottom:0" id="sm-avis-title"></div>
+        </div>
+        <div id="sm-avis-list"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 <!-- ══ PANNEAU DÉTAIL JOUR ══ -->
 <div class="day-panel-overlay" id="day-panel-overlay" onclick="closeDayPanel()"></div>
 <div class="day-panel" id="day-panel">
