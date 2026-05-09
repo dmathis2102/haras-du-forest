@@ -1969,19 +1969,21 @@
     renderCoursMoniteur();
   }
 
-  function openAddSlotModal(date, heure) {
-    const iso = date || '';
-    const h   = heure || '09h00';
+  function openAddSlotModal(date, heure, prefillType, prefillLabel, prefillInscrit) {
+    const iso       = date || '';
+    const h         = heure || '09h00';
+    const initType  = prefillType || 'particulier';
+    const isGroup   = initType !== 'particulier';
     openDetailId = null;
     document.getElementById('dp-title').textContent = 'Nouveau créneau';
     document.getElementById('dp-body').innerHTML = `
       <div style="display:flex;flex-direction:column;gap:14px">
         <div class="form-group"><div class="form-label">Type de cours</div>
           <select class="form-select" id="ns-type" onchange="toggleNewSlotFields()">
-            <option value="particulier">Cours particulier</option>
-            <option value="collectif">Cours collectif</option>
-            <option value="enfants">Cours enfants</option>
-            <option value="stage">Stage</option>
+            <option value="particulier"${initType==='particulier'?' selected':''}>Cours particulier</option>
+            <option value="collectif"${initType==='collectif'?' selected':''}>Cours collectif</option>
+            <option value="enfants"${initType==='enfants'?' selected':''}>Cours enfants</option>
+            <option value="stage"${initType==='stage'?' selected':''}>Stage</option>
           </select></div>
         <div class="form-row">
           <div class="form-group"><div class="form-label">Date</div>
