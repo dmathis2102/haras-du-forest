@@ -3181,11 +3181,41 @@
     });
   }
 
+  /* ══ PLACES COURS COLLECTIFS / ENFANTS / STAGES ══ */
+  const coursSpots = {
+    c1:  { max: 6, booked: 4 },
+    c2:  { max: 6, booked: 2 },
+    e1:  { max: 6, booked: 3 },
+    e2:  { max: 6, booked: 1 },
+    sd1: { max: 6, booked: 4 },
+    sd2: { max: 6, booked: 0 },
+    sd3: { max: 6, booked: 0 },
+    sp1: { max: 6, booked: 5 },
+    sp2: { max: 6, booked: 2 },
+    sp3: { max: 6, booked: 0 },
+  };
+  let currentCourseKey = null;
+
+  function updateCourseSpot(key) {
+    const s = coursSpots[key];
+    if (!s) return;
+    const remaining = s.max - s.booked;
+    const subEl = document.getElementById('spot-' + key);
+    const btnEl = document.getElementById('btn-' + key);
+    const item  = subEl ? subEl.closest('.list-item') : null;
+    if (remaining <= 0) {
+      if (subEl) subEl.textContent = 'Complet';
+      if (item)  item.style.opacity = '0.5';
+      if (btnEl) { btnEl.disabled = true; btnEl.textContent = 'Complet'; btnEl.className = 'btn btn-outline btn-sm'; }
+    } else {
+      if (subEl) subEl.textContent = `${remaining} / ${s.max} places disponibles`;
+    }
+  }
+
   /* ══ CONFIRMATION POPUP ══ */
-  function openConfirm(type, date, pts) {
+  function openConfirm(type, date, pts, courseKey) {
     document.getElementById('c-title').textContent = type;
     document.getElementById('c-type').textContent = type;
-    // Pour cours particulier : utilise le recap dynamique
     if (type === 'Cours particulier') {
       const d = document.getElementById('recap-date').textContent;
       const t = document.getElementById('recap-time').textContent;
@@ -3194,6 +3224,7 @@
       document.getElementById('c-date').textContent = date;
     }
     document.getElementById('c-pts').textContent = '− ' + pts;
+    currentCourseKey = courseKey || null;
     document.getElementById('confirm-overlay').classList.add('open');
   }
 
