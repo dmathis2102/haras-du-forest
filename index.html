@@ -943,47 +943,50 @@
     /* ══════════ SLOTS ══════════ */
     .slot-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
+      grid-template-columns: repeat(auto-fill, minmax(68px, 1fr));
+      gap: 8px;
       margin-top: 14px;
     }
 
     .slot {
-      padding: 13px 8px;
+      padding: 12px 6px;
       border: 1.5px solid var(--border);
-      border-radius: 8px;
+      border-radius: 4px;
       text-align: center;
       cursor: pointer;
       transition: all 0.18s;
       background: white;
+      min-width: 0;
     }
 
-    .slot:hover:not(.unavailable) { border-color: var(--gold-light); background: #FDFAF4; }
+    .slot:hover:not(.unavailable) { border-color: var(--gold); background: #FAF8F5; }
 
     .slot.selected {
-      border-color: var(--sidebar-bg);
-      background: var(--sidebar-bg);
+      border-color: var(--text-1);
+      background: var(--text-1);
     }
 
     .slot.selected .slot-time { color: white; }
-    .slot.selected .slot-info { color: rgba(255,255,255,0.55); }
+    .slot.selected .slot-info { color: rgba(255,255,255,0.5); }
 
     .slot.unavailable {
-      opacity: 0.38;
+      opacity: 0.35;
       cursor: not-allowed;
-      background: #F8F6F2;
+      background: #F5F5F5;
     }
 
     .slot-time {
-      font-size: 14px;
-      font-weight: 600;
+      font-size: 13px;
+      font-weight: 700;
       color: var(--text-1);
+      white-space: nowrap;
     }
 
     .slot-info {
-      font-size: 10.5px;
+      font-size: 10px;
       color: var(--text-3);
       margin-top: 3px;
+      white-space: nowrap;
     }
 
     /* ══════════ FORMS ══════════ */
