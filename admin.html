@@ -887,26 +887,29 @@
             </div>
             <div class="card-body">
               <div class="alert-list">
-                <div class="alert-item">
+                <div class="alert-item" onclick="navigateTo('paiements', () => openPaiementDetail(2))">
                   <div class="alert-icon si-red" style="border-radius:8px">⚠</div>
                   <div class="alert-txt">
                     <div class="alert-title">Paiement en attente</div>
                     <div class="alert-sub">Isabelle Morel · Formule Confort</div>
                   </div>
+                  <span style="color:var(--t3);font-size:18px;align-self:center">›</span>
                 </div>
-                <div class="alert-item">
+                <div class="alert-item" onclick="navigateTo('cours')">
                   <div class="alert-icon si-orange" style="border-radius:8px;background:var(--orange-l)">📋</div>
                   <div class="alert-txt">
                     <div class="alert-title">Cours presque complet</div>
                     <div class="alert-sub">Collectif confirmés — Sam 16 mai · 5/6</div>
                   </div>
+                  <span style="color:var(--t3);font-size:18px;align-self:center">›</span>
                 </div>
-                <div class="alert-item">
+                <div class="alert-item" onclick="navigateTo('reservations', () => openDetail(10))">
                   <div class="alert-icon si-blue" style="border-radius:8px">💬</div>
                   <div class="alert-txt">
                     <div class="alert-title">Demande de stage</div>
                     <div class="alert-sub">Nathan Dupuis · Stage été juillet</div>
                   </div>
+                  <span style="color:var(--t3);font-size:18px;align-self:center">›</span>
                 </div>
               </div>
             </div>
