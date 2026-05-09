@@ -1660,7 +1660,7 @@
     <div class="section">
       <div class="section-title">Moniteur</div>
       <div class="form-group" style="margin:0">
-        <select>
+        <select id="select-moniteur" onchange="updateRecapParticulier()">
           <option>Sans préférence</option>
           <option>Sophie L. — Débutants &amp; enfants</option>
           <option>Thomas D. — Confirmés</option>
@@ -1671,27 +1671,28 @@
 
     <div class="section">
       <div class="section-title">Créneaux disponibles</div>
-      <div class="slot-grid">
-        <div class="slot selected" onclick="selectSlot(this)"><div class="slot-time">09h00</div><div class="slot-info">Disponible</div></div>
-        <div class="slot" onclick="selectSlot(this)"><div class="slot-time">10h00</div><div class="slot-info">Disponible</div></div>
+      <div class="slot-grid" id="slot-grid-particulier">
+        <div class="slot selected" onclick="selectTimeSlot(this,'particulier')" data-time="09h00"><div class="slot-time">09h00</div><div class="slot-info">Disponible</div></div>
+        <div class="slot" onclick="selectTimeSlot(this,'particulier')" data-time="10h00"><div class="slot-time">10h00</div><div class="slot-info">Disponible</div></div>
         <div class="slot unavailable"><div class="slot-time">11h00</div><div class="slot-info">Réservé</div></div>
-        <div class="slot" onclick="selectSlot(this)"><div class="slot-time">14h00</div><div class="slot-info">Disponible</div></div>
-        <div class="slot" onclick="selectSlot(this)"><div class="slot-time">15h00</div><div class="slot-info">Disponible</div></div>
+        <div class="slot" onclick="selectTimeSlot(this,'particulier')" data-time="14h00"><div class="slot-time">14h00</div><div class="slot-info">Disponible</div></div>
+        <div class="slot" onclick="selectTimeSlot(this,'particulier')" data-time="15h00"><div class="slot-time">15h00</div><div class="slot-info">Disponible</div></div>
         <div class="slot unavailable"><div class="slot-time">16h00</div><div class="slot-info">Réservé</div></div>
-        <div class="slot" onclick="selectSlot(this)"><div class="slot-time">17h00</div><div class="slot-info">Disponible</div></div>
-        <div class="slot" onclick="selectSlot(this)"><div class="slot-time">18h00</div><div class="slot-info">Disponible</div></div>
+        <div class="slot" onclick="selectTimeSlot(this,'particulier')" data-time="17h00"><div class="slot-time">17h00</div><div class="slot-info">Disponible</div></div>
+        <div class="slot" onclick="selectTimeSlot(this,'particulier')" data-time="18h00"><div class="slot-time">18h00</div><div class="slot-info">Disponible</div></div>
       </div>
     </div>
 
     <div class="section">
       <div class="section-title">Récapitulatif</div>
       <div class="recap-line"><span class="rl-key">Cours</span><span class="rl-val">Particulier · 45 min</span></div>
-      <div class="recap-line"><span class="rl-key">Créneau</span><span class="rl-val">Sam. 10 mai · 09h00</span></div>
-      <div class="recap-line"><span class="rl-key">Moniteur</span><span class="rl-val">Sophie L.</span></div>
+      <div class="recap-line"><span class="rl-key">Date</span><span class="rl-val" id="recap-date">—</span></div>
+      <div class="recap-line"><span class="rl-key">Créneau</span><span class="rl-val" id="recap-time">09h00</span></div>
+      <div class="recap-line"><span class="rl-key">Moniteur</span><span class="rl-val" id="recap-moniteur">Sans préférence</span></div>
       <div class="recap-line"><span class="rl-key">Débit</span><span class="rl-val gold">− 10 points</span></div>
       <div class="recap-line"><span class="rl-key">Solde après</span><span class="rl-val green">70 points</span></div>
       <br/>
-      <button class="btn btn-dark" onclick="showInner('confirmation')">Confirmer la réservation</button>
+      <button class="btn btn-dark" onclick="openConfirm('Cours particulier','45 min','10 pts')">Confirmer la réservation</button>
     </div>
   </div>
 
