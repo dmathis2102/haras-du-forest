@@ -2170,7 +2170,7 @@
 
     <div class="section-label">Choisir un pack</div>
 
-    <div class="pack selected" onclick="selectPack(this)" data-price="30 €">
+    <div class="pack selected" onclick="selectPack(this)" data-price="30 €" data-name="Pack Appoint" data-detail="30 points · 3 séances collectives ou particulières">
       <div class="pack-top">
         <div class="pack-name">Pack Appoint</div>
         <div class="pack-amount">30 <sub>pts</sub></div>
@@ -2179,7 +2179,7 @@
       <div class="pack-price">30 €</div>
     </div>
 
-    <div class="pack" onclick="selectPack(this)" data-price="60 €">
+    <div class="pack" onclick="selectPack(this)" data-price="60 €" data-name="Pack Loisir" data-detail="70 points · 7 séances · Petit bonus offert">
       <div class="pack-top">
         <div class="pack-name">Pack Loisir</div>
         <div class="pack-amount">70 <sub>pts</sub></div>
@@ -2188,7 +2188,7 @@
       <div class="pack-price">60 €</div>
     </div>
 
-    <div class="pack" onclick="selectPack(this)" data-price="100 €">
+    <div class="pack" onclick="selectPack(this)" data-price="100 €" data-name="Pack Confort" data-detail="120 points · 12 séances · 20 pts offerts">
       <div class="pack-top">
         <div class="pack-name">Pack Confort</div>
         <div class="pack-amount">120 <sub>pts</sub></div>
@@ -2198,7 +2198,7 @@
     </div>
 
     <br/>
-    <button class="btn btn-gold" id="pay-btn">Procéder au paiement · 30 €</button>
+    <button class="btn btn-gold" id="pay-btn" onclick="openPaiementPack()">Procéder au paiement · <span id="pay-pack-label">30 €</span></button>
 
   </div>
 
