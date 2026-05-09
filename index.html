@@ -1428,6 +1428,66 @@
     .main::-webkit-scrollbar-track { background: transparent; }
     .main::-webkit-scrollbar-thumb { background: #D8CEBC; border-radius: 3px; }
 
+    /* ══════════ PAIEMENT ══════════ */
+    .pay-recap {
+      background: var(--sidebar-bg);
+      border-radius: var(--r);
+      padding: 22px 20px;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .pay-recap-icon {
+      width: 46px; height: 46px;
+      background: rgba(196,169,126,0.15);
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--gold);
+      flex-shrink: 0;
+    }
+    .pay-recap-icon svg { width: 22px; height: 22px; }
+    .pay-recap-info { flex: 1; min-width: 0; }
+    .pay-recap-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem; font-weight: 700;
+      color: #fff; margin-bottom: 3px;
+    }
+    .pay-recap-detail { font-size: 0.78rem; color: rgba(255,255,255,0.5); line-height: 1.4; }
+    .pay-recap-price {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem; font-weight: 700;
+      color: var(--gold); flex-shrink: 0;
+    }
+    .card-input-wrap { position: relative; }
+    .card-input-icon {
+      position: absolute;
+      left: 13px; top: 50%; transform: translateY(-50%);
+      color: var(--text-3); display: flex; pointer-events: none;
+    }
+    .card-input-icon svg { width: 17px; height: 17px; }
+    .card-input-wrap input { padding-left: 40px; letter-spacing: 0.06em; }
+    .card-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .ssl-badge {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 0.76rem; color: var(--text-3);
+      margin-top: 16px; padding: 10px 14px;
+      background: #F4F6F9; border-radius: 8px;
+    }
+    .ssl-badge svg { width: 13px; height: 13px; color: var(--green-ok); flex-shrink: 0; }
+    .pay-card-logos { display: flex; gap: 6px; margin-bottom: 16px; }
+    .pay-card-logo {
+      height: 22px; padding: 3px 8px;
+      border: 1.5px solid var(--border);
+      border-radius: 5px;
+      font-size: 0.65rem; font-weight: 800;
+      display: flex; align-items: center;
+      letter-spacing: 0.02em;
+    }
+    .pay-card-logo.visa { color: #1A1F71; }
+    .pay-card-logo.mc { color: #EB001B; }
+    .pay-card-logo.ae { color: #2E77BC; }
+
     /* ══════════ SUCCESS ══════════ */
     .success-wrap {
       display: flex;
