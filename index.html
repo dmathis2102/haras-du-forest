@@ -2385,6 +2385,31 @@
 
 </main>
 
+<!-- ══ POPUP CONFIRMATION ══ -->
+<div class="confirm-overlay" id="confirm-overlay" onclick="closeConfirm(event)">
+  <div class="confirm-sheet">
+    <div class="confirm-handle"></div>
+    <div class="confirm-header">
+      <div class="confirm-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+      </div>
+      <div>
+        <div class="confirm-title" id="c-title">Cours particulier</div>
+        <div class="confirm-sub">Confirmation de réservation</div>
+      </div>
+    </div>
+    <div class="confirm-body">
+      <div class="confirm-row"><span class="cr-key">Séance</span><span class="cr-val" id="c-type">—</span></div>
+      <div class="confirm-row"><span class="cr-key">Date &amp; heure</span><span class="cr-val" id="c-date">—</span></div>
+      <div class="confirm-row"><span class="cr-key">Débit</span><span class="cr-val cr-pts" id="c-pts">—</span></div>
+    </div>
+    <div class="confirm-actions">
+      <button class="btn btn-outline" onclick="closeConfirm()">Annuler</button>
+      <button class="btn btn-dark" onclick="doConfirm()">Confirmer</button>
+    </div>
+  </div>
+</div>
+
 <script>
   function enterApp() {
     document.getElementById('auth-screen').classList.add('hidden');
