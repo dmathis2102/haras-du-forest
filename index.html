@@ -2562,16 +2562,42 @@
     document.getElementById('pay-btn').textContent = 'Procéder au paiement · ' + price;
   }
 
+  // État recap cours particulier
+  const recap = { day: '—', time: '09h00', moniteur: 'Sans préférence' };
+
   function selectSlot(el) {
     const grid = el.closest('.slot-grid');
     grid.querySelectorAll('.slot:not(.unavailable)').forEach(s => s.classList.remove('selected'));
     el.classList.add('selected');
   }
 
+  function selectTimeSlot(el, ctx) {
+    const grid = el.closest('.slot-grid');
+    grid.querySelectorAll('.slot:not(.unavailable)').forEach(s => s.classList.remove('selected'));
+    el.classList.add('selected');
+    if (ctx === 'particulier') {
+      recap.time = el.dataset.time || el.querySelector('.slot-time').textContent;
+      updateRecapParticulier();
+    }
+  }
+
+  function updateRecapParticulier() {
+    const sel = document.getElementById('select-moniteur');
+    if (sel) recap.moniteur = sel.value.split(' — ')[0];
+    const d = document.getElementById('recap-date');
+    const t = document.getElementById('recap-time');
+    const m = document.getElementById('recap-moniteur');
+    if (d) d.textContent = recap.day;
+    if (t) t.textContent = recap.time;
+    if (m) m.textContent = recap.moniteur;
+  }
+
   /* ══ WEEK CALENDAR ══ */
   const calOffsets = {};
   const MONTHS = ['jan','fév','mar','avr','mai','juin','juil','aoû','sep','oct','nov','déc'];
+  const MONTHS_FULL = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
   const DAY_NAMES = ['L','M','M','J','V','S','D'];
+  const DAY_FULL  = ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
 
   function initCal(calId) {
     calOffsets[calId] = 0;
@@ -2621,10 +2647,41 @@
         div.onclick = function() {
           grid.querySelectorAll('.day-slot').forEach(s => s.classList.remove('selected'));
           this.classList.add('selected');
+          if (calId === 'particulier') {
+            recap.day = `${DAY_FULL[i]}. ${day.getDate()} ${MONTHS[day.getMonth()]}`;
+            updateRecapParticulier();
+          }
         };
       }
       grid.appendChild(div);
     });
+  }
+
+  /* ══ CONFIRMATION POPUP ══ */
+  function openConfirm(type, date, pts) {
+    document.getElementById('c-title').textContent = type;
+    document.getElementById('c-type').textContent = type;
+    // Pour cours particulier : utilise le recap dynamique
+    if (type === 'Cours particulier') {
+      const d = document.getElementById('recap-date').textContent;
+      const t = document.getElementById('recap-time').textContent;
+      document.getElementById('c-date').textContent = (d !== '—' ? d + ' · ' : '') + t;
+    } else {
+      document.getElementById('c-date').textContent = date;
+    }
+    document.getElementById('c-pts').textContent = '− ' + pts;
+    document.getElementById('confirm-overlay').classList.add('open');
+  }
+
+  function closeConfirm(e) {
+    if (!e || e.target === document.getElementById('confirm-overlay')) {
+      document.getElementById('confirm-overlay').classList.remove('open');
+    }
+  }
+
+  function doConfirm() {
+    document.getElementById('confirm-overlay').classList.remove('open');
+    showInner('confirmation');
   }
 
   // Init calendars au chargement
