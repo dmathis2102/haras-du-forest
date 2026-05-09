@@ -1610,6 +1610,86 @@
   showMonitorTab(document.querySelector('.moni-tab'), 'sophie');
   renderCoursGrid();
   renderPaiements(paiements);
+
+  /* ── PLANNING MENSUEL ── */
+  let currentMonth = 4; // Mai 2026
+  let currentYear  = 2026;
+
+  const MONTH_NAMES = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+
+  const monthSlots = {
+    '2026-05-01': [{label:'14h · Collectif (4/6)',cls:'wg-coll'},{label:'16h · Nathan — Particulier',cls:'wg-part'}],
+    '2026-05-02': [{label:'09h · Lucas — Particulier',cls:'wg-part'},{label:'10h · Collectif (5/6)',cls:'wg-coll'},{label:'14h · Enfants (3/6)',cls:'wg-enf'}],
+    '2026-05-04': [{label:'09h · Marie — Particulier',cls:'wg-part'},{label:'10h · Collectif (4/6)',cls:'wg-coll'},{label:'15h · Clara — Particulier',cls:'wg-part'}],
+    '2026-05-05': [{label:'14h · Enfants (4/6)',cls:'wg-enf'},{label:'17h · Nathan — Particulier',cls:'wg-part'}],
+    '2026-05-06': [{label:'09h · Collectif (3/6)',cls:'wg-coll'},{label:'10h · Enfants (5/6)',cls:'wg-enf'},{label:'14h · Collectif (2/6)',cls:'wg-coll'}],
+    '2026-05-07': [{label:'09h · Nathan — Particulier',cls:'wg-part'},{label:'17h · Lucas — Particulier',cls:'wg-part'}],
+    '2026-05-08': [{label:'09h · Marie — Particulier',cls:'wg-part'},{label:'10h · Collectif (5/6)',cls:'wg-coll'},{label:'14h · Enfants (3/6)',cls:'wg-enf'}],
+    '2026-05-09': [{label:'09h · Collectif (4/6)',cls:'wg-coll'},{label:'10h · Lucas — Particulier',cls:'wg-part'},{label:'14h · Enfants (3/6)',cls:'wg-enf'},{label:'17h · Nathan — Particulier',cls:'wg-part'}],
+    '2026-05-11': [{label:'09h · Marie — Particulier',cls:'wg-part'},{label:'10h · Collectif (4/6)',cls:'wg-coll'},{label:'14h · Antoine — Particulier',cls:'wg-part'}],
+    '2026-05-12': [{label:'14h · Enfants (3/6)',cls:'wg-enf'},{label:'16h · Isabelle — Particulier',cls:'wg-part'},{label:'17h · Nathan — Particulier',cls:'wg-part'}],
+    '2026-05-13': [{label:'09h · Collectif (3/6)',cls:'wg-coll'},{label:'10h · Enfants (5/6)',cls:'wg-enf'},{label:'14h · Collectif (2/6)',cls:'wg-coll'}],
+    '2026-05-14': [{label:'09h · Nathan — Particulier',cls:'wg-part'},{label:'15h · Pierre — Particulier',cls:'wg-part'}],
+    '2026-05-15': [{label:'10h · Collectif (5/6)',cls:'wg-coll'},{label:'14h · Marie — Particulier',cls:'wg-part'},{label:'15h · Enfants (3/6)',cls:'wg-enf'}],
+    '2026-05-16': [{label:'09h · Lucas — Particulier',cls:'wg-part'},{label:'10h · Collectif (5/6)',cls:'wg-coll'},{label:'11h · Nathan — Particulier',cls:'wg-part'},{label:'14h · Enfants (6/6)',cls:'wg-enf'}],
+    '2026-05-18': [{label:'09h · Clara — Particulier',cls:'wg-part'},{label:'10h · Collectif (4/6)',cls:'wg-coll'},{label:'16h · Marie — Particulier',cls:'wg-part'}],
+    '2026-05-19': [{label:'14h · Enfants (4/6)',cls:'wg-enf'},{label:'17h · Pierre — Particulier',cls:'wg-part'}],
+    '2026-05-20': [{label:'09h · Collectif (3/6)',cls:'wg-coll'},{label:'10h · Enfants (4/6)',cls:'wg-enf'},{label:'14h · Collectif (4/6)',cls:'wg-coll'}],
+    '2026-05-21': [{label:'09h · Antoine — Particulier',cls:'wg-part'},{label:'15h · Lucas — Particulier',cls:'wg-part'}],
+    '2026-05-22': [{label:'09h · Collectif (5/6)',cls:'wg-coll'},{label:'14h · Nathan — Particulier',cls:'wg-part'},{label:'15h · Enfants (3/6)',cls:'wg-enf'}],
+    '2026-05-23': [{label:'09h · Marie — Particulier',cls:'wg-part'},{label:'10h · Collectif (4/6)',cls:'wg-coll'},{label:'14h · Enfants (5/6)',cls:'wg-enf'},{label:'16h · Clara — Particulier',cls:'wg-part'}],
+    '2026-05-25': [{label:'09h · Isabelle — Particulier',cls:'wg-part'},{label:'10h · Collectif (3/6)',cls:'wg-coll'},{label:'14h · Antoine — Particulier',cls:'wg-part'}],
+    '2026-05-26': [{label:'14h · Enfants (4/6)',cls:'wg-enf'},{label:'17h · Lucas — Particulier',cls:'wg-part'}],
+    '2026-05-27': [{label:'09h · Collectif (4/6)',cls:'wg-coll'},{label:'10h · Enfants (3/6)',cls:'wg-enf'},{label:'14h · Collectif (5/6)',cls:'wg-coll'}],
+    '2026-05-28': [{label:'09h · Nathan — Particulier',cls:'wg-part'},{label:'17h · Marie — Particulier',cls:'wg-part'}],
+    '2026-05-29': [{label:'09h · Collectif (5/6)',cls:'wg-coll'},{label:'14h · Clara — Particulier',cls:'wg-part'},{label:'15h · Enfants (4/6)',cls:'wg-enf'}],
+    '2026-05-30': [{label:'09h · Pierre — Particulier',cls:'wg-part'},{label:'10h · Collectif (6/6)',cls:'wg-coll'},{label:'14h · Enfants (4/6)',cls:'wg-enf'},{label:'16h · Marie — Particulier',cls:'wg-part'}],
+  };
+
+  function openMonthCalendar() {
+    document.getElementById('month-modal').classList.add('open');
+    renderMonthCalendar();
+  }
+  function closeMonthCalendar() {
+    document.getElementById('month-modal').classList.remove('open');
+  }
+  function prevMonth() {
+    currentMonth--; if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+    renderMonthCalendar();
+  }
+  function nextMonth() {
+    currentMonth++; if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+    renderMonthCalendar();
+  }
+
+  function renderMonthCalendar() {
+    document.getElementById('month-label').textContent = `${MONTH_NAMES[currentMonth]} ${currentYear}`;
+    const firstDay  = new Date(currentYear, currentMonth, 1);
+    const totalDays = new Date(currentYear, currentMonth + 1, 0).getDate();
+    let startDow = firstDay.getDay();
+    startDow = startDow === 0 ? 6 : startDow - 1; // Lundi = 0
+    const today = new Date();
+
+    let cells = [];
+    for (let i = 0; i < startDow; i++) cells.push(null);
+    for (let d = 1; d <= totalDays; d++) cells.push(d);
+    while (cells.length % 7 !== 0) cells.push(null);
+
+    document.getElementById('month-grid-body').innerHTML = cells.map(d => {
+      if (!d) return `<div class="month-cell empty"></div>`;
+      const iso = `${currentYear}-${String(currentMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      const isToday = today.getFullYear()===currentYear && today.getMonth()===currentMonth && today.getDate()===d;
+      const slots = monthSlots[iso] || [];
+      const MAX_VISIBLE = 3;
+      const visible = slots.slice(0, MAX_VISIBLE);
+      const extra   = slots.length - MAX_VISIBLE;
+      return `<div class="month-cell${isToday ? ' is-today' : ''}">
+        <div class="month-day-num">${d}</div>
+        ${visible.map(s => `<div class="month-slot ${s.cls}">${s.label}</div>`).join('')}
+        ${extra > 0 ? `<div class="month-more">+${extra} autre${extra>1?'s':''}</div>` : ''}
+      </div>`;
+    }).join('');
+  }
 </script>
 </body>
 </html>
