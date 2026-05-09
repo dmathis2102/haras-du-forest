@@ -475,6 +475,32 @@
   }
   .dp-overlay.open { display: block; }
 
+  /* ── COURS GRILLE ENRICHIE ── */
+  .cours-cell-rich {
+    padding: 7px 8px; border-radius: 6px; cursor: pointer;
+    transition: opacity 0.15s; min-height: 52px;
+  }
+  .cours-cell-rich:hover { opacity: 0.78; }
+  .cours-cell-rich.particulier { background: var(--blue-l);   border: 1px solid rgba(59,130,246,0.3); }
+  .cours-cell-rich.collectif   { background: var(--green-l);  border: 1px solid rgba(43,102,87,0.25); }
+  .cours-cell-rich.enfants     { background: var(--orange-l); border: 1px solid rgba(217,119,6,0.25); }
+  .cours-cell-rich.indispo-mon { background: #F1F3F7; border: 1px solid var(--border); cursor: default; opacity: 1 !important; }
+  .cours-cell-type   { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.65; }
+  .cours-cell-client { font-size: 12px; font-weight: 600; margin-top: 3px; color: var(--t1); }
+  .cours-cell-spots  { font-size: 12px; font-weight: 700; margin-top: 3px; color: var(--t1); }
+  .cours-cell-bar    { height: 4px; background: rgba(0,0,0,0.1); border-radius: 2px; margin-top: 5px; overflow: hidden; }
+  .cours-cell-bar-fill { height: 100%; border-radius: 2px; }
+  .bar-blue   { background: #3B82F6; }
+  .bar-green  { background: #2B6657; }
+  .bar-orange { background: #D97706; }
+  .cours-cell-empty {
+    min-height: 52px; border-radius: 6px; border: 1.5px dashed var(--border);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--border); font-size: 20px; cursor: pointer;
+    transition: all 0.15s;
+  }
+  .cours-cell-empty:hover { border-color: var(--navy); color: var(--navy); background: var(--blue-l); }
+
   /* ── MONITOR CARDS ── */
   .monitor-cards { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:0; }
   .monitor-card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:20px; }
