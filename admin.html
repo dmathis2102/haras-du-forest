@@ -1721,12 +1721,141 @@
       const MAX_VISIBLE = 3;
       const visible = slots.slice(0, MAX_VISIBLE);
       const extra   = slots.length - MAX_VISIBLE;
-      return `<div class="month-cell${isToday ? ' is-today' : ''}">
+      return `<div class="month-cell${isToday ? ' is-today' : ''}" onclick="openDayDetail('${iso}')">
         <div class="month-day-num">${d}</div>
         ${visible.map(s => `<div class="month-slot ${s.cls}">${s.label}</div>`).join('')}
         ${extra > 0 ? `<div class="month-more">+${extra} autre${extra>1?'s':''}</div>` : ''}
       </div>`;
     }).join('');
+  }
+
+  /* ── PANNEAU DÉTAIL JOUR ── */
+  let currentDayISO = null;
+  const clsToType  = { 'wg-part':'Particulier', 'wg-coll':'Collectif', 'wg-enf':'Enfants' };
+  const dotColorMap = { 'wg-part':'#3B82F6', 'wg-coll':'#2B6657', 'wg-enf':'#D97706' };
+  const badgeMap    = { 'wg-part':'badge-blue', 'wg-coll':'badge-green', 'wg-enf':'badge-gold' };
+
+  function openDayDetail(iso) {
+    currentDayISO = iso;
+    const d = new Date(iso + 'T00:00:00');
+    const label = d.toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+    document.getElementById('day-panel-title').textContent = label.charAt(0).toUpperCase() + label.slice(1);
+    renderDayPanel();
+    document.getElementById('day-panel').classList.add('open');
+    document.getElementById('day-panel-overlay').classList.add('open');
+  }
+
+  function closeDayPanel() {
+    document.getElementById('day-panel').classList.remove('open');
+    document.getElementById('day-panel-overlay').classList.remove('open');
+    currentDayISO = null;
+  }
+
+  function renderDayPanel() {
+    const slots = monthSlots[currentDayISO] ? [...monthSlots[currentDayISO]] : [];
+    document.getElementById('day-panel-body').innerHTML = `
+      <div style="margin-bottom:24px">
+        <div class="day-section-title">${slots.length} créneau${slots.length !== 1 ? 'x' : ''} planifié${slots.length !== 1 ? 's' : ''}</div>
+        ${slots.length === 0
+          ? '<p style="font-size:13px;color:var(--t3);font-style:italic;padding:8px 0">Aucun cours planifié ce jour.</p>'
+          : slots.map((s, idx) => {
+              const parts  = s.label.split(' · ');
+              const time   = parts[0];
+              const detail = parts.slice(1).join(' · ');
+              return `<div class="day-event-card">
+                <div class="day-event-time">${time}</div>
+                <div class="day-event-dot" style="background:${dotColorMap[s.cls]||'#ccc'}"></div>
+                <div class="day-event-info">
+                  <div class="day-event-label">${detail}</div>
+                  <div class="day-event-sub"><span class="tl-badge ${badgeMap[s.cls]||'badge-gray'}">${clsToType[s.cls]||'—'}</span></div>
+                </div>
+                <button onclick="removeDayEvent(${idx})"
+                  style="background:none;border:none;color:var(--t3);cursor:pointer;font-size:13px;padding:2px 6px;flex-shrink:0;border-radius:4px"
+                  title="Supprimer">✕</button>
+              </div>`;
+            }).join('')
+        }
+      </div>
+
+      <div style="border-top:1px solid var(--border);padding-top:20px">
+        <div class="day-section-title">Ajouter un créneau</div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div class="form-group">
+            <div class="form-label">Type de cours</div>
+            <select class="form-select" id="day-add-type" onchange="toggleDayFields()">
+              <option value="wg-part">Cours particulier</option>
+              <option value="wg-coll">Cours collectif</option>
+              <option value="wg-enf">Cours enfants</option>
+            </select>
+          </div>
+          <div class="form-group" id="day-client-group">
+            <div class="form-label">Nom du client</div>
+            <input class="form-input" type="text" id="day-add-client" placeholder="Ex : Marie Lefebvre">
+          </div>
+          <div class="form-group" id="day-spots-group" style="display:none">
+            <div class="form-label">Places réservées / total</div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <input class="form-input" type="number" id="day-add-booked" placeholder="0" min="0" max="12" style="width:72px">
+              <span style="color:var(--t3);font-size:14px">/</span>
+              <input class="form-input" type="number" id="day-add-max" placeholder="6" min="1" max="12" style="width:72px">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <div class="form-label">Heure</div>
+              <select class="form-select" id="day-add-time">
+                <option>09h00</option><option>10h00</option><option>11h00</option>
+                <option>14h00</option><option>15h00</option><option>16h00</option>
+                <option>17h00</option><option>18h00</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <div class="form-label">Moniteur</div>
+              <select class="form-select" id="day-add-monitor">
+                <option>Sophie L.</option>
+                <option>Thomas D.</option>
+                <option>Camille R.</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn btn-primary" style="width:100%" onclick="addDayEvent()">Ajouter le créneau</button>
+        </div>
+      </div>`;
+  }
+
+  function toggleDayFields() {
+    const type = document.getElementById('day-add-type').value;
+    document.getElementById('day-client-group').style.display = type === 'wg-part' ? '' : 'none';
+    document.getElementById('day-spots-group').style.display  = type !== 'wg-part' ? '' : 'none';
+  }
+
+  function addDayEvent() {
+    const type    = document.getElementById('day-add-type').value;
+    const time    = document.getElementById('day-add-time').value;
+    const timeShort = time.replace('00','').replace('h0','h');
+    let label;
+    if (type === 'wg-part') {
+      const client = document.getElementById('day-add-client').value.trim() || 'Client';
+      label = `${timeShort} · ${client} — Particulier`;
+    } else {
+      const booked   = document.getElementById('day-add-booked').value || '0';
+      const max      = document.getElementById('day-add-max').value    || '6';
+      const typeName = type === 'wg-coll' ? 'Collectif' : 'Enfants';
+      label = `${timeShort} · ${typeName} (${booked}/${max})`;
+    }
+    if (!monthSlots[currentDayISO]) monthSlots[currentDayISO] = [];
+    monthSlots[currentDayISO].push({ label, cls: type });
+    monthSlots[currentDayISO].sort((a, b) => a.label.localeCompare(b.label));
+    renderDayPanel();
+    renderMonthCalendar();
+  }
+
+  function removeDayEvent(idx) {
+    if (!monthSlots[currentDayISO]) return;
+    monthSlots[currentDayISO].splice(idx, 1);
+    if (monthSlots[currentDayISO].length === 0) delete monthSlots[currentDayISO];
+    renderDayPanel();
+    renderMonthCalendar();
   }
 </script>
 </body>
