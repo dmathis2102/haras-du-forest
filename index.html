@@ -3023,6 +3023,7 @@
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.getElementById('page-' + name).classList.add('active');
     document.getElementById('main-content').scrollTop = 0;
+    if (name === 'cours-particulier') renderParticulierSlots();
   }
 
   function selectPack(el) {
