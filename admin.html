@@ -1947,6 +1947,104 @@
     renderDayPanel();
     renderMonthCalendar();
   }
+
+  /* ── STATS MONITEUR ── */
+  const monitorStats = {
+    sophie: {
+      coursMois: 24, heuresMois: 21, noteGlobale: 4.8, tauxSatisfaction: 96,
+      activite: [6, 7, 5, 6],
+      avis: [
+        { client:'Marie Lefebvre', note:5, date:'2026-05-07', texte:"Sophie est une excellente monitrice, très pédagogue et à l'écoute. Ma fille adore ses cours !" },
+        { client:'Clara Petit',    note:5, date:'2026-05-03', texte:"Toujours bienveillante et professionnelle. Je recommande vivement." },
+        { client:'Antoine Bernard',note:4, date:'2026-04-28', texte:"Très bon suivi, on progresse à chaque cours. Ambiance super agréable." },
+        { client:'Sophie Rousseau',note:5, date:'2026-04-20', texte:"Patiente et encourageante, idéale pour les débutants !" },
+      ]
+    },
+    thomas: {
+      coursMois: 28, heuresMois: 26, noteGlobale: 4.9, tauxSatisfaction: 98,
+      activite: [7, 8, 6, 7],
+      avis: [
+        { client:'Lucas Martin', note:5, date:'2026-05-06', texte:"Thomas pousse vraiment à se dépasser, super pour la compétition. Technique irréprochable." },
+        { client:'Pierre Garnier',note:5, date:'2026-05-02', texte:"Excellent moniteur, exercices très précis. Parfait pour les galops avancés." },
+        { client:'Nathan Dupuis', note:5, date:'2026-04-25', texte:"Cours dynamiques et exigeants. On progresse vite, je recommande à 100% !" },
+        { client:'Isabelle Morel',note:4, date:'2026-04-18', texte:"Très compétent, parfois un peu exigeant mais les résultats sont là." },
+      ]
+    },
+    camille: {
+      coursMois: 21, heuresMois: 18, noteGlobale: 4.7, tauxSatisfaction: 94,
+      activite: [5, 6, 5, 5],
+      avis: [
+        { client:'Isabelle Morel',  note:5, date:'2026-05-05', texte:"Camille s'adapte parfaitement à tous les niveaux. Très patiente avec les débutants." },
+        { client:'Sophie Rousseau', note:4, date:'2026-04-30', texte:"Super ambiance pendant les cours. On apprend en s'amusant !" },
+        { client:'Marie Lefebvre',  note:5, date:'2026-04-22', texte:"Toujours disponible et de bon conseil. Mes enfants l'adorent." },
+        { client:'Nathan Dupuis',   note:4, date:'2026-04-15', texte:"Bonne monitrice, très à l'écoute. Quelques exercices très originaux." },
+      ]
+    }
+  };
+
+  function renderStars(note) {
+    return Array.from({length:5}, (_,i) =>
+      `<span style="color:${i < Math.round(note) ? '#F59E0B' : '#DDE3EE'}">★</span>`
+    ).join('');
+  }
+
+  function openMonitorStats(id) {
+    const m = moniteurs.find(m => m.id === id);
+    const s = monitorStats[id];
+    if (!m || !s) return;
+
+    document.getElementById('sm-avatar').textContent    = m.initials;
+    document.getElementById('sm-name').textContent      = m.full;
+    document.getElementById('sm-spec').textContent      = m.specialite + ' · ' + m.galop;
+    document.getElementById('sm-note-badge').innerHTML  = `★ ${s.noteGlobale}`;
+
+    // KPIs
+    document.getElementById('sm-kpis').innerHTML = `
+      <div class="stats-kpi">
+        <div class="stats-kpi-val">${s.coursMois}</div>
+        <div class="stats-kpi-lbl">Cours ce mois</div>
+        <div class="stats-kpi-sub">~${Math.round(s.coursMois/4)} par semaine</div>
+      </div>
+      <div class="stats-kpi">
+        <div class="stats-kpi-val">${s.heuresMois}h</div>
+        <div class="stats-kpi-lbl">Heures planifiées</div>
+        <div class="stats-kpi-sub">${(s.heuresMois/s.coursMois*60).toFixed(0)} min / cours en moy.</div>
+      </div>
+      <div class="stats-kpi">
+        <div class="stats-kpi-val">${s.tauxSatisfaction}%</div>
+        <div class="stats-kpi-lbl">Taux de satisfaction</div>
+        <div class="stats-kpi-sub">Basé sur ${s.avis.length} avis</div>
+      </div>`;
+
+    // Barres d'activité
+    const maxVal = Math.max(...s.activite);
+    const semaines = ['S1 — 28 avr.','S2 — 5 mai','S3 — 12 mai','S4 — 19 mai'];
+    document.getElementById('sm-bars').innerHTML = s.activite.map((v,i) => `
+      <div class="activity-bar-wrap">
+        <div class="activity-bar-val">${v}</div>
+        <div class="activity-bar" style="height:${Math.round((v/maxVal)*50)}px"></div>
+      </div>`).join('');
+    document.getElementById('sm-bar-labels').innerHTML = semaines.map(l => `
+      <div style="flex:1;text-align:center;font-size:10px;color:var(--t3)">${l}</div>`).join('');
+
+    // Avis
+    document.getElementById('sm-avis-title').textContent = `Avis clients (${s.avis.length})`;
+    document.getElementById('sm-avis-list').innerHTML = s.avis.map(a => `
+      <div class="review-card">
+        <div class="review-header">
+          <div class="review-client">${a.client}</div>
+          <div class="review-date">${fmtDate(a.date)}</div>
+        </div>
+        <div class="review-stars">${renderStars(a.note)}</div>
+        <div class="review-text">"${a.texte}"</div>
+      </div>`).join('');
+
+    document.getElementById('stats-modal').classList.add('open');
+  }
+
+  function closeMonitorStats() {
+    document.getElementById('stats-modal').classList.remove('open');
+  }
 </script>
 </body>
 </html>
