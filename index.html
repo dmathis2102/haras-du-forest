@@ -775,17 +775,27 @@
       background: var(--border);
       margin: 20px 0;
     }
-    .club-horaires { display: flex; flex-direction: column; gap: 6px; }
+    .club-horaires { display: flex; flex-direction: column; gap: 8px; width: 100%; }
     .club-horaire-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      width: 100%;
+      min-width: 0;
     }
-    .club-horaire-day { font-size: 0.85rem; color: var(--text-2); }
+    .club-horaire-day {
+      font-size: 0.83rem;
+      color: var(--text-2);
+      flex: 1;
+      min-width: 0;
+      padding-right: 8px;
+    }
     .club-horaire-time {
-      font-size: 0.85rem;
+      font-size: 0.83rem;
       font-weight: 600;
       color: var(--text-1);
+      flex-shrink: 0;
+      white-space: nowrap;
     }
     .club-social-btn {
       display: flex;
