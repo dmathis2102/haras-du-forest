@@ -1883,7 +1883,7 @@
     document.getElementById('dp-body').innerHTML = `
       <div class="dp-section">
         <div class="dp-section-title">Informations</div>
-        <div class="dp-row"><span class="dp-key">Type</span><span class="dp-val"><span class="tl-badge ${s.type==='particulier'?'badge-blue':s.type==='collectif'?'badge-green':'badge-gold'}">${s.type==='particulier'?'Particulier':s.type==='collectif'?'Collectif':'Enfants'}</span></span></div>
+        <div class="dp-row"><span class="dp-key">Type</span><span class="dp-val"><span class="tl-badge ${s.type==='particulier'?'badge-blue':s.type==='collectif'?'badge-green':s.type==='stage'?'badge-gray':'badge-gold'}">${s.type==='particulier'?'Particulier':s.type==='collectif'?'Collectif':s.type==='stage'?'Stage':'Enfants'}</span></span></div>
         <div class="dp-row"><span class="dp-key">Moniteur</span><span class="dp-val">${m.full}</span></div>
         ${s.type==='particulier'
           ? `<div class="dp-row"><span class="dp-key">Client</span><span class="dp-val">${s.client}</span></div>`
