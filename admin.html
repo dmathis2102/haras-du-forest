@@ -1755,36 +1755,278 @@
 
   /* ── COURS & CRÉNEAUX ── */
   const ALL_TIMES_ADMIN = ['09h00','10h00','11h00','14h00','15h00','16h00','17h00','18h00'];
-  const JOURS_ADMIN     = ['Lun 11','Mar 12','Mer 13','Jeu 14','Ven 15','Sam 16'];
-  const slotsData = {
-    '09h00': ['reserve','reserve','dispo',  'dispo',  'dispo',  'reserve'],
-    '10h00': ['reserve','dispo',  'dispo',  'dispo',  'reserve','reserve'],
-    '11h00': ['indispo','indispo','indispo','indispo','indispo','dispo'  ],
-    '14h00': ['dispo',  'reserve','reserve','dispo',  'reserve','reserve'],
-    '15h00': ['dispo',  'reserve','dispo',  'dispo',  'reserve','dispo'  ],
-    '16h00': ['indispo','reserve','indispo','indispo','indispo','dispo'  ],
-    '17h00': ['dispo',  'reserve','dispo',  'reserve','dispo',  'dispo'  ],
-    '18h00': ['dispo',  'dispo',  'reserve','dispo',  'complet','dispo'  ],
-  };
-  const slotLabels  = { dispo:'Disponible', reserve:'Réservé', indispo:'Indisponible', complet:'Complet' };
-  const slotClasses = { dispo:'cours-dispo', reserve:'cours-reserve', indispo:'cours-indispo', complet:'cours-complet' };
+  const JOURS_COURS = [
+    { label:'Lun 11', date:'2026-05-11' }, { label:'Mar 12', date:'2026-05-12' },
+    { label:'Mer 13', date:'2026-05-13' }, { label:'Jeu 14', date:'2026-05-14' },
+    { label:'Ven 15', date:'2026-05-15' }, { label:'Sam 16', date:'2026-05-16' },
+  ];
 
-  function renderCoursGrid() {
-    document.getElementById('cours-tbody').innerHTML = ALL_TIMES_ADMIN.map(time => `
+  const coursParMoniteur = {
+    sophie: {
+      '2026-05-11': {
+        '09h00': { type:'particulier', client:'Marie Lefebvre', status:'reserve' },
+        '10h00': { type:'collectif', label:'Collectif débutants', maxPlaces:6, inscrits:['Lucas Martin','Clara Petit','Antoine Bernard','Sophie Rousseau'] },
+        '15h00': { type:'particulier', client:'Clara Petit', status:'reserve' },
+      },
+      '2026-05-13': {
+        '09h00': { type:'collectif', label:'Collectif débutants', maxPlaces:6, inscrits:['Pierre Garnier','Nathan Dupuis'] },
+      },
+      '2026-05-15': {
+        '10h00': { type:'collectif', label:'Collectif confirmés', maxPlaces:6, inscrits:['Marie Lefebvre','Lucas Martin','Clara Petit','Antoine Bernard','Pierre Garnier'] },
+        '16h00': { type:'particulier', client:'Clara Petit', status:'reserve' },
+      },
+      '2026-05-16': {
+        '09h00': { type:'particulier', client:'Lucas Martin', status:'reserve' },
+        '14h00': { type:'collectif', label:'Collectif confirmés', maxPlaces:6, inscrits:['Marie Lefebvre','Pierre Garnier','Nathan Dupuis','Antoine Bernard'] },
+        '16h00': { type:'particulier', client:'Marie Lefebvre', status:'reserve' },
+      },
+    },
+    thomas: {
+      '2026-05-11': {
+        '09h00': { type:'collectif', label:'Collectif avancés', maxPlaces:6, inscrits:['Lucas Martin','Pierre Garnier','Marie Lefebvre','Isabelle Morel'] },
+        '10h00': { type:'particulier', client:'Lucas Martin', status:'reserve' },
+      },
+      '2026-05-12': {
+        '17h00': { type:'particulier', client:'Nathan Dupuis', status:'reserve' },
+      },
+      '2026-05-13': {
+        '14h00': { type:'collectif', label:'Collectif avancés', maxPlaces:6, inscrits:['Lucas Martin','Clara Petit'] },
+      },
+      '2026-05-14': {
+        '09h00': { type:'particulier', client:'Nathan Dupuis', status:'reserve' },
+        '17h00': { type:'particulier', client:'Pierre Garnier', status:'reserve' },
+      },
+      '2026-05-16': {
+        '10h00': { type:'collectif', label:'Collectif confirmés', maxPlaces:6, inscrits:['Marie Lefebvre','Lucas Martin','Clara Petit','Antoine Bernard','Pierre Garnier'] },
+        '11h00': { type:'particulier', client:'Pierre Garnier', status:'reserve' },
+      },
+    },
+    camille: {
+      '2026-05-12': {
+        '14h00': { type:'enfants', label:'Galop 1-2', maxPlaces:6, inscrits:['Léa Bernard','Tom Rousseau','Emma Garnier'] },
+        '16h00': { type:'particulier', client:'Isabelle Morel', status:'reserve' },
+      },
+      '2026-05-13': {
+        '10h00': { type:'enfants', label:'Galop 1-3', maxPlaces:6, inscrits:['Léa Bernard','Tom Rousseau','Emma Garnier','Jules Martin','Chloé Petit'] },
+      },
+      '2026-05-15': {
+        '15h00': { type:'enfants', label:'Galop 1-2', maxPlaces:6, inscrits:['Léa Bernard','Tom Rousseau','Emma Garnier'] },
+      },
+      '2026-05-16': {
+        '14h00': { type:'enfants', label:'Galop 2-3', maxPlaces:6, inscrits:['Léa Bernard','Tom Rousseau','Emma Garnier','Jules Martin','Chloé Petit','Noa Dupuis'] },
+      },
+    },
+  };
+
+  let activeCoursMoniteur = 'sophie';
+
+  function switchCoursMoniteur(id, btn) {
+    activeCoursMoniteur = id;
+    document.querySelectorAll('.cours-mon-tab').forEach(t => {
+      t.className = t.dataset.id === id ? 'btn btn-primary cours-mon-tab' : 'btn btn-outline cours-mon-tab';
+    });
+    renderCoursMoniteur();
+  }
+
+  function renderCoursMoniteur() {
+    const m = moniteurs.find(m => m.id === activeCoursMoniteur);
+    const slots = coursParMoniteur[activeCoursMoniteur] || {};
+    document.getElementById('cours-monitor-title').textContent = `Planning — ${m.full}`;
+
+    let totalCours = 0, totalInscrits = 0, totalPlaces = 0;
+    Object.values(slots).forEach(day => Object.values(day).forEach(s => {
+      totalCours++;
+      if (s.inscrits) { totalInscrits += s.inscrits.length; totalPlaces += s.maxPlaces || 0; }
+    }));
+    document.getElementById('cours-monitor-stats').textContent =
+      `${totalCours} cours planifiés cette semaine · ${totalPlaces ? totalInscrits + '/' + totalPlaces + ' places réservées' : ''}`;
+
+    document.getElementById('cours-tbody').innerHTML = ALL_TIMES_ADMIN.map(heure => `
       <tr>
-        <td style="font-weight:700;font-size:13px;color:var(--t2);white-space:nowrap">${time}</td>
-        ${slotsData[time].map((st, i) => `
-          <td style="padding:8px 10px">
-            <div class="cours-cell ${slotClasses[st]}"
-              onclick="${st !== 'indispo' ? `toggleSlot('${time}',${i})` : ''}">${slotLabels[st]}</div>
-          </td>`).join('')}
+        <td style="font-weight:700;font-size:12px;color:var(--t2);white-space:nowrap;padding:6px 12px">${heure}</td>
+        ${JOURS_COURS.map(({ label, date }) => {
+          const s = (slots[date] || {})[heure];
+          if (!s) return `<td style="padding:4px 6px"><div class="cours-cell-empty" onclick="openAddSlotModal('${date}','${heure}')">+</div></td>`;
+          const barCls = s.type === 'particulier' ? 'bar-blue' : s.type === 'collectif' ? 'bar-green' : 'bar-orange';
+          const booked = s.inscrits ? s.inscrits.length : 0;
+          const max    = s.maxPlaces || 0;
+          const pct    = max ? Math.round(booked/max*100) : 0;
+          return `<td style="padding:4px 6px">
+            <div class="cours-cell-rich ${s.type}" onclick="openSlotDetail('${date}','${heure}')">
+              <div class="cours-cell-type">${s.type === 'particulier' ? 'Particulier' : s.type === 'collectif' ? 'Collectif' : 'Enfants'}</div>
+              ${s.type === 'particulier'
+                ? `<div class="cours-cell-client">${s.client}</div>`
+                : `<div class="cours-cell-spots">${s.label} · <strong>${booked}/${max}</strong></div>
+                   <div class="cours-cell-bar"><div class="cours-cell-bar-fill ${barCls}" style="width:${pct}%"></div></div>`
+              }
+            </div>
+          </td>`;
+        }).join('')}
       </tr>`).join('');
   }
 
-  function toggleSlot(time, dayIdx) {
-    const cycle = { dispo:'reserve', reserve:'dispo', complet:'dispo' };
-    slotsData[time][dayIdx] = cycle[slotsData[time][dayIdx]] || 'dispo';
-    renderCoursGrid();
+  function openSlotDetail(date, heure) {
+    const slots = coursParMoniteur[activeCoursMoniteur] || {};
+    const s = (slots[date] || {})[heure];
+    if (!s) return;
+    const m = moniteurs.find(m => m.id === activeCoursMoniteur);
+    const d = new Date(date + 'T00:00:00');
+    const dateLabel = d.toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'long' });
+    openDetailId = null;
+    document.getElementById('dp-title').textContent = `${heure} — ${dateLabel.charAt(0).toUpperCase()+dateLabel.slice(1)}`;
+
+    const booked = s.inscrits ? s.inscrits.length : 0;
+    const max    = s.maxPlaces || 6;
+
+    document.getElementById('dp-body').innerHTML = `
+      <div class="dp-section">
+        <div class="dp-section-title">Informations</div>
+        <div class="dp-row"><span class="dp-key">Type</span><span class="dp-val"><span class="tl-badge ${s.type==='particulier'?'badge-blue':s.type==='collectif'?'badge-green':'badge-gold'}">${s.type==='particulier'?'Particulier':s.type==='collectif'?'Collectif':'Enfants'}</span></span></div>
+        <div class="dp-row"><span class="dp-key">Moniteur</span><span class="dp-val">${m.full}</span></div>
+        ${s.type==='particulier'
+          ? `<div class="dp-row"><span class="dp-key">Client</span><span class="dp-val">${s.client}</span></div>`
+          : `<div class="dp-row"><span class="dp-key">Intitulé</span><span class="dp-val">${s.label||'—'}</span></div>
+             <div class="dp-row"><span class="dp-key">Places</span><span class="dp-val"><strong>${booked}/${max}</strong> <span class="tl-badge ${booked>=max?'badge-orange':'badge-green'}" style="margin-left:6px">${booked>=max?'Complet':max-booked+' dispo'}</span></span></div>`
+        }
+      </div>
+
+      ${s.type !== 'particulier' ? `
+      <div class="dp-section">
+        <div class="dp-section-title">Participants (${booked}/${max})</div>
+        ${booked === 0 ? '<p style="font-size:13px;color:var(--t3);font-style:italic">Aucun inscrit.</p>' : ''}
+        ${(s.inscrits||[]).map((name,i) => `
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:7px 10px;background:var(--bg);border-radius:6px;margin-bottom:5px">
+            <span style="font-size:13px">${name}</span>
+            <button onclick="removeInscrit('${date}','${heure}',${i})" style="background:none;border:none;color:var(--t3);cursor:pointer;font-size:13px;padding:0 4px" title="Retirer">✕</button>
+          </div>`).join('')}
+        <div style="display:flex;gap:6px;margin-top:10px">
+          <input class="form-input" type="text" id="add-inscrit-input" placeholder="Ajouter un participant..." style="flex:1;font-size:13px">
+          <button class="btn btn-outline btn-sm" onclick="addInscrit('${date}','${heure}')">Ajouter</button>
+        </div>
+      </div>` : ''}
+
+      <div class="dp-section">
+        <div class="dp-section-title">Modifier</div>
+        ${s.type === 'particulier' ? `
+          <div class="form-group"><div class="form-label">Client</div>
+          <input class="form-input" type="text" id="edit-slot-client" value="${s.client}"></div>` : `
+          <div class="form-row">
+            <div class="form-group"><div class="form-label">Intitulé</div>
+            <input class="form-input" type="text" id="edit-slot-label" value="${s.label||''}"></div>
+            <div class="form-group"><div class="form-label">Places max</div>
+            <input class="form-input" type="number" id="edit-slot-max" value="${max}" min="1" max="20"></div>
+          </div>`}
+        <button class="btn btn-primary" style="width:100%;margin-top:10px" onclick="saveSlotEdit('${date}','${heure}')">Enregistrer les modifications</button>
+      </div>
+      <div class="dp-section">
+        <button class="btn btn-outline" style="width:100%;color:var(--red);border-color:#F5C6C2" onclick="deleteSlot('${date}','${heure}')">Supprimer ce créneau</button>
+      </div>`;
+
+    document.getElementById('dp-footer').innerHTML = `<button class="btn btn-primary" style="flex:1" onclick="closeDetail()">Fermer</button>`;
+    document.getElementById('detail-panel').classList.add('open');
+    document.getElementById('dp-overlay').classList.add('open');
+  }
+
+  function saveSlotEdit(date, heure) {
+    const s = ((coursParMoniteur[activeCoursMoniteur]||{})[date]||{})[heure];
+    if (!s) return;
+    if (s.type === 'particulier') {
+      s.client = document.getElementById('edit-slot-client').value.trim() || s.client;
+    } else {
+      s.label     = document.getElementById('edit-slot-label').value.trim() || s.label;
+      s.maxPlaces = parseInt(document.getElementById('edit-slot-max').value) || s.maxPlaces;
+    }
+    renderCoursMoniteur();
+    openSlotDetail(date, heure);
+  }
+
+  function addInscrit(date, heure) {
+    const input = document.getElementById('add-inscrit-input');
+    const name  = input.value.trim();
+    if (!name) return;
+    const s = ((coursParMoniteur[activeCoursMoniteur]||{})[date]||{})[heure];
+    if (!s) return;
+    if (!s.inscrits) s.inscrits = [];
+    if (s.inscrits.length >= (s.maxPlaces||6)) { alert('Le cours est complet !'); return; }
+    s.inscrits.push(name);
+    input.value = '';
+    renderCoursMoniteur();
+    openSlotDetail(date, heure);
+  }
+
+  function removeInscrit(date, heure, idx) {
+    const s = ((coursParMoniteur[activeCoursMoniteur]||{})[date]||{})[heure];
+    if (s && s.inscrits) { s.inscrits.splice(idx, 1); renderCoursMoniteur(); openSlotDetail(date, heure); }
+  }
+
+  function deleteSlot(date, heure) {
+    if (!confirm('Supprimer ce créneau ?')) return;
+    const day = (coursParMoniteur[activeCoursMoniteur]||{})[date];
+    if (day) { delete day[heure]; if (!Object.keys(day).length) delete coursParMoniteur[activeCoursMoniteur][date]; }
+    closeDetail();
+    renderCoursMoniteur();
+  }
+
+  function openAddSlotModal(date, heure) {
+    const iso = date || '';
+    const h   = heure || '09h00';
+    openDetailId = null;
+    document.getElementById('dp-title').textContent = 'Nouveau créneau';
+    document.getElementById('dp-body').innerHTML = `
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div class="form-group"><div class="form-label">Type de cours</div>
+          <select class="form-select" id="ns-type" onchange="toggleNewSlotFields()">
+            <option value="particulier">Cours particulier</option>
+            <option value="collectif">Cours collectif</option>
+            <option value="enfants">Cours enfants</option>
+          </select></div>
+        <div class="form-row">
+          <div class="form-group"><div class="form-label">Date</div>
+            <input class="form-input" type="date" id="ns-date" value="${iso}"></div>
+          <div class="form-group"><div class="form-label">Heure</div>
+            <select class="form-select" id="ns-heure">
+              ${ALL_TIMES_ADMIN.map(t => `<option${t===h?' selected':''}>${t}</option>`).join('')}
+            </select></div>
+        </div>
+        <div class="form-group" id="ns-client-group">
+          <div class="form-label">Client</div>
+          <input class="form-input" type="text" id="ns-client" placeholder="Nom du client">
+        </div>
+        <div id="ns-group-fields" style="display:none">
+          <div class="form-row">
+            <div class="form-group"><div class="form-label">Intitulé</div>
+              <input class="form-input" type="text" id="ns-label" placeholder="Ex: Collectif débutants"></div>
+            <div class="form-group"><div class="form-label">Places max</div>
+              <input class="form-input" type="number" id="ns-max" value="6" min="1" max="20"></div>
+          </div>
+        </div>
+        <button class="btn btn-primary" style="width:100%" onclick="saveNewSlot()">Créer le créneau</button>
+      </div>`;
+    document.getElementById('dp-footer').innerHTML = `<button class="btn btn-primary" style="flex:1" onclick="closeDetail()">Fermer</button>`;
+    document.getElementById('detail-panel').classList.add('open');
+    document.getElementById('dp-overlay').classList.add('open');
+  }
+
+  function toggleNewSlotFields() {
+    const type = document.getElementById('ns-type').value;
+    document.getElementById('ns-client-group').style.display = type === 'particulier' ? '' : 'none';
+    document.getElementById('ns-group-fields').style.display  = type !== 'particulier' ? '' : 'none';
+  }
+
+  function saveNewSlot() {
+    const type  = document.getElementById('ns-type').value;
+    const date  = document.getElementById('ns-date').value;
+    const heure = document.getElementById('ns-heure').value;
+    if (!date) { alert('Veuillez choisir une date.'); return; }
+    if (!coursParMoniteur[activeCoursMoniteur]) coursParMoniteur[activeCoursMoniteur] = {};
+    if (!coursParMoniteur[activeCoursMoniteur][date]) coursParMoniteur[activeCoursMoniteur][date] = {};
+    if (type === 'particulier') {
+      coursParMoniteur[activeCoursMoniteur][date][heure] = { type, client: document.getElementById('ns-client').value.trim() || 'À définir', status: 'reserve' };
+    } else {
+      coursParMoniteur[activeCoursMoniteur][date][heure] = { type, label: document.getElementById('ns-label').value.trim() || (type==='collectif'?'Collectif':'Enfants'), maxPlaces: parseInt(document.getElementById('ns-max').value)||6, inscrits: [] };
+    }
+    closeDetail();
+    renderCoursMoniteur();
   }
 
   /* ── PAIEMENTS ── */
