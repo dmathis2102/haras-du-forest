@@ -3254,7 +3254,8 @@
       return;
     }
     section.style.display = 'block';
-    list.innerHTML = reservations.map(r => `
+    const sorted = [...reservations].sort((a, b) => (a.sortDate || 0) - (b.sortDate || 0));
+    list.innerHTML = sorted.map(r => `
       <div class="list-item" id="resa-${r.id}">
         <div class="li-dot green"></div>
         <div class="li-content">
