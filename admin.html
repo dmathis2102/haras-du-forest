@@ -1777,7 +1777,7 @@
   function renderPaiements(list) {
     document.getElementById('pay-count').textContent = list.length;
     document.getElementById('pay-tbody').innerHTML = list.map(p => `
-      <tr>
+      <tr style="cursor:pointer" onclick="openPaiementDetail(${p.id})">
         <td><div class="td-client"><div class="td-avatar">${p.initials}</div><div class="td-name">${p.client}</div></div></td>
         <td class="td-type">${p.type}</td>
         <td><strong>${p.montant}€</strong></td>
