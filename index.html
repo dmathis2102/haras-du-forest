@@ -3098,6 +3098,44 @@
     showInner('confirmation');
   }
 
+  /* ══ PAIEMENT ══ */
+  let payBackTarget = 'formule-essentielle';
+
+  function openPaiement(nom, prix, detail, backTarget) {
+    document.getElementById('pay-name').textContent = nom;
+    document.getElementById('pay-detail').textContent = detail;
+    document.getElementById('pay-price').textContent = prix;
+    document.getElementById('pay-btn-price').textContent = prix;
+    payBackTarget = backTarget || 'mes-reservations';
+    // Réinitialise les champs
+    ['pay-card-num','pay-exp','pay-cvv','pay-holder'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+    showInner('paiement');
+  }
+
+  function doPaiement() {
+    // Ici on connectera Stripe plus tard
+    showInner('confirmation');
+  }
+
+  function fmtCard(el) {
+    let v = el.value.replace(/\D/g,'').slice(0,16);
+    el.value = v.replace(/(.{4})/g,'$1  ').trim();
+  }
+
+  function fmtExp(el) {
+    let v = el.value.replace(/\D/g,'').slice(0,4);
+    if (v.length >= 3) v = v.slice(0,2) + ' / ' + v.slice(2);
+    el.value = v;
+  }
+
+  function selectPack(el) {
+    document.querySelectorAll('.pack').forEach(p => p.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
   // Init calendars au chargement
   window.addEventListener('DOMContentLoaded', () => {
     initCal('particulier');
