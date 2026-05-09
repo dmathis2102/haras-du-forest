@@ -3327,6 +3327,12 @@
       titre: type + moniteurLabel,
       date:  date
     });
+    // Décrémenter les places pour cours collectifs / enfants / stages
+    if (currentCourseKey && coursSpots[currentCourseKey]) {
+      coursSpots[currentCourseKey].booked++;
+      updateCourseSpot(currentCourseKey);
+    }
+
     renderReservations();
 
     document.getElementById('confirm-overlay').classList.remove('open');
