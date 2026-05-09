@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Haras du Forest — Administration</title>
+<style>
+  :root {
+    --navy:      #152240;
+    --navy-2:    #1E3260;
+    --navy-3:    #243a72;
+    --gold:      #C4A97E;
+    --gold-l:    #D9BF9B;
+    --bg:        #F0F2F7;
+    --card:      #FFFFFF;
+    --border:    #DDE3EE;
+    --t1:        #0E1C35;
+    --t2:        #4A5568;
+    --t3:        #8A96A8;
+    --green:     #2B6657;
+    --green-l:   #E6F4F0;
+    --red:       #C0392B;
+    --red-l:     #FDECEA;
+    --orange:    #D97706;
+    --orange-l:  #FEF3C7;
+    --blue-l:    #EEF2FB;
+    --r:         8px;
+    --sidebar-w: 240px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--t1); display: flex; height: 100vh; overflow: hidden; }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: var(--sidebar-w);
+    background: var(--navy);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    height: 100vh;
+    overflow-y: auto;
+  }
+  .sb-logo {
+    padding: 24px 20px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .sb-logo-title { color: var(--gold); font-size: 15px; font-weight: 700; letter-spacing: 0.3px; }
+  .sb-logo-sub   { color: rgba(255,255,255,0.4); font-size: 11px; margin-top: 2px; }
+  .sb-section-label {
+    padding: 18px 20px 6px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+  }
+  .sb-nav { padding: 0 10px; flex: 1; }
+  .sb-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: var(--r);
+    cursor: pointer;
+    transition: background 0.15s;
+    margin-bottom: 2px;
+    color: rgba(255,255,255,0.6);
+    font-size: 13.5px;
+    font-weight: 500;
+    user-select: none;
+  }
+  .sb-item:hover { background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.85); }
+  .sb-item.active { background: rgba(196,169,126,0.18); color: var(--gold); }
+  .sb-item.active .sb-icon { color: var(--gold); }
+  .sb-icon { font-size: 16px; width: 20px; text-align: center; flex-shrink: 0; }
+  .sb-badge {
+    margin-left: auto;
+    background: var(--red);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 10px;
+    min-width: 18px;
+    text-align: center;
+  }
+  .sb-footer {
+    padding: 14px 10px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+  .sb-user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: var(--r);
+    cursor: pointer;
+  }
+  .sb-avatar {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--navy-3), #2A5298);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--gold); font-size: 13px; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .sb-user-name  { color: rgba(255,255,255,0.85); font-size: 13px; font-weight: 600; }
+  .sb-user-role  { color: rgba(255,255,255,0.35); font-size: 11px; }
+
+  /* ── MAIN ── */
+  .main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .topbar {
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 0 28px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+  .topbar-title { font-size: 17px; font-weight: 700; color: var(--t1); }
+  .topbar-sub   { font-size: 12px; color: var(--t3); margin-top: 1px; }
+  .topbar-actions { display: flex; align-items: center; gap: 10px; }
+  .topbar-date { font-size: 13px; color: var(--t3); }
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 16px; border-radius: var(--r);
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    border: none; transition: all 0.15s;
+  }
+  .btn-primary { background: var(--navy); color: #fff; }
+  .btn-primary:hover { background: var(--navy-2); }
+  .btn-outline {
+    background: transparent;
+    border: 1.5px solid var(--border);
+    color: var(--t2);
+  }
+  .btn-outline:hover { border-color: var(--navy); color: var(--navy); background: var(--blue-l); }
+  .btn-sm { padding: 5px 10px; font-size: 12px; }
+
+  .content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px 28px;
+  }
+
+  /* ── PAGES ── */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ── STATS CARDS ── */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .stat-label { font-size: 12px; color: var(--t3); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+  .stat-value { font-size: 28px; font-weight: 800; color: var(--t1); margin: 6px 0 4px; }
+  .stat-delta { font-size: 12px; color: var(--t3); }
+  .stat-delta span { font-weight: 600; }
+  .stat-delta .up   { color: var(--green); }
+  .stat-delta .down { color: var(--red); }
+  .stat-icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; margin-bottom: 12px;
+  }
+  .si-blue   { background: var(--blue-l); }
+  .si-green  { background: var(--green-l); }
+  .si-gold   { background: #FBF4EA; }
+  .si-red    { background: var(--red-l); }
+
+  /* ── DASHBOARD GRID ── */
+  .dash-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 20px;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .card-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .card-title { font-size: 14px; font-weight: 700; color: var(--t1); }
+  .card-body  { padding: 0; }
+
+  /* ── TIMELINE ── */
+  .timeline { padding: 8px 0; }
+  .tl-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 10px 20px;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.12s;
+  }
+  .tl-item:last-child { border-bottom: none; }
+  .tl-item:hover { background: #FAFBFD; }
+  .tl-time {
+    font-size: 12px; font-weight: 700; color: var(--t3);
+    width: 42px; flex-shrink: 0; padding-top: 2px;
+  }
+  .tl-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    margin-top: 4px; flex-shrink: 0;
+  }
+  .dot-green  { background: var(--green); }
+  .dot-gold   { background: var(--gold); }
+  .dot-red    { background: var(--red); }
+  .dot-blue   { background: #3B82F6; }
+  .tl-info { flex: 1; }
+  .tl-name  { font-size: 13.5px; font-weight: 600; color: var(--t1); }
+  .tl-sub   { font-size: 12px; color: var(--t3); margin-top: 1px; }
+  .tl-badge {
+    font-size: 11px; font-weight: 600;
+    padding: 2px 8px; border-radius: 20px;
+    flex-shrink: 0; align-self: center;
+  }
+  .badge-green  { background: var(--green-l); color: var(--green); }
+  .badge-gold   { background: #FBF4EA; color: #92703A; }
+  .badge-red    { background: var(--red-l); color: var(--red); }
+  .badge-blue   { background: var(--blue-l); color: #2563EB; }
+  .badge-gray   { background: #F1F3F7; color: var(--t3); }
+  .badge-orange { background: var(--orange-l); color: var(--orange); }
+
+  /* ── ALERTES ── */
+  .alert-list { padding: 4px 0; }
+  .alert-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .alert-item:last-child { border-bottom: none; }
+  .alert-icon {
+    width: 32px; height: 32px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; flex-shrink: 0;
+  }
+  .alert-txt { flex: 1; }
+  .alert-title { font-size: 13px; font-weight: 600; color: var(--t1); }
+  .alert-sub   { font-size: 12px; color: var(--t3); margin-top: 2px; }
+
+  /* ── MINI PLANNING SEMAINE ── */
+  .week-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0;
+  }
+  .wg-day {
+    border-right: 1px solid var(--border);
+    padding: 10px 8px;
+  }
+  .wg-day:last-child { border-right: none; }
+  .wg-day-label { font-size: 11px; font-weight: 700; color: var(--t3); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+  .wg-day-num   { font-size: 18px; font-weight: 800; color: var(--t1); margin-bottom: 8px; }
+  .wg-day-num.today { color: var(--navy); background: var(--gold); width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+  .wg-slot {
+    font-size: 11px;
+    padding: 3px 6px;
+    border-radius: 4px;
+    margin-bottom: 3px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .wg-part { background: var(--blue-l); color: #2563EB; }
+  .wg-coll { background: var(--green-l); color: var(--green); }
+  .wg-enf  { background: var(--orange-l); color: var(--orange); }
+
+  /* ── RESERVATIONS PAGE ── */
+  .filter-bar {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .filter-bar label { font-size: 12px; font-weight: 600; color: var(--t3); }
+  .filter-select, .filter-input {
+    padding: 7px 10px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--r);
+    font-size: 13px;
+    color: var(--t1);
+    background: var(--bg);
+    outline: none;
+    cursor: pointer;
+  }
+  .filter-select:focus, .filter-input:focus { border-color: var(--navy); }
+  .filter-sep { width: 1px; height: 24px; background: var(--border); margin: 0 4px; }
+  .filter-reset {
+    margin-left: auto;
+    font-size: 12px; font-weight: 600; color: var(--t3);
+    background: none; border: none; cursor: pointer; padding: 4px 8px;
+  }
+  .filter-reset:hover { color: var(--navy); }
+
+  /* ── TABLE ── */
+  .table-wrap {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .table-toolbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .table-count { font-size: 13px; color: var(--t3); }
+  .table-count strong { color: var(--t1); }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  thead th {
+    padding: 11px 16px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--t3);
+    background: #F8F9FC;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  thead th:first-child { padding-left: 20px; }
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.12s;
+  }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: #FAFBFD; }
+  td {
+    padding: 12px 16px;
+    font-size: 13.5px;
+    color: var(--t1);
+    vertical-align: middle;
+  }
+  td:first-child { padding-left: 20px; }
+  .td-client { display: flex; align-items: center; gap: 10px; }
+  .td-avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--navy), #2A5298);
+    color: var(--gold); font-size: 12px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .td-name { font-weight: 600; font-size: 13.5px; color: var(--t1); }
+  .td-email { font-size: 11.5px; color: var(--t3); }
+  .td-type  { font-size: 13px; }
+  .td-monitor { font-size: 13px; color: var(--t2); }
+  .td-actions { display: flex; gap: 6px; }
+
+  /* ── MODAL NOUVELLE RÉSA ── */
+  .modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(14,28,53,0.45);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--card);
+    border-radius: 16px;
+    width: 480px;
+    max-width: 95vw;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+  }
+  .modal-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+  }
+  .modal-title { font-size: 16px; font-weight: 700; color: var(--t1); }
+  .modal-close {
+    width: 30px; height: 30px; border-radius: 50%;
+    border: none; background: var(--bg); cursor: pointer;
+    font-size: 16px; color: var(--t3); display: flex; align-items: center; justify-content: center;
+  }
+  .modal-close:hover { background: var(--border); color: var(--t1); }
+  .modal-body { padding: 20px 24px; display: flex; flex-direction: column; gap: 16px; }
+  .modal-footer {
+    padding: 16px 24px;
+    border-top: 1px solid var(--border);
+    display: flex; gap: 10px; justify-content: flex-end;
+  }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-label { font-size: 12px; font-weight: 600; color: var(--t2); }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .form-input, .form-select {
+    padding: 9px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--r);
+    font-size: 13.5px;
+    color: var(--t1);
+    outline: none;
+    transition: border 0.15s;
+    width: 100%;
+    background: #fff;
+  }
+  .form-input:focus, .form-select:focus { border-color: var(--navy); }
+
+  /* ── DETAIL PANEL (slide-in) ── */
+  .detail-panel {
+    position: fixed;
+    top: 0; right: -420px;
+    width: 420px; height: 100vh;
+    background: var(--card);
+    border-left: 1px solid var(--border);
+    box-shadow: -8px 0 30px rgba(0,0,0,0.12);
+    z-index: 150;
+    transition: right 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  .detail-panel.open { right: 0; }
+  .dp-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .dp-title  { font-size: 15px; font-weight: 700; color: var(--t1); }
+  .dp-body   { padding: 20px 24px; flex: 1; overflow-y: auto; }
+  .dp-section { margin-bottom: 20px; }
+  .dp-section-title {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.8px; color: var(--t3); margin-bottom: 10px;
+  }
+  .dp-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 0; border-bottom: 1px solid var(--border);
+  }
+  .dp-row:last-child { border-bottom: none; }
+  .dp-key  { font-size: 13px; color: var(--t3); }
+  .dp-val  { font-size: 13px; font-weight: 600; color: var(--t1); }
+  .dp-footer {
+    padding: 16px 24px;
+    border-top: 1px solid var(--border);
+    display: flex; gap: 10px;
+  }
+  .dp-overlay {
+    display: none; position: fixed; inset: 0; z-index: 140;
+  }
+  .dp-overlay.open { display: block; }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--t3); }
+</style>
+</head>
+<body>
+
+<!-- ══ SIDEBAR ══ -->
+<nav class="sidebar">
+  <div class="sb-logo">
+    <div class="sb-logo-title">Haras du Forest</div>
+    <div class="sb-logo-sub">Administration</div>
+  </div>
+
+  <div class="sb-nav">
+    <div class="sb-section-label">Principal</div>
+    <div class="sb-item active" onclick="showPage('dashboard')">
+      <span class="sb-icon">▦</span> Tableau de bord
+    </div>
+    <div class="sb-item" onclick="showPage('reservations')">
+      <span class="sb-icon">📅</span> Réservations
+      <span class="sb-badge" id="badge-resa">3</span>
+    </div>
+    <div class="sb-item" onclick="showPage('clients')">
+      <span class="sb-icon">👤</span> Clients
+    </div>
+
+    <div class="sb-section-label">Gestion</div>
+    <div class="sb-item" onclick="showPage('moniteurs')">
+      <span class="sb-icon">🎖</span> Moniteurs
+    </div>
+    <div class="sb-item" onclick="showPage('cours')">
+      <span class="sb-icon">🐴</span> Cours & Créneaux
+    </div>
+    <div class="sb-item" onclick="showPage('paiements')">
+      <span class="sb-icon">💳</span> Paiements
+      <span class="sb-badge" style="background:var(--orange)" id="badge-pay">2</span>
+    </div>
+  </div>
+
+  <div class="sb-footer">
+    <div class="sb-user">
+      <div class="sb-avatar">AD</div>
+      <div>
+        <div class="sb-user-name">Admin</div>
+        <div class="sb-user-role">Gérant</div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ══ MAIN ══ -->
+<div class="main">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div>
+      <div class="topbar-title" id="topbar-title">Tableau de bord</div>
+      <div class="topbar-sub" id="topbar-sub">Vendredi 9 mai 2026</div>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn btn-primary" onclick="openNewResa()">+ Nouvelle réservation</button>
+    </div>
+  </div>
+
+  <!-- CONTENU -->
+  <div class="content">
+
+    <!-- ══ PAGE DASHBOARD ══ -->
+    <div class="page active" id="page-dashboard">
+
+      <!-- Stats -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon si-blue">📅</div>
+          <div class="stat-label">Réservations aujourd'hui</div>
+          <div class="stat-value">8</div>
+          <div class="stat-delta"><span class="up">+2</span> vs hier</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon si-green">💰</div>
+          <div class="stat-label">Revenus du mois</div>
+          <div class="stat-value">3 240€</div>
+          <div class="stat-delta"><span class="up">+12%</span> vs avril</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon si-gold">👤</div>
+          <div class="stat-label">Clients actifs</div>
+          <div class="stat-value">47</div>
+          <div class="stat-delta"><span class="up">+3</span> ce mois</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon si-red">⚠</div>
+          <div class="stat-label">En attente paiement</div>
+          <div class="stat-value">2</div>
+          <div class="stat-delta"><span class="down">À traiter</span></div>
+        </div>
+      </div>
+
+      <!-- Grille principale -->
+      <div class="dash-grid">
+
+        <!-- Planning du jour -->
+        <div>
+          <div class="card" style="margin-bottom:20px">
+            <div class="card-header">
+              <span class="card-title">Planning du jour — Vendredi 9 mai</span>
+              <span class="badge-gray tl-badge">8 créneaux</span>
+            </div>
+            <div class="card-body">
+              <div class="timeline">
+                <div class="tl-item">
+                  <div class="tl-time">09h00</div>
+                  <div class="tl-dot dot-blue"></div>
+                  <div class="tl-info">
+                    <div class="tl-name">Marie Lefebvre</div>
+                    <div class="tl-sub">Cours particulier · Sophie L.</div>
+                  </div>
+                  <span class="tl-badge badge-green">Confirmé</span>
+                </div>
+                <div class="tl-item">
+                  <div class="tl-time">09h00</div>
+                  <div class="tl-dot dot-green"></div>
+                  <div class="tl-info">
+                    <div class="tl-name">Cours collectif débutants</div>
+                    <div class="tl-sub">4/6 places · Thomas D.</div>
+                  </div>
+                  <span class="tl-badge badge-green">Confirmé</span>
+                </div>
+                <div class="tl-item">
+                  <div class="tl-time">10h00</div>
+                  <div class="tl-dot dot-blue"></div>
+                  <div class="tl-info">
+                    <div class="tl-name">Lucas Martin</div>
+                    <div class="tl-sub">Cours particulier · Thomas D.</div>
+                  </div>
+                  <span class="tl-badge badge-green">Confirmé</span>
+                </div>
+                <div class="tl-item">
+                  <div class="tl-time">14h00</div>
+                  <div class="tl-dot dot-gold"></div>
+                  <div class="tl-info">
+                    <div class="tl-name">Cours enfants — Galop 1-2</div>
+                    <div class="tl-sub">3/6 places · Camille R.</div>
+                  </div>
+                  <span class="tl-badge badge-green">Confirmé</span>
+                </div>
+                <div class="tl-item">
+                  <div class="tl-time">15h00</div>
+                  <div class="tl-dot dot-blue"></div>
+                  <div class="tl-info">
+                    <div class="tl-name">Isabelle Morel</div>
+                    <div class="tl-sub">Cours particulier · Camille R.</div>
+                  </div>
+                  <span class="tl-badge badge-orange">En attente</span>
+                </div>
+                <div class="tl-item">
+                  <div class="tl-time">16h00</div>
+                  <div class="tl-dot dot-green"></div>
+                  <div class="tl-info">
+                    <div class="tl-name">Cours collectif confirmés</div>
+                    <div class="tl-sub">5/6 places · Sophie L.</div>
+                  </div>
+                  <span class="tl-badge badge-green">Confirmé</span>
+                </div>
+                <div class="tl-item">
+                  <div class="tl-time">17h00</div>
+                  <div class="tl-dot dot-blue"></div>
+                  <div class="tl-info">
+                    <div class="tl-name">Nathan Dupuis</div>
+                    <div class="tl-sub">Cours particulier · Thomas D.</div>
+                  </div>
+                  <span class="tl-badge badge-green">Confirmé</span>
+                </div>
+                <div class="tl-item">
+                  <div class="tl-time">18h00</div>
+                  <div class="tl-dot dot-blue"></div>
+                  <div class="tl-info">
+                    <div class="tl-name">Clara Petit</div>
+                    <div class="tl-sub">Cours particulier · Sophie L.</div>
+                  </div>
+                  <span class="tl-badge badge-red">Annulé</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Planning semaine -->
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Semaine du 11 au 16 mai</span>
+              <button class="btn btn-outline btn-sm">Voir tout</button>
+            </div>
+            <div class="card-body">
+              <div class="week-grid">
+                <div class="wg-day">
+                  <div class="wg-day-label">Lun</div>
+                  <div class="wg-day-num">11</div>
+                  <div class="wg-slot wg-part">09h · Marie</div>
+                  <div class="wg-slot wg-coll">10h · Collectif</div>
+                  <div class="wg-slot wg-part">15h · Lucas</div>
+                </div>
+                <div class="wg-day">
+                  <div class="wg-day-label">Mar</div>
+                  <div class="wg-day-num">12</div>
+                  <div class="wg-slot wg-enf">14h · Enfants</div>
+                  <div class="wg-slot wg-part">16h · Isabelle</div>
+                </div>
+                <div class="wg-day">
+                  <div class="wg-day-label">Mer</div>
+                  <div class="wg-day-num">13</div>
+                  <div class="wg-slot wg-coll">09h · Collectif</div>
+                  <div class="wg-slot wg-enf">10h · Enfants</div>
+                  <div class="wg-slot wg-coll">14h · Collectif</div>
+                </div>
+                <div class="wg-day">
+                  <div class="wg-day-label">Jeu</div>
+                  <div class="wg-day-num">14</div>
+                  <div class="wg-slot wg-part">09h · Nathan</div>
+                  <div class="wg-slot wg-part">17h · Clara</div>
+                </div>
+                <div class="wg-day">
+                  <div class="wg-day-label">Ven</div>
+                  <div class="wg-day-num">15</div>
+                  <div class="wg-slot wg-coll">10h · Collectif</div>
+                  <div class="wg-slot wg-part">14h · Marie</div>
+                  <div class="wg-slot wg-enf">15h · Enfants</div>
+                </div>
+                <div class="wg-day">
+                  <div class="wg-day-label">Sam</div>
+                  <div class="wg-day-num">16</div>
+                  <div class="wg-slot wg-part">09h · Lucas</div>
+                  <div class="wg-slot wg-coll">10h · Collectif</div>
+                  <div class="wg-slot wg-part">11h · Nathan</div>
+                  <div class="wg-slot wg-enf">14h · Enfants</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Colonne droite -->
+        <div>
+          <!-- Alertes -->
+          <div class="card" style="margin-bottom:20px">
+            <div class="card-header">
+              <span class="card-title">Alertes</span>
+              <span class="tl-badge badge-red">3</span>
+            </div>
+            <div class="card-body">
+              <div class="alert-list">
+                <div class="alert-item">
+                  <div class="alert-icon si-red" style="border-radius:8px">⚠</div>
+                  <div class="alert-txt">
+                    <div class="alert-title">Paiement en attente</div>
+                    <div class="alert-sub">Isabelle Morel · Formule Confort</div>
+                  </div>
+                </div>
+                <div class="alert-item">
+                  <div class="alert-icon si-orange" style="border-radius:8px;background:var(--orange-l)">📋</div>
+                  <div class="alert-txt">
+                    <div class="alert-title">Cours presque complet</div>
+                    <div class="alert-sub">Collectif confirmés — Sam 16 mai · 5/6</div>
+                  </div>
+                </div>
+                <div class="alert-item">
+                  <div class="alert-icon si-blue" style="border-radius:8px">💬</div>
+                  <div class="alert-txt">
+                    <div class="alert-title">Demande de stage</div>
+                    <div class="alert-sub">Nathan Dupuis · Stage été juillet</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Moniteurs du jour -->
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Moniteurs aujourd'hui</span>
+            </div>
+            <div class="card-body" style="padding:12px 0">
+              <div class="tl-item">
+                <div class="tl-dot dot-green"></div>
+                <div class="tl-info">
+                  <div class="tl-name">Sophie L.</div>
+                  <div class="tl-sub">3 cours · 09h, 16h, 18h</div>
+                </div>
+                <span class="tl-badge badge-green">Disponible</span>
+              </div>
+              <div class="tl-item">
+                <div class="tl-dot dot-green"></div>
+                <div class="tl-info">
+                  <div class="tl-name">Thomas D.</div>
+                  <div class="tl-sub">3 cours · 09h, 10h, 17h</div>
+                </div>
+                <span class="tl-badge badge-green">Disponible</span>
+              </div>
+              <div class="tl-item">
+                <div class="tl-dot dot-gold"></div>
+                <div class="tl-info">
+                  <div class="tl-name">Camille R.</div>
+                  <div class="tl-sub">2 cours · 14h, 15h</div>
+                </div>
+                <span class="tl-badge badge-gold">Après-midi</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ PAGE RÉSERVATIONS ══ -->
+    <div class="page" id="page-reservations">
+
+      <div class="filter-bar">
+        <label>Type</label>
+        <select class="filter-select" id="f-type" onchange="filterResas()">
+          <option value="">Tous les cours</option>
+          <option value="Particulier">Cours particulier</option>
+          <option value="Collectif">Cours collectif</option>
+          <option value="Enfants">Cours enfants</option>
+          <option value="Stage">Stage</option>
+        </select>
+
+        <div class="filter-sep"></div>
+        <label>Moniteur</label>
+        <select class="filter-select" id="f-monitor" onchange="filterResas()">
+          <option value="">Tous</option>
+          <option value="Sophie">Sophie L.</option>
+          <option value="Thomas">Thomas D.</option>
+          <option value="Camille">Camille R.</option>
+        </select>
+
+        <div class="filter-sep"></div>
+        <label>Statut</label>
+        <select class="filter-select" id="f-status" onchange="filterResas()">
+          <option value="">Tous</option>
+          <option value="Confirmé">Confirmé</option>
+          <option value="En attente">En attente</option>
+          <option value="Annulé">Annulé</option>
+        </select>
+
+        <div class="filter-sep"></div>
+        <label>Date</label>
+        <input type="date" class="filter-input" id="f-date" onchange="filterResas()" style="width:140px">
+
+        <button class="filter-reset" onclick="resetFilters()">Réinitialiser</button>
+      </div>
+
+      <div class="table-wrap">
+        <div class="table-toolbar">
+          <div class="table-count"><strong id="resa-count">12</strong> réservations</div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-outline btn-sm">Exporter CSV</button>
+            <button class="btn btn-primary btn-sm" onclick="openNewResa()">+ Ajouter</button>
+          </div>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Client</th>
+              <th>Type de cours</th>
+              <th>Date & Heure</th>
+              <th>Moniteur</th>
+              <th>Statut</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="resa-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ══ PAGES À VENIR ══ -->
+    <div class="page" id="page-clients">
+      <div class="card" style="padding:48px;text-align:center">
+        <div style="font-size:36px;margin-bottom:12px">👤</div>
+        <div style="font-size:16px;font-weight:700;color:var(--t1)">Gestion des clients</div>
+        <div style="font-size:13px;color:var(--t3);margin-top:6px">Cette section sera disponible prochainement.</div>
+      </div>
+    </div>
+    <div class="page" id="page-moniteurs">
+      <div class="card" style="padding:48px;text-align:center">
+        <div style="font-size:36px;margin-bottom:12px">🎖</div>
+        <div style="font-size:16px;font-weight:700;color:var(--t1)">Gestion des moniteurs</div>
+        <div style="font-size:13px;color:var(--t3);margin-top:6px">Cette section sera disponible prochainement.</div>
+      </div>
+    </div>
+    <div class="page" id="page-cours">
+      <div class="card" style="padding:48px;text-align:center">
+        <div style="font-size:36px;margin-bottom:12px">🐴</div>
+        <div style="font-size:16px;font-weight:700;color:var(--t1)">Gestion des cours & créneaux</div>
+        <div style="font-size:13px;color:var(--t3);margin-top:6px">Cette section sera disponible prochainement.</div>
+      </div>
+    </div>
+    <div class="page" id="page-paiements">
+      <div class="card" style="padding:48px;text-align:center">
+        <div style="font-size:36px;margin-bottom:12px">💳</div>
+        <div style="font-size:16px;font-weight:700;color:var(--t1)">Suivi des paiements</div>
+        <div style="font-size:13px;color:var(--t3);margin-top:6px">Cette section sera disponible prochainement.</div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<!-- ══ MODAL NOUVELLE RÉSERVATION ══ -->
+<div class="modal-overlay" id="modal-resa">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Nouvelle réservation</div>
+      <button class="modal-close" onclick="closeNewResa()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <div class="form-label">Client</div>
+        <input class="form-input" type="text" placeholder="Nom du client" id="nr-client">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <div class="form-label">Type de cours</div>
+          <select class="form-select" id="nr-type">
+            <option>Cours particulier</option>
+            <option>Cours collectif</option>
+            <option>Cours enfants</option>
+            <option>Stage</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <div class="form-label">Moniteur</div>
+          <select class="form-select" id="nr-monitor">
+            <option>Sophie L.</option>
+            <option>Thomas D.</option>
+            <option>Camille R.</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <div class="form-label">Date</div>
+          <input class="form-input" type="date" id="nr-date">
+        </div>
+        <div class="form-group">
+          <div class="form-label">Heure</div>
+          <select class="form-select" id="nr-time">
+            <option>09h00</option>
+            <option>10h00</option>
+            <option>11h00</option>
+            <option>14h00</option>
+            <option>15h00</option>
+            <option>16h00</option>
+            <option>17h00</option>
+            <option>18h00</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="form-label">Statut</div>
+        <select class="form-select" id="nr-status">
+          <option>Confirmé</option>
+          <option>En attente</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <div class="form-label">Notes</div>
+        <input class="form-input" type="text" placeholder="Optionnel" id="nr-notes">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeNewResa()">Annuler</button>
+      <button class="btn btn-primary" onclick="addResa()">Créer la réservation</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PANNEAU DÉTAIL RÉSERVATION ══ -->
+<div class="dp-overlay" id="dp-overlay" onclick="closeDetail()"></div>
+<div class="detail-panel" id="detail-panel">
+  <div class="dp-header">
+    <div class="dp-title" id="dp-title">Détail réservation</div>
+    <button class="modal-close" onclick="closeDetail()">✕</button>
+  </div>
+  <div class="dp-body" id="dp-body"></div>
+  <div class="dp-footer">
+    <button class="btn btn-outline" style="flex:1;color:var(--red);border-color:#F5C6C2" onclick="cancelResaFromDetail()">Annuler le cours</button>
+    <button class="btn btn-primary" style="flex:1" onclick="closeDetail()">Fermer</button>
+  </div>
+</div>
+
+<script>
+  /* ── NAVIGATION ── */
+  const pageTitles = {
+    dashboard:    ['Tableau de bord', 'Vendredi 9 mai 2026'],
+    reservations: ['Réservations', 'Toutes les réservations'],
+    clients:      ['Clients', 'Gestion des clients'],
+    moniteurs:    ['Moniteurs', 'Planning et disponibilités'],
+    cours:        ['Cours & Créneaux', 'Configuration des cours'],
+    paiements:    ['Paiements', 'Suivi des encaissements'],
+  };
+
+  function showPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + id).classList.add('active');
+    document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+    const [title, sub] = pageTitles[id] || ['', ''];
+    document.getElementById('topbar-title').textContent = title;
+    document.getElementById('topbar-sub').textContent = sub;
+  }
+
+  /* ── DONNÉES RÉSERVATIONS ── */
+  let reservations = [
+    { id: 1,  client: 'Marie Lefebvre',   initials: 'ML', type: 'Particulier', date: '2026-05-09', heure: '09h00', monitor: 'Sophie',  status: 'Confirmé'   },
+    { id: 2,  client: 'Lucas Martin',     initials: 'LM', type: 'Particulier', date: '2026-05-09', heure: '10h00', monitor: 'Thomas',  status: 'Confirmé'   },
+    { id: 3,  client: 'Isabelle Morel',   initials: 'IM', type: 'Particulier', date: '2026-05-09', heure: '15h00', monitor: 'Camille', status: 'En attente' },
+    { id: 4,  client: 'Nathan Dupuis',    initials: 'ND', type: 'Particulier', date: '2026-05-09', heure: '17h00', monitor: 'Thomas',  status: 'Confirmé'   },
+    { id: 5,  client: 'Clara Petit',      initials: 'CP', type: 'Particulier', date: '2026-05-09', heure: '18h00', monitor: 'Sophie',  status: 'Annulé'     },
+    { id: 6,  client: 'Cours collectif',  initials: 'CC', type: 'Collectif',   date: '2026-05-09', heure: '09h00', monitor: 'Thomas',  status: 'Confirmé'   },
+    { id: 7,  client: 'Cours enfants',    initials: 'CE', type: 'Enfants',     date: '2026-05-09', heure: '14h00', monitor: 'Camille', status: 'Confirmé'   },
+    { id: 8,  client: 'Cours collectif',  initials: 'CC', type: 'Collectif',   date: '2026-05-13', heure: '17h30', monitor: 'Thomas',  status: 'Confirmé'   },
+    { id: 9,  client: 'Marie Lefebvre',   initials: 'ML', type: 'Particulier', date: '2026-05-14', heure: '09h00', monitor: 'Sophie',  status: 'Confirmé'   },
+    { id: 10, client: 'Nathan Dupuis',    initials: 'ND', type: 'Stage',       date: '2026-07-07', heure: '09h00', monitor: 'Thomas',  status: 'En attente' },
+    { id: 11, client: 'Cours enfants',    initials: 'CE', type: 'Enfants',     date: '2026-05-17', heure: '10h00', monitor: 'Camille', status: 'Confirmé'   },
+    { id: 12, client: 'Lucas Martin',     initials: 'LM', type: 'Collectif',   date: '2026-05-15', heure: '18h00', monitor: 'Sophie',  status: 'Confirmé'   },
+  ];
+  let nextId = 13;
+  let openDetailId = null;
+
+  const statusBadge = {
+    'Confirmé':   'badge-green',
+    'En attente': 'badge-orange',
+    'Annulé':     'badge-red',
+  };
+  const monitorFull = { Sophie: 'Sophie L.', Thomas: 'Thomas D.', Camille: 'Camille R.' };
+  const typeBadge   = { Particulier: 'badge-blue', Collectif: 'badge-green', Enfants: 'badge-gold', Stage: 'badge-gray' };
+
+  function fmtDate(iso) {
+    if (!iso) return '—';
+    const d = new Date(iso + 'T00:00:00');
+    return d.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+  }
+
+  function renderResas(list) {
+    const tbody = document.getElementById('resa-tbody');
+    document.getElementById('resa-count').textContent = list.length;
+    if (list.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--t3)">Aucune réservation trouvée</td></tr>`;
+      return;
+    }
+    tbody.innerHTML = list.map(r => `
+      <tr>
+        <td>
+          <div class="td-client">
+            <div class="td-avatar">${r.initials}</div>
+            <div>
+              <div class="td-name">${r.client}</div>
+              <div class="td-email">${r.heure}</div>
+            </div>
+          </div>
+        </td>
+        <td><span class="tl-badge ${typeBadge[r.type] || 'badge-gray'}">${r.type}</span></td>
+        <td class="td-type">${fmtDate(r.date)}</td>
+        <td class="td-monitor">${monitorFull[r.monitor] || r.monitor}</td>
+        <td><span class="tl-badge ${statusBadge[r.status] || 'badge-gray'}">${r.status}</span></td>
+        <td>
+          <div class="td-actions">
+            <button class="btn btn-outline btn-sm" onclick="openDetail(${r.id})">Détail</button>
+            ${r.status !== 'Annulé' ? `<button class="btn btn-outline btn-sm" style="color:var(--red);border-color:#F5C6C2" onclick="quickCancel(${r.id})">Annuler</button>` : ''}
+          </div>
+        </td>
+      </tr>`).join('');
+  }
+
+  function filterResas() {
+    const type    = document.getElementById('f-type').value;
+    const monitor = document.getElementById('f-monitor').value;
+    const status  = document.getElementById('f-status').value;
+    const date    = document.getElementById('f-date').value;
+    const filtered = reservations.filter(r =>
+      (!type    || r.type === type) &&
+      (!monitor || r.monitor === monitor) &&
+      (!status  || r.status === status) &&
+      (!date    || r.date === date)
+    );
+    renderResas(filtered);
+  }
+
+  function resetFilters() {
+    ['f-type','f-monitor','f-status','f-date'].forEach(id => document.getElementById(id).value = '');
+    renderResas(reservations);
+  }
+
+  /* ── NOUVELLE RÉSERVATION ── */
+  function openNewResa() {
+    document.getElementById('modal-resa').classList.add('open');
+    // Pré-remplir date d'aujourd'hui
+    document.getElementById('nr-date').value = '2026-05-09';
+  }
+  function closeNewResa() {
+    document.getElementById('modal-resa').classList.remove('open');
+  }
+  function addResa() {
+    const client  = document.getElementById('nr-client').value.trim();
+    if (!client) { alert('Merci de renseigner le nom du client.'); return; }
+    const type    = document.getElementById('nr-type').value;
+    const monitor = document.getElementById('nr-monitor').value;
+    const date    = document.getElementById('nr-date').value;
+    const heure   = document.getElementById('nr-time').value;
+    const status  = document.getElementById('nr-status').value;
+    const initials = client.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+    const monKey = Object.entries(monitorFull).find(([k,v]) => v === monitor)?.[0] || monitor;
+    const typeKey = type.replace('Cours ', '');
+    reservations.unshift({ id: nextId++, client, initials, type: typeKey, date, heure, monitor: monKey, status });
+    document.getElementById('badge-resa').textContent = reservations.filter(r => r.status === 'En attente').length || '';
+    closeNewResa();
+    filterResas();
+  }
+
+  /* ── DETAIL PANEL ── */
+  function openDetail(id) {
+    const r = reservations.find(r => r.id === id);
+    if (!r) return;
+    openDetailId = id;
+    document.getElementById('dp-title').textContent = r.client;
+    document.getElementById('dp-body').innerHTML = `
+      <div class="dp-section">
+        <div class="dp-section-title">Réservation</div>
+        <div class="dp-row"><span class="dp-key">Type</span><span class="dp-val"><span class="tl-badge ${typeBadge[r.type]||'badge-gray'}">${r.type}</span></span></div>
+        <div class="dp-row"><span class="dp-key">Date</span><span class="dp-val">${fmtDate(r.date)}</span></div>
+        <div class="dp-row"><span class="dp-key">Heure</span><span class="dp-val">${r.heure}</span></div>
+        <div class="dp-row"><span class="dp-key">Moniteur</span><span class="dp-val">${monitorFull[r.monitor]||r.monitor}</span></div>
+        <div class="dp-row"><span class="dp-key">Statut</span><span class="dp-val"><span class="tl-badge ${statusBadge[r.status]||'badge-gray'}">${r.status}</span></span></div>
+      </div>
+      <div class="dp-section">
+        <div class="dp-section-title">Client</div>
+        <div class="dp-row"><span class="dp-key">Nom</span><span class="dp-val">${r.client}</span></div>
+        <div class="dp-row"><span class="dp-key">ID réservation</span><span class="dp-val">#${String(r.id).padStart(4,'0')}</span></div>
+      </div>
+      <div class="dp-section">
+        <div class="dp-section-title">Actions rapides</div>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px">
+          ${r.status === 'En attente' ? `<button class="btn btn-primary" style="width:100%" onclick="confirmResa(${r.id})">Confirmer la réservation</button>` : ''}
+          <button class="btn btn-outline" style="width:100%">Envoyer un rappel</button>
+        </div>
+      </div>`;
+    document.getElementById('detail-panel').classList.add('open');
+    document.getElementById('dp-overlay').classList.add('open');
+  }
+
+  function closeDetail() {
+    document.getElementById('detail-panel').classList.remove('open');
+    document.getElementById('dp-overlay').classList.remove('open');
+    openDetailId = null;
+  }
+
+  function confirmResa(id) {
+    const r = reservations.find(r => r.id === id);
+    if (r) { r.status = 'Confirmé'; filterResas(); openDetail(id); }
+  }
+
+  function cancelResaFromDetail() {
+    if (openDetailId) quickCancel(openDetailId);
+    closeDetail();
+  }
+
+  function quickCancel(id) {
+    if (!confirm('Confirmer l\'annulation de cette réservation ?')) return;
+    const r = reservations.find(r => r.id === id);
+    if (r) { r.status = 'Annulé'; filterResas(); }
+  }
+
+  /* ── INIT ── */
+  renderResas(reservations);
+</script>
+</body>
+</html>
