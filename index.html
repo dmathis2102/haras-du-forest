@@ -3183,16 +3183,16 @@
 
   /* ══ PLACES COURS COLLECTIFS / ENFANTS / STAGES ══ */
   const coursSpots = {
-    c1:  { max: 6, booked: 4 },
-    c2:  { max: 6, booked: 2 },
-    e1:  { max: 6, booked: 3 },
-    e2:  { max: 6, booked: 1 },
-    sd1: { max: 6, booked: 4 },
-    sd2: { max: 6, booked: 0 },
-    sd3: { max: 6, booked: 0 },
-    sp1: { max: 6, booked: 5 },
-    sp2: { max: 6, booked: 2 },
-    sp3: { max: 6, booked: 0 },
+    c1:  { max: 6, booked: 2, label: 'Rejoindre' }, // 4/6 dispo
+    c2:  { max: 6, booked: 4, label: 'Rejoindre' }, // 2/6 dispo
+    e1:  { max: 6, booked: 3, label: 'Rejoindre' }, // 3/6 dispo
+    e2:  { max: 6, booked: 1, label: 'Rejoindre' }, // 5/6 dispo
+    sd1: { max: 6, booked: 4, label: 'Demande'   }, // 2 restantes
+    sd2: { max: 6, booked: 0, label: 'Demande'   }, // 6 dispo
+    sd3: { max: 6, booked: 0, label: 'Demande'   }, // 6 dispo
+    sp1: { max: 6, booked: 5, label: 'Demande'   }, // 1 restante
+    sp2: { max: 6, booked: 2, label: 'Demande'   }, // 4 dispo
+    sp3: { max: 6, booked: 0, label: 'Demande'   }, // 6 dispo
   };
   let currentCourseKey = null;
 
