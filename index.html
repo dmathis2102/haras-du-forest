@@ -3292,8 +3292,12 @@
           updateCourseSpot(r.courseKey);
         }
         // Libérer le créneau pour cours particulier
-        if (r.dateISO && r.time && r.monitorKey) {
-          bookings.delete(`${r.dateISO}_${r.time}_${r.monitorKey}`);
+        if (r.dateISO && r.time) {
+          if (r.monitorKey) {
+            bookings.delete(`${r.dateISO}_${r.time}_${r.monitorKey}`);
+          } else {
+            MONITORS_LIST.forEach(m => bookings.delete(`${r.dateISO}_${r.time}_${m}`));
+          }
           renderParticulierSlots();
         }
       }
