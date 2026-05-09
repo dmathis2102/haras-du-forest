@@ -3332,17 +3332,27 @@
     // Réservation cours particulier : bloquer le créneau
     let assignedMonitor = recap.moniteur;
     let usedMk = null;
+    const bookedTime = recap.time; // capturer AVANT renderParticulierSlots qui réinitialise recap.time
     if (type === 'Cours particulier' && selectedDateISO) {
       let mk = getSelectedMonitorKey();
       if (!mk) {
-        mk = MONITORS_LIST.find(m => !bookings.has(`${selectedDateISO}_${recap.time}_${m}`)) || null;
+        mk = MONITORS_LIST.find(m => !bookings.has(`${selectedDateISO}_${bookedTime}_${m}`)) || null;
         if (mk) assignedMonitor = MONITOR_NAME_MAP[mk];
       }
       if (mk) {
         usedMk = mk;
-        bookings.add(`${selectedDateISO}_${recap.time}_${mk}`);
+        bookings.add(`${selectedDateISO}_${bookedTime}_${mk}`);
         renderParticulierSlots();
       }
+    }
+
+    // Calculer sortDate pour tri chronologique
+    let sortDate = Date.now();
+    if (type === 'Cours particulier' && selectedDateISO && bookedTime) {
+      const [h, m] = bookedTime.replace('h', ':').split(':');
+      sortDate = new Date(`${selectedDateISO}T${h.padStart(2,'0')}:${m || '00'}:00`).getTime();
+    } else if (currentCourseKey && coursSpots[currentCourseKey]) {
+      sortDate = coursSpots[currentCourseKey].sortDate || Date.now();
     }
 
     // Ajout à la liste À venir
@@ -3354,8 +3364,9 @@
       date:      date,
       courseKey: currentCourseKey,
       dateISO:   type === 'Cours particulier' ? selectedDateISO : null,
-      time:      type === 'Cours particulier' ? recap.time : null,
+      time:      type === 'Cours particulier' ? bookedTime : null,
       monitorKey: usedMk,
+      sortDate:  sortDate,
     });
     // Décrémenter les places pour cours collectifs / enfants / stages
     if (currentCourseKey && coursSpots[currentCourseKey]) {
