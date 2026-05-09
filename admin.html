@@ -1087,6 +1087,32 @@
   </div><!-- /content -->
 </div><!-- /main -->
 
+<!-- ══ PLANNING MENSUEL ══ -->
+<div class="month-modal-overlay" id="month-modal" onclick="if(event.target===this)closeMonthCalendar()">
+  <div class="month-modal">
+    <div class="month-modal-header">
+      <div class="month-nav">
+        <button class="month-nav-btn" onclick="prevMonth()">&#8592;</button>
+        <div class="month-label" id="month-label"></div>
+        <button class="month-nav-btn" onclick="nextMonth()">&#8594;</button>
+      </div>
+      <div class="month-legend">
+        <span><i style="background:var(--blue-l);border:1px solid #93C5FD"></i>Particulier</span>
+        <span><i style="background:var(--green-l);border:1px solid #6EE7B7"></i>Collectif</span>
+        <span><i style="background:var(--orange-l);border:1px solid #FCD34D"></i>Enfants</span>
+      </div>
+      <button class="modal-close" onclick="closeMonthCalendar()">&#x2715;</button>
+    </div>
+    <div class="month-dow-row">
+      <div class="month-dow">Lun</div><div class="month-dow">Mar</div>
+      <div class="month-dow">Mer</div><div class="month-dow">Jeu</div>
+      <div class="month-dow">Ven</div><div class="month-dow">Sam</div>
+      <div class="month-dow">Dim</div>
+    </div>
+    <div class="month-grid" id="month-grid-body"></div>
+  </div>
+</div>
+
 <!-- ══ MODAL NOUVELLE RÉSERVATION ══ -->
 <div class="modal-overlay" id="modal-resa">
   <div class="modal">
