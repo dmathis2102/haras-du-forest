@@ -1337,11 +1337,17 @@
   function showPage(id) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.getElementById('page-' + id).classList.add('active');
-    document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('active'));
-    event.currentTarget.classList.add('active');
+    document.querySelectorAll('.sb-item').forEach(i => {
+      i.classList.toggle('active', !!(i.getAttribute('onclick')||'').includes(`'${id}'`));
+    });
     const [title, sub] = pageTitles[id] || ['', ''];
     document.getElementById('topbar-title').textContent = title;
     document.getElementById('topbar-sub').textContent = sub;
+  }
+
+  function navigateTo(id, then) {
+    showPage(id);
+    if (then) setTimeout(then, 60);
   }
 
   /* ── DONNÉES RÉSERVATIONS ── */
