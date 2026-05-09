@@ -1285,8 +1285,238 @@
     if (r) { r.status = 'Annulé'; filterResas(); }
   }
 
+  /* ── CLIENTS ── */
+  const clients = [
+    { id:1, nom:'Marie Lefebvre',   initials:'ML', email:'marie.lefebvre@email.com',    tel:'06 12 34 56 78', galop:'5+',  formule:'Confort',    points:240, reservations:8  },
+    { id:2, nom:'Lucas Martin',     initials:'LM', email:'lucas.martin@email.com',      tel:'06 23 45 67 89', galop:'3-4', formule:'Essentielle',points:80,  reservations:4  },
+    { id:3, nom:'Isabelle Morel',   initials:'IM', email:'isabelle.morel@email.com',    tel:'06 34 56 78 90', galop:'3-4', formule:'Premium',    points:450, reservations:15 },
+    { id:4, nom:'Nathan Dupuis',    initials:'ND', email:'nathan.dupuis@email.com',     tel:'06 45 67 89 01', galop:'1-2', formule:'Essentielle',points:40,  reservations:3  },
+    { id:5, nom:'Clara Petit',      initials:'CP', email:'clara.petit@email.com',       tel:'06 56 78 90 12', galop:'5+',  formule:'Premium',    points:620, reservations:22 },
+    { id:6, nom:'Antoine Bernard',  initials:'AB', email:'antoine.bernard@email.com',   tel:'06 67 89 01 23', galop:'3-4', formule:'Confort',    points:160, reservations:9  },
+    { id:7, nom:'Sophie Rousseau',  initials:'SR', email:'sophie.rousseau@email.com',   tel:'06 78 90 12 34', galop:'1-2', formule:'Essentielle',points:20,  reservations:2  },
+    { id:8, nom:'Pierre Garnier',   initials:'PG', email:'pierre.garnier@email.com',    tel:'06 89 01 23 45', galop:'5+',  formule:'Premium',    points:380, reservations:17 },
+  ];
+  const formuleBadge = { Essentielle:'badge-gray', Confort:'badge-gold', Premium:'badge-blue' };
+
+  function renderClients(list) {
+    document.getElementById('client-count').textContent = list.length;
+    document.getElementById('client-tbody').innerHTML = list.map(c => `
+      <tr>
+        <td><div class="td-client"><div class="td-avatar">${c.initials}</div><div><div class="td-name">${c.nom}</div></div></div></td>
+        <td><div class="td-name" style="font-weight:400;font-size:13px">${c.email}</div><div class="td-email">${c.tel}</div></td>
+        <td><span class="tl-badge badge-gray">Galop ${c.galop}</span></td>
+        <td><span class="tl-badge ${formuleBadge[c.formule]||'badge-gray'}">${c.formule}</span></td>
+        <td><strong>${c.points}</strong> pts</td>
+        <td>${c.reservations} cours</td>
+        <td><div class="td-actions"><button class="btn btn-outline btn-sm" onclick="openClientDetail(${c.id})">Fiche</button></div></td>
+      </tr>`).join('');
+  }
+
+  function filterClients() {
+    const search  = document.getElementById('fc-search').value.toLowerCase();
+    const formule = document.getElementById('fc-formule').value;
+    const galop   = document.getElementById('fc-galop').value;
+    renderClients(clients.filter(c =>
+      (!search  || c.nom.toLowerCase().includes(search) || c.email.toLowerCase().includes(search)) &&
+      (!formule || c.formule === formule) &&
+      (!galop   || c.galop === galop)
+    ));
+  }
+
+  function openClientDetail(id) {
+    const c = clients.find(c => c.id === id);
+    if (!c) return;
+    openDetailId = null;
+    document.getElementById('dp-title').textContent = c.nom;
+    document.getElementById('dp-body').innerHTML = `
+      <div class="dp-section">
+        <div class="dp-section-title">Informations</div>
+        <div class="dp-row"><span class="dp-key">Email</span><span class="dp-val">${c.email}</span></div>
+        <div class="dp-row"><span class="dp-key">Téléphone</span><span class="dp-val">${c.tel}</span></div>
+        <div class="dp-row"><span class="dp-key">Niveau</span><span class="dp-val">Galop ${c.galop}</span></div>
+      </div>
+      <div class="dp-section">
+        <div class="dp-section-title">Abonnement</div>
+        <div class="dp-row"><span class="dp-key">Formule</span><span class="dp-val"><span class="tl-badge ${formuleBadge[c.formule]||'badge-gray'}">${c.formule}</span></span></div>
+        <div class="dp-row"><span class="dp-key">Solde points</span><span class="dp-val">${c.points} pts</span></div>
+        <div class="dp-row"><span class="dp-key">Réservations</span><span class="dp-val">${c.reservations} cours</span></div>
+      </div>
+      <div class="dp-section">
+        <div class="dp-section-title">Actions</div>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px">
+          <button class="btn btn-outline" style="width:100%">Modifier le profil</button>
+          <button class="btn btn-outline" style="width:100%">Historique complet</button>
+          <button class="btn btn-outline" style="width:100%">Ajouter des points</button>
+        </div>
+      </div>`;
+    document.getElementById('detail-panel').classList.add('open');
+    document.getElementById('dp-overlay').classList.add('open');
+  }
+
+  /* ── MONITEURS ── */
+  const moniteurs = [
+    {
+      id:'sophie', full:'Sophie Lefranc', initials:'SL',
+      specialite:'Débutants & enfants', galop:'Galop 3 à 7',
+      tel:'06 11 22 33 44', email:'sophie.l@harasduforest.fr',
+      coursWeek:8, heuresWeek:7.5,
+      planning:[
+        { jour:'Lun 11', slots:['09h00 · Cours particulier — Marie L.','14h00 · Cours enfants (4/6)'] },
+        { jour:'Mer 13', slots:['09h00 · Cours collectif (3/6)'] },
+        { jour:'Ven 15', slots:['10h00 · Cours collectif (5/6)','16h00 · Cours particulier — Clara P.'] },
+        { jour:'Sam 16', slots:['09h00 · Cours particulier — Lucas M.','16h00 · Cours collectif (4/6)'] },
+      ]
+    },
+    {
+      id:'thomas', full:'Thomas Durand', initials:'TD',
+      specialite:'Confirmés & compétition', galop:'Galop 5+',
+      tel:'06 22 33 44 55', email:'thomas.d@harasduforest.fr',
+      coursWeek:9, heuresWeek:8.5,
+      planning:[
+        { jour:'Lun 11', slots:['09h00 · Cours collectif (4/6)','10h00 · Cours particulier — Lucas M.'] },
+        { jour:'Mar 12', slots:['17h00 · Cours particulier — Nathan D.'] },
+        { jour:'Mer 13', slots:['14h00 · Cours collectif (2/6)'] },
+        { jour:'Jeu 14', slots:['09h00 · Cours particulier — Nathan D.'] },
+        { jour:'Sam 16', slots:['10h00 · Cours collectif (5/6)','11h00 · Cours particulier'] },
+      ]
+    },
+    {
+      id:'camille', full:'Camille Renard', initials:'CR',
+      specialite:'Tous niveaux', galop:'Galop 1 à 7',
+      tel:'06 33 44 55 66', email:'camille.r@harasduforest.fr',
+      coursWeek:7, heuresWeek:6,
+      planning:[
+        { jour:'Mar 12', slots:['14h00 · Cours enfants (3/6)','16h00 · Cours particulier — Isabelle M.'] },
+        { jour:'Mer 13', slots:['10h00 · Cours enfants (5/6)'] },
+        { jour:'Ven 15', slots:['15h00 · Cours enfants (3/6)'] },
+        { jour:'Sam 16', slots:['14h00 · Cours enfants (6/6 — complet)'] },
+      ]
+    },
+  ];
+
+  function renderMoniteurCards() {
+    document.querySelector('#page-moniteurs .monitor-cards').innerHTML = moniteurs.map(m => `
+      <div class="monitor-card">
+        <div class="monitor-card-top">
+          <div class="monitor-card-avatar">${m.initials}</div>
+          <div>
+            <div class="monitor-card-name">${m.full}</div>
+            <div class="monitor-card-spec">${m.specialite}</div>
+            <div class="monitor-card-spec">${m.galop}</div>
+          </div>
+        </div>
+        <div style="font-size:12px;color:var(--t3);margin-bottom:2px">${m.email}</div>
+        <div style="font-size:12px;color:var(--t3)">${m.tel}</div>
+        <div class="monitor-stat-row">
+          <div class="monitor-stat"><div class="monitor-stat-val">${m.coursWeek}</div><div class="monitor-stat-lbl">Cours cette semaine</div></div>
+          <div class="monitor-stat"><div class="monitor-stat-val">${m.heuresWeek}h</div><div class="monitor-stat-lbl">Heures planifiées</div></div>
+        </div>
+      </div>`).join('');
+  }
+
+  function showMonitorTab(btn, id) {
+    document.querySelectorAll('.moni-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    const m = moniteurs.find(m => m.id === id);
+    if (!m) return;
+    document.getElementById('monitor-schedule').innerHTML = m.planning.length === 0
+      ? '<p style="color:var(--t3);font-size:13px;padding:8px 0">Aucun cours planifié cette semaine.</p>'
+      : m.planning.map(day => `
+        <div style="margin-bottom:16px">
+          <div style="font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:8px">${day.jour}</div>
+          ${day.slots.map(s => `
+            <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--bg);border-radius:8px;margin-bottom:6px;font-size:13px">
+              <div class="tl-dot dot-green"></div><span>${s}</span>
+            </div>`).join('')}
+        </div>`).join('');
+  }
+
+  /* ── COURS & CRÉNEAUX ── */
+  const ALL_TIMES_ADMIN = ['09h00','10h00','11h00','14h00','15h00','16h00','17h00','18h00'];
+  const JOURS_ADMIN     = ['Lun 11','Mar 12','Mer 13','Jeu 14','Ven 15','Sam 16'];
+  const slotsData = {
+    '09h00': ['reserve','reserve','dispo',  'dispo',  'dispo',  'reserve'],
+    '10h00': ['reserve','dispo',  'dispo',  'dispo',  'reserve','reserve'],
+    '11h00': ['indispo','indispo','indispo','indispo','indispo','dispo'  ],
+    '14h00': ['dispo',  'reserve','reserve','dispo',  'reserve','reserve'],
+    '15h00': ['dispo',  'reserve','dispo',  'dispo',  'reserve','dispo'  ],
+    '16h00': ['indispo','reserve','indispo','indispo','indispo','dispo'  ],
+    '17h00': ['dispo',  'reserve','dispo',  'reserve','dispo',  'dispo'  ],
+    '18h00': ['dispo',  'dispo',  'reserve','dispo',  'complet','dispo'  ],
+  };
+  const slotLabels  = { dispo:'Disponible', reserve:'Réservé', indispo:'Indisponible', complet:'Complet' };
+  const slotClasses = { dispo:'cours-dispo', reserve:'cours-reserve', indispo:'cours-indispo', complet:'cours-complet' };
+
+  function renderCoursGrid() {
+    document.getElementById('cours-tbody').innerHTML = ALL_TIMES_ADMIN.map(time => `
+      <tr>
+        <td style="font-weight:700;font-size:13px;color:var(--t2);white-space:nowrap">${time}</td>
+        ${slotsData[time].map((st, i) => `
+          <td style="padding:8px 10px">
+            <div class="cours-cell ${slotClasses[st]}"
+              onclick="${st !== 'indispo' ? `toggleSlot('${time}',${i})` : ''}">${slotLabels[st]}</div>
+          </td>`).join('')}
+      </tr>`).join('');
+  }
+
+  function toggleSlot(time, dayIdx) {
+    const cycle = { dispo:'reserve', reserve:'dispo', complet:'dispo' };
+    slotsData[time][dayIdx] = cycle[slotsData[time][dayIdx]] || 'dispo';
+    renderCoursGrid();
+  }
+
+  /* ── PAIEMENTS ── */
+  const paiements = [
+    { id:1, client:'Marie Lefebvre',  initials:'ML', type:'Formule Confort',    montant:400, date:'2026-05-01', statut:'Payé',       methode:'Carte'    },
+    { id:2, client:'Isabelle Morel',  initials:'IM', type:'Formule Premium',    montant:600, date:'2026-05-03', statut:'En attente', methode:'—'        },
+    { id:3, client:'Nathan Dupuis',   initials:'ND', type:'Stage juillet',      montant:350, date:'2026-05-05', statut:'En attente', methode:'—'        },
+    { id:4, client:'Clara Petit',     initials:'CP', type:'Pack 20 points',     montant:200, date:'2026-04-28', statut:'Payé',       methode:'Virement' },
+    { id:5, client:'Lucas Martin',    initials:'LM', type:'Formule Essentielle',montant:300, date:'2026-04-25', statut:'Payé',       methode:'Carte'    },
+    { id:6, client:'Antoine Bernard', initials:'AB', type:'Pack 10 points',     montant:120, date:'2026-04-20', statut:'Payé',       methode:'Carte'    },
+    { id:7, client:'Pierre Garnier',  initials:'PG', type:'Formule Premium',    montant:600, date:'2026-04-15', statut:'Payé',       methode:'Virement' },
+    { id:8, client:'Sophie Rousseau', initials:'SR', type:'Formule Essentielle',montant:300, date:'2026-04-10', statut:'En retard',  methode:'—'        },
+  ];
+  const payStatutBadge = { 'Payé':'badge-green', 'En attente':'badge-orange', 'En retard':'badge-red' };
+
+  function renderPaiements(list) {
+    document.getElementById('pay-count').textContent = list.length;
+    document.getElementById('pay-tbody').innerHTML = list.map(p => `
+      <tr>
+        <td><div class="td-client"><div class="td-avatar">${p.initials}</div><div class="td-name">${p.client}</div></div></td>
+        <td class="td-type">${p.type}</td>
+        <td><strong>${p.montant}€</strong></td>
+        <td>${fmtDate(p.date)}</td>
+        <td style="color:var(--t3)">${p.methode}</td>
+        <td><span class="tl-badge ${payStatutBadge[p.statut]||'badge-gray'}">${p.statut}</span></td>
+        <td><div class="td-actions">
+          ${p.statut !== 'Payé'
+            ? `<button class="btn btn-outline btn-sm" style="color:var(--green);border-color:#B2D8CE" onclick="marquerPaye(${p.id})">Marquer payé</button>`
+            : '<span style="font-size:12px;color:var(--t3)">—</span>'}
+        </div></td>
+      </tr>`).join('');
+  }
+
+  function filterPaiements() {
+    const status = document.getElementById('fp-status').value;
+    const type   = document.getElementById('fp-type').value;
+    renderPaiements(paiements.filter(p =>
+      (!status || p.statut === status) &&
+      (!type   || p.type.includes(type))
+    ));
+  }
+
+  function marquerPaye(id) {
+    const p = paiements.find(p => p.id === id);
+    if (p) { p.statut = 'Payé'; p.methode = 'Espèces'; filterPaiements(); }
+  }
+
   /* ── INIT ── */
   renderResas(reservations);
+  renderClients(clients);
+  renderMoniteurCards();
+  showMonitorTab(document.querySelector('.moni-tab'), 'sophie');
+  renderCoursGrid();
+  renderPaiements(paiements);
 </script>
 </body>
 </html>
