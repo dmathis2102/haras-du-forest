@@ -3074,6 +3074,35 @@
     }
   }
 
+  /* ══ RÉSERVATIONS À VENIR ══ */
+  let reservations = [];
+  let nextResaId = 1;
+
+  function renderReservations() {
+    const list    = document.getElementById('reservations-list');
+    const section = document.getElementById('upcoming-section');
+    if (!list || !section) return;
+    if (reservations.length === 0) {
+      section.style.display = 'none';
+      return;
+    }
+    section.style.display = 'block';
+    list.innerHTML = reservations.map(r => `
+      <div class="list-item" id="resa-${r.id}">
+        <div class="li-dot green"></div>
+        <div class="li-content">
+          <div class="li-title">${r.titre}</div>
+          <div class="li-sub">${r.date}</div>
+        </div>
+        <button class="btn btn-outline btn-sm" style="color:var(--red);border-color:#F5E0DE" onclick="annulerReservation(${r.id})">Annuler</button>
+      </div>`).join('');
+  }
+
+  function annulerReservation(id) {
+    reservations = reservations.filter(r => r.id !== id);
+    renderReservations();
+  }
+
   function doConfirm() {
     const type = document.getElementById('c-title').textContent;
     const date = document.getElementById('c-date').textContent;
@@ -3089,6 +3118,17 @@
     if (confCours) confCours.textContent = courseMap[type] || type;
     if (confDate)  confDate.textContent  = date;
     if (confPts)   confPts.textContent   = pts;
+
+    // Ajout à la liste À venir
+    const moniteur = (type === 'Cours particulier' && recap.moniteur !== 'Sans préférence')
+      ? ' · ' + recap.moniteur : '';
+    reservations.push({
+      id:    nextResaId++,
+      titre: type + moniteur,
+      date:  date
+    });
+    renderReservations();
+
     document.getElementById('confirm-overlay').classList.remove('open');
     showInner('confirmation');
   }
