@@ -1848,7 +1848,7 @@
         ${JOURS_COURS.map(({ label, date }) => {
           const s = (slots[date] || {})[heure];
           if (!s) return `<td style="padding:4px 6px"><div class="cours-cell-empty" onclick="openAddSlotModal('${date}','${heure}')">+</div></td>`;
-          const barCls = s.type === 'particulier' ? 'bar-blue' : s.type === 'collectif' ? 'bar-green' : 'bar-orange';
+          const barCls = s.type === 'particulier' ? 'bar-blue' : s.type === 'collectif' ? 'bar-green' : s.type === 'stage' ? 'bar-purple' : 'bar-orange';
           const booked = s.inscrits ? s.inscrits.length : 0;
           const max    = s.maxPlaces || 0;
           const pct    = max ? Math.round(booked/max*100) : 0;
