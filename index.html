@@ -2208,17 +2208,55 @@
       <p>Choisissez la formule adaptée à votre pratique</p>
     </div>
 
-    <div class="card" onclick="">
-      <div class="card-content">
-        <div class="card-title">Formule Annuelle</div>
-        <div class="card-desc">1 cours par semaine · Année scolaire · Hors vacances scolaires</div>
-      </div>
-      <div class="card-meta">
-        <span class="badge badge-gold">300 € / an</span>
+    <div class="photo-card" onclick="showInner('formule-essentielle')">
+      <img src="https://images.squarespace-cdn.com/content/v1/695bed2f7b38680b38b84a7a/ca624f5b-d0db-4e4b-80c9-33a59732cc45/6.jpg" alt="Formule Essentielle" class="photo-card-img" />
+      <div class="photo-card-overlay">
+        <span class="photo-card-badge">300 € / an</span>
+        <div class="photo-card-body">
+          <div class="photo-card-title">Formule Essentielle</div>
+          <div class="photo-card-desc">1 cours / semaine · Année scolaire · 120 points</div>
+        </div>
+        <span class="photo-card-arrow">›</span>
       </div>
     </div>
 
-    <div class="section" style="margin-top:4px">
+    <div class="photo-card" onclick="showInner('formule-confort')">
+      <img src="https://images.squarespace-cdn.com/content/v1/695bed2f7b38680b38b84a7a/0ca4f026-2e4f-463a-9e25-8e3a135c0591/2.jpg" alt="Formule Confort" class="photo-card-img" />
+      <div class="photo-card-overlay">
+        <span class="photo-card-badge">400 € / an</span>
+        <div class="photo-card-body">
+          <div class="photo-card-title">Formule Confort</div>
+          <div class="photo-card-desc">2 cours / semaine · Vacances incluses · 200 points</div>
+        </div>
+        <span class="photo-card-arrow">›</span>
+      </div>
+    </div>
+
+    <div class="photo-card" onclick="showInner('formule-premium')">
+      <img src="https://images.squarespace-cdn.com/content/v1/695bed2f7b38680b38b84a7a/55197b91-dfd6-49ae-9564-b71cc1f7e6ec/5.jpg" alt="Formule Premium" class="photo-card-img" />
+      <div class="photo-card-overlay">
+        <span class="photo-card-badge" style="background:var(--gold)">600 € / an</span>
+        <div class="photo-card-body">
+          <div class="photo-card-title">Formule Premium</div>
+          <div class="photo-card-desc">Cours illimités · Stages inclus · 350 points</div>
+        </div>
+        <span class="photo-card-arrow">›</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ INNER : FORMULE ESSENTIELLE ══ -->
+  <div class="page" id="page-formule-essentielle">
+    <button class="back-btn" onclick="showPage('formules')">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 2L4 7l5 5"/></svg>
+      Retour
+    </button>
+    <div class="page-header">
+      <h1>Formule Essentielle</h1>
+      <p>L'entrée idéale pour pratiquer à son rythme</p>
+    </div>
+
+    <div class="section">
       <div class="section-title">Ce qui est inclus</div>
       <div class="recap-line"><span class="rl-key">Fréquence</span><span class="rl-val">1 cours par semaine</span></div>
       <div class="recap-line"><span class="rl-key">Période</span><span class="rl-val">Année scolaire complète</span></div>
@@ -2242,7 +2280,85 @@
       </ul>
     </div>
 
-    <button class="btn btn-dark">Souscrire à la formule — 300 €</button>
+    <button class="btn btn-dark">Souscrire — 300 €</button>
+  </div>
+
+  <!-- ══ INNER : FORMULE CONFORT ══ -->
+  <div class="page" id="page-formule-confort">
+    <button class="back-btn" onclick="showPage('formules')">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 2L4 7l5 5"/></svg>
+      Retour
+    </button>
+    <div class="page-header">
+      <h1>Formule Confort</h1>
+      <p>Pour les cavaliers qui veulent progresser vite</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Ce qui est inclus</div>
+      <div class="recap-line"><span class="rl-key">Fréquence</span><span class="rl-val">2 cours par semaine</span></div>
+      <div class="recap-line"><span class="rl-key">Période</span><span class="rl-val">Année scolaire + petites vacances</span></div>
+      <div class="recap-line"><span class="rl-key">Vacances d'été</span><span class="rl-val">Non incluses</span></div>
+      <div class="recap-line"><span class="rl-key">Points crédités</span><span class="rl-val green">200 points</span></div>
+      <div class="recap-line"><span class="rl-key">Prix</span><span class="rl-val">400 €</span></div>
+    </div>
+
+    <div class="info-card">
+      <div class="info-card-title">💡 L'avantage Confort</div>
+      <p>Deux séances par semaine, c'est le rythme idéal pour une progression régulière et visible. Vous bénéficiez aussi des cours pendant les vacances de Toussaint, Noël, hiver et printemps — sans supplément.</p>
+    </div>
+
+    <div class="info-card">
+      <div class="info-card-title">📅 Fonctionnement</div>
+      <ul>
+        <li>Inscription et paiement en une fois au début de l'année</li>
+        <li>200 points crédités immédiatement sur votre compte</li>
+        <li>Cours disponibles en semaine scolaire et petites vacances</li>
+        <li>Points utilisables librement sur cours collectifs et particuliers</li>
+      </ul>
+    </div>
+
+    <button class="btn btn-dark">Souscrire — 400 €</button>
+  </div>
+
+  <!-- ══ INNER : FORMULE PREMIUM ══ -->
+  <div class="page" id="page-formule-premium">
+    <button class="back-btn" onclick="showPage('formules')">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 2L4 7l5 5"/></svg>
+      Retour
+    </button>
+    <div class="page-header">
+      <h1>Formule Premium</h1>
+      <p>L'accès complet au haras, toute l'année</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Ce qui est inclus</div>
+      <div class="recap-line"><span class="rl-key">Cours</span><span class="rl-val">Illimités (collectifs)</span></div>
+      <div class="recap-line"><span class="rl-key">Cours particuliers</span><span class="rl-val">2 inclus / mois</span></div>
+      <div class="recap-line"><span class="rl-key">Période</span><span class="rl-val">Toute l'année</span></div>
+      <div class="recap-line"><span class="rl-key">Stages</span><span class="rl-val">1 stage découverte offert</span></div>
+      <div class="recap-line"><span class="rl-key">Points crédités</span><span class="rl-val green">350 points</span></div>
+      <div class="recap-line"><span class="rl-key">Prix</span><span class="rl-val">600 €</span></div>
+    </div>
+
+    <div class="info-card">
+      <div class="info-card-title">⭐ L'avantage Premium</div>
+      <p>La formule la plus complète du haras. Cours collectifs illimités, 2 cours particuliers par mois inclus et un stage découverte offert. Idéale pour les cavaliers passionnés qui souhaitent s'investir pleinement et progresser sur tous les plans.</p>
+    </div>
+
+    <div class="info-card">
+      <div class="info-card-title">📅 Fonctionnement</div>
+      <ul>
+        <li>Inscription et paiement en une fois</li>
+        <li>350 points crédités immédiatement sur votre compte</li>
+        <li>Cours disponibles 7j/7 selon les créneaux du haras</li>
+        <li>Stage découverte à planifier avec l'équipe</li>
+        <li>Priorité de réservation sur les créneaux premium</li>
+      </ul>
+    </div>
+
+    <button class="btn btn-dark" style="background: linear-gradient(135deg, var(--navy), #2A5298)">Souscrire — 600 €</button>
   </div>
 
   <!-- ══ MES RÉSERVATIONS ══ -->
