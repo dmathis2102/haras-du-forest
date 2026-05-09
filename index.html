@@ -1578,13 +1578,22 @@
     </div>
 
     <div class="section">
-      <div class="section-title">Paramètres</div>
-      <div class="form-group">
-        <label>Date souhaitée</label>
-        <input type="date" />
+      <div class="section-title">Choisissez une date</div>
+      <div class="week-nav-row">
+        <button class="week-arrow" onclick="changeWeek('particulier',-1)">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 2L4 7l5 5"/></svg>
+        </button>
+        <span class="week-label" id="cal-particulier-label"></span>
+        <button class="week-arrow" onclick="changeWeek('particulier',1)">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 2l5 5-5 5"/></svg>
+        </button>
       </div>
-      <div class="form-group">
-        <label>Moniteur</label>
+      <div class="week-day-grid" id="cal-particulier-grid"></div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Moniteur</div>
+      <div class="form-group" style="margin:0">
         <select>
           <option>Sans préférence</option>
           <option>Sophie L. — Débutants &amp; enfants</option>
