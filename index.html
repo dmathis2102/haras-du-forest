@@ -1879,39 +1879,190 @@
       Retour
     </button>
     <div class="page-header">
-      <h1>Stage intensif</h1>
-      <p>Progression accélérée sur plusieurs jours</p>
+      <h1>Stages intensifs</h1>
+      <p>Progression accélérée pendant les vacances scolaires</p>
     </div>
-    <div class="card">
-      <div class="card-icon ci-forest">
-        <svg viewBox="0 0 22 22" fill="none" stroke="#2D6A4F" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="M11 7v4l3 2"/></svg>
+
+    <div class="photo-card" onclick="showInner('stage-decouverte')">
+      <img src="https://images.squarespace-cdn.com/content/v1/695bed2f7b38680b38b84a7a/0ca4f026-2e4f-463a-9e25-8e3a135c0591/2.jpg" alt="Stage découverte" class="photo-card-img" />
+      <div class="photo-card-overlay">
+        <span class="photo-card-badge photo-card-badge-muted">Sur devis</span>
+        <div class="photo-card-body">
+          <div class="photo-card-title">Stage découverte</div>
+          <div class="photo-card-desc">2 jours · 4 séances · Débutants &amp; enfants</div>
+        </div>
+        <span class="photo-card-arrow">›</span>
       </div>
-      <div class="card-content">
-        <div class="card-title">Stage découverte — 2 jours</div>
-        <div class="card-desc">4 séances · Idéal pour les débutants</div>
-      </div>
-      <div class="card-meta"><span class="badge badge-muted">Sur devis</span></div>
     </div>
-    <div class="card">
-      <div class="card-icon ci-gold">
-        <svg viewBox="0 0 22 22" fill="none" stroke="#8A6820" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 2l2.2 4.4 4.9.7-3.5 3.4.8 4.9L11 13l-4.4 2.4.8-4.9-3.5-3.4 4.9-.7z"/></svg>
+
+    <div class="photo-card" onclick="showInner('stage-progression')">
+      <img src="https://images.squarespace-cdn.com/content/v1/695bed2f7b38680b38b84a7a/55197b91-dfd6-49ae-9564-b71cc1f7e6ec/5.jpg" alt="Stage progression" class="photo-card-img" />
+      <div class="photo-card-overlay">
+        <span class="photo-card-badge photo-card-badge-muted">Sur devis</span>
+        <div class="photo-card-body">
+          <div class="photo-card-title">Stage progression</div>
+          <div class="photo-card-desc">5 jours · 10 séances · Passage de galop inclus</div>
+        </div>
+        <span class="photo-card-arrow">›</span>
       </div>
-      <div class="card-content">
-        <div class="card-title">Stage progression — 5 jours</div>
-        <div class="card-desc">10 séances · Passage de galop inclus</div>
-      </div>
-      <div class="card-meta"><span class="badge badge-muted">Sur devis</span></div>
     </div>
+  </div>
+
+  <!-- ══ INNER : STAGE DÉCOUVERTE ══ -->
+  <div class="page" id="page-stage-decouverte">
+    <button class="back-btn" onclick="showInner('stage')">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 2L4 7l5 5"/></svg>
+      Retour
+    </button>
+    <div class="page-header">
+      <h1>Stage découverte</h1>
+      <p>2 jours · 4 séances · Tous niveaux débutants</p>
+    </div>
+
     <div class="section">
-      <div class="section-title">Demande de renseignements</div>
-      <div class="form-group"><label>Nom &amp; prénom</label><input type="text" placeholder="Marie Dupont" /></div>
-      <div class="form-group"><label>Email</label><input type="email" placeholder="marie@email.com" /></div>
-      <div class="form-group"><label>Stage souhaité</label>
-        <select><option>Stage découverte</option><option>Stage progression</option></select>
+      <div class="section-title">Programme</div>
+      <div class="recap-line"><span class="rl-key">Durée</span><span class="rl-val">2 jours</span></div>
+      <div class="recap-line"><span class="rl-key">Séances</span><span class="rl-val">4 séances (2/jour)</span></div>
+      <div class="recap-line"><span class="rl-key">Durée / séance</span><span class="rl-val">1h30</span></div>
+      <div class="recap-line"><span class="rl-key">Niveau</span><span class="rl-val">Débutant à Galop 2</span></div>
+      <div class="recap-line"><span class="rl-key">Tarif</span><span class="rl-val gold">Sur devis</span></div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Ce qui est au programme</div>
+      <div class="list-item" style="flex-direction:column; align-items:flex-start; gap:4px">
+        <div class="li-title">Jour 1 — Matin</div>
+        <div class="li-sub">Prise en main, mise en selle, premiers pas au pas et au trot</div>
       </div>
-      <div class="form-group"><label>Dates envisagées</label><input type="text" placeholder="Semaine du 2 juin" /></div>
-      <br/>
-      <button class="btn btn-dark">Envoyer la demande</button>
+      <div class="list-item" style="flex-direction:column; align-items:flex-start; gap:4px">
+        <div class="li-title">Jour 1 — Après-midi</div>
+        <div class="li-sub">Travail en longe, équilibre en selle, soins et entretien du cheval</div>
+      </div>
+      <div class="list-item" style="flex-direction:column; align-items:flex-start; gap:4px">
+        <div class="li-title">Jour 2 — Matin</div>
+        <div class="li-sub">Trot assis/enlevé, serpentines, premiers exercices d'assouplissement</div>
+      </div>
+      <div class="list-item" style="flex-direction:column; align-items:flex-start; gap:4px">
+        <div class="li-title">Jour 2 — Après-midi</div>
+        <div class="li-sub">Initiation au galop (selon niveau), clôture avec bilan individuel</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Moniteur</div>
+      <div class="pres-monitor" style="margin:0">
+        <div class="pres-monitor-avatar">SL</div>
+        <div class="pres-monitor-info">
+          <div class="pres-monitor-name">Sophie Lefebvre</div>
+          <div class="pres-monitor-role">BPJEPS Équitation · Spécialiste débutants &amp; enfants</div>
+          <p class="pres-monitor-bio">Sophie encadre tous les stages découverte. Son approche bienveillante et pédagogique est particulièrement adaptée aux cavaliers qui débutent ou qui souhaitent consolider leurs bases.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Sessions à venir</div>
+      <div class="list-item">
+        <div class="li-dot green"></div>
+        <div class="li-content">
+          <div class="li-title">Vacances de printemps · 7–8 mai 2026</div>
+          <div class="li-sub">2 places restantes</div>
+        </div>
+        <button class="btn btn-dark btn-sm" onclick="openConfirm('Stage découverte','7–8 mai 2026','Sur devis')">Demande</button>
+      </div>
+      <div class="list-item">
+        <div class="li-dot green"></div>
+        <div class="li-content">
+          <div class="li-title">Grandes vacances · 7–8 juil. 2026</div>
+          <div class="li-sub">6 places disponibles</div>
+        </div>
+        <button class="btn btn-dark btn-sm" onclick="openConfirm('Stage découverte','7–8 juil. 2026','Sur devis')">Demande</button>
+      </div>
+      <div class="list-item">
+        <div class="li-dot green"></div>
+        <div class="li-content">
+          <div class="li-title">Grandes vacances · 4–5 août 2026</div>
+          <div class="li-sub">6 places disponibles</div>
+        </div>
+        <button class="btn btn-dark btn-sm" onclick="openConfirm('Stage découverte','4–5 août 2026','Sur devis')">Demande</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ INNER : STAGE PROGRESSION ══ -->
+  <div class="page" id="page-stage-progression">
+    <button class="back-btn" onclick="showInner('stage')">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 2L4 7l5 5"/></svg>
+      Retour
+    </button>
+    <div class="page-header">
+      <h1>Stage progression</h1>
+      <p>5 jours · 10 séances · Passage de galop inclus</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Programme</div>
+      <div class="recap-line"><span class="rl-key">Durée</span><span class="rl-val">5 jours</span></div>
+      <div class="recap-line"><span class="rl-key">Séances</span><span class="rl-val">10 séances (2/jour)</span></div>
+      <div class="recap-line"><span class="rl-key">Durée / séance</span><span class="rl-val">1h</span></div>
+      <div class="recap-line"><span class="rl-key">Niveau</span><span class="rl-val">Galop 1 à Galop 5</span></div>
+      <div class="recap-line"><span class="rl-key">Tarif</span><span class="rl-val gold">Sur devis</span></div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Ce qui est au programme</div>
+      <div class="list-item" style="flex-direction:column; align-items:flex-start; gap:4px">
+        <div class="li-title">Jours 1–2 — Fondamentaux</div>
+        <div class="li-sub">Remise en selle, travail de position, équilibre au trot et au galop</div>
+      </div>
+      <div class="list-item" style="flex-direction:column; align-items:flex-start; gap:4px">
+        <div class="li-title">Jours 3–4 — Technique</div>
+        <div class="li-sub">Transitions, assouplissements, premiers exercices de saut d'obstacles</div>
+      </div>
+      <div class="list-item" style="flex-direction:column; align-items:flex-start; gap:4px">
+        <div class="li-title">Jour 5 — Évaluation</div>
+        <div class="li-sub">Passage de galop officiel FFE · Bilan individuel avec le moniteur</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Moniteur</div>
+      <div class="pres-monitor" style="margin:0">
+        <div class="pres-monitor-avatar">TM</div>
+        <div class="pres-monitor-info">
+          <div class="pres-monitor-name">Thomas Marchand</div>
+          <div class="pres-monitor-role">BPJEPS · Galop 7 · Stages &amp; perfectionnement</div>
+          <p class="pres-monitor-bio">Thomas pilote l'ensemble des stages progression. Son approche technique et exigeante permet aux cavaliers de progresser rapidement et de franchir les paliers de galop en toute confiance.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Sessions à venir</div>
+      <div class="list-item">
+        <div class="li-dot green"></div>
+        <div class="li-content">
+          <div class="li-title">Vacances de printemps · 4–8 mai 2026</div>
+          <div class="li-sub">1 place restante</div>
+        </div>
+        <button class="btn btn-dark btn-sm" onclick="openConfirm('Stage progression','4–8 mai 2026','Sur devis')">Demande</button>
+      </div>
+      <div class="list-item">
+        <div class="li-dot green"></div>
+        <div class="li-content">
+          <div class="li-title">Grandes vacances · 6–10 juil. 2026</div>
+          <div class="li-sub">4 places disponibles</div>
+        </div>
+        <button class="btn btn-dark btn-sm" onclick="openConfirm('Stage progression','6–10 juil. 2026','Sur devis')">Demande</button>
+      </div>
+      <div class="list-item">
+        <div class="li-dot green"></div>
+        <div class="li-content">
+          <div class="li-title">Grandes vacances · 3–7 août 2026</div>
+          <div class="li-sub">6 places disponibles</div>
+        </div>
+        <button class="btn btn-dark btn-sm" onclick="openConfirm('Stage progression','3–7 août 2026','Sur devis')">Demande</button>
+      </div>
     </div>
   </div>
 
