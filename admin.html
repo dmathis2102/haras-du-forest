@@ -1068,41 +1068,41 @@
 
     <!-- ══ COURS & CRÉNEAUX ══ -->
     <div class="page" id="page-cours">
-      <div class="filter-bar">
-        <label>Semaine</label>
-        <select class="filter-select" id="cours-week" onchange="renderCoursGrid()">
-          <option value="0">Cette semaine (9–10 mai)</option>
-          <option value="1" selected>Semaine prochaine (11–17 mai)</option>
-          <option value="2">Semaine du 18–24 mai</option>
-        </select>
-        <div class="filter-sep"></div>
-        <label>Vue</label>
-        <select class="filter-select" id="cours-monitor" onchange="renderCoursGrid()">
-          <option value="">Tous les moniteurs</option>
-          <option value="Sophie">Sophie L.</option>
-          <option value="Thomas">Thomas D.</option>
-          <option value="Camille">Camille R.</option>
+      <!-- Onglets moniteurs -->
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+        <button class="btn btn-primary cours-mon-tab" data-id="sophie" onclick="switchCoursMoniteur('sophie',this)">Sophie L.</button>
+        <button class="btn btn-outline cours-mon-tab" data-id="thomas" onclick="switchCoursMoniteur('thomas',this)">Thomas D.</button>
+        <button class="btn btn-outline cours-mon-tab" data-id="camille" onclick="switchCoursMoniteur('camille',this)">Camille R.</button>
+        <div style="flex:1"></div>
+        <select class="filter-select" style="width:auto">
+          <option>Semaine du 11–16 mai</option>
+          <option>Semaine du 18–23 mai</option>
         </select>
       </div>
+
       <div class="table-wrap">
         <div class="table-toolbar">
-          <span class="card-title">Grille des créneaux</span>
-          <span style="font-size:12px;color:var(--t3)">Cliquez sur un créneau disponible ou réservé pour changer son statut</span>
+          <div>
+            <div class="card-title" id="cours-monitor-title">Planning — Sophie L.</div>
+            <div style="font-size:12px;color:var(--t3);margin-top:3px" id="cours-monitor-stats"></div>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="openAddSlotModal()">+ Ajouter un créneau</button>
         </div>
         <div style="overflow-x:auto">
           <table id="cours-table">
-            <thead><tr>
-              <th style="min-width:80px">Heure</th>
+            <thead><tr id="cours-thead-row">
+              <th style="min-width:76px">Heure</th>
               <th>Lun 11</th><th>Mar 12</th><th>Mer 13</th><th>Jeu 14</th><th>Ven 15</th><th>Sam 16</th>
             </tr></thead>
             <tbody id="cours-tbody"></tbody>
           </table>
         </div>
         <div style="padding:12px 20px;border-top:1px solid var(--border);display:flex;gap:20px;font-size:12px;color:var(--t2)">
-          <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--green-l);border:1px solid var(--green);margin-right:4px;vertical-align:middle"></span>Disponible</span>
-          <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--blue-l);border:1px solid #3B82F6;margin-right:4px;vertical-align:middle"></span>Réservé</span>
+          <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--blue-l);border:1px solid #93C5FD;margin-right:4px;vertical-align:middle"></span>Particulier</span>
+          <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--green-l);border:1px solid #6EE7B7;margin-right:4px;vertical-align:middle"></span>Collectif</span>
+          <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--orange-l);border:1px solid #FCD34D;margin-right:4px;vertical-align:middle"></span>Enfants</span>
           <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#F1F3F7;border:1px solid var(--border);margin-right:4px;vertical-align:middle"></span>Indisponible</span>
-          <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--orange-l);border:1px solid var(--orange);margin-right:4px;vertical-align:middle"></span>Complet</span>
+          <span style="margin-left:auto;color:var(--t3)">Cliquez sur un créneau pour le modifier</span>
         </div>
       </div>
     </div>
