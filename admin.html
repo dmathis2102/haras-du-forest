@@ -1548,6 +1548,14 @@
     openDetail(id);
   }
 
+  function sendLienPaiement(btn, montant) {
+    const orig = btn.textContent;
+    btn.textContent = 'Lien envoyé ✓';
+    btn.disabled = true;
+    btn.style.background = 'var(--green)';
+    setTimeout(() => { btn.textContent = orig; btn.disabled = false; btn.style.background = ''; }, 2500);
+  }
+
   function sendRappel(btn) {
     const orig = btn.textContent;
     btn.textContent = 'Rappel envoyé ✓';
