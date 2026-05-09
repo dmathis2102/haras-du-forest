@@ -1577,14 +1577,17 @@
         <div class="dp-row"><span class="dp-key">Nom</span><span class="dp-val">${p.client}</span></div>
         <div class="dp-row"><span class="dp-key">Réf. paiement</span><span class="dp-val">#PAY-${String(p.id).padStart(4,'0')}</span></div>
       </div>
-      ${isPending ? `
       <div class="dp-section">
         <div class="dp-section-title">Actions</div>
         <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px">
+          <button class="btn btn-primary" style="width:100%" onclick="sendLienPaiement(this, ${p.montant})">💳 Envoyer un lien de paiement</button>
+          ${isPending ? `
           <button class="btn btn-outline" style="width:100%" onclick="sendRappel(this)">Envoyer un rappel</button>
           <button class="btn btn-primary" style="width:100%;background:var(--green)" onclick="marquerPayePanel(${p.id})">Marquer comme payé</button>
+          ` : ''}
         </div>
-      </div>` : ''}`;
+      </div>
+      `;
     document.getElementById('dp-footer').innerHTML = `<button class="btn btn-primary" style="flex:1" onclick="closeDetail()">Fermer</button>`;
     document.getElementById('detail-panel').classList.add('open');
     document.getElementById('dp-overlay').classList.add('open');
