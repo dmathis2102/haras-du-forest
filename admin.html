@@ -1512,6 +1512,61 @@
     if (r) { r.status = 'Confirmé'; filterResas(); openDetail(id); }
   }
 
+  function traiterStage(id, statut) {
+    const r = reservations.find(r => r.id === id);
+    if (!r) return;
+    r.status = statut;
+    filterResas();
+    openDetail(id);
+  }
+
+  function sendRappel(btn) {
+    const orig = btn.textContent;
+    btn.textContent = 'Rappel envoyé ✓';
+    btn.disabled = true;
+    btn.style.color = 'var(--green)';
+    btn.style.borderColor = 'var(--green)';
+    setTimeout(() => { btn.textContent = orig; btn.disabled = false; btn.style.color = ''; btn.style.borderColor = ''; }, 2500);
+  }
+
+  function openPaiementDetail(id) {
+    const p = paiements.find(p => p.id === id);
+    if (!p) return;
+    openDetailId = null;
+    const isPending = p.statut === 'En attente' || p.statut === 'En retard';
+    document.getElementById('dp-title').textContent = p.client;
+    document.getElementById('dp-body').innerHTML = `
+      <div class="dp-section">
+        <div class="dp-section-title">Paiement</div>
+        <div class="dp-row"><span class="dp-key">Type</span><span class="dp-val">${p.type}</span></div>
+        <div class="dp-row"><span class="dp-key">Montant</span><span class="dp-val"><strong>${p.montant}€</strong></span></div>
+        <div class="dp-row"><span class="dp-key">Date</span><span class="dp-val">${fmtDate(p.date)}</span></div>
+        <div class="dp-row"><span class="dp-key">Méthode</span><span class="dp-val">${p.methode}</span></div>
+        <div class="dp-row"><span class="dp-key">Statut</span><span class="dp-val"><span class="tl-badge ${payStatutBadge[p.statut]||'badge-gray'}">${p.statut}</span></span></div>
+      </div>
+      <div class="dp-section">
+        <div class="dp-section-title">Client</div>
+        <div class="dp-row"><span class="dp-key">Nom</span><span class="dp-val">${p.client}</span></div>
+        <div class="dp-row"><span class="dp-key">Réf. paiement</span><span class="dp-val">#PAY-${String(p.id).padStart(4,'0')}</span></div>
+      </div>
+      ${isPending ? `
+      <div class="dp-section">
+        <div class="dp-section-title">Actions</div>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px">
+          <button class="btn btn-outline" style="width:100%" onclick="sendRappel(this)">Envoyer un rappel</button>
+          <button class="btn btn-primary" style="width:100%;background:var(--green)" onclick="marquerPayePanel(${p.id})">Marquer comme payé</button>
+        </div>
+      </div>` : ''}`;
+    document.getElementById('dp-footer').innerHTML = `<button class="btn btn-primary" style="flex:1" onclick="closeDetail()">Fermer</button>`;
+    document.getElementById('detail-panel').classList.add('open');
+    document.getElementById('dp-overlay').classList.add('open');
+  }
+
+  function marquerPayePanel(id) {
+    marquerPaye(id);
+    openPaiementDetail(id);
+  }
+
   function cancelResaFromDetail() {
     if (openDetailId) quickCancel(openDetailId);
     closeDetail();
