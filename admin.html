@@ -2544,10 +2544,9 @@
           if (s.type === 'evenement' || s.type === 'indisponible') {
             const bg  = s.type === 'evenement' ? '#EEF2FB' : '#F3F4F6';
             const col = s.type === 'evenement' ? '#3B5BC0' : '#6B7280';
-            const ico = s.type === 'evenement' ? '📅' : '🔒';
             return `<td style="padding:4px 6px">
               <div onclick="openSlotDetail('${date}','${heure}')" style="border-radius:6px;padding:6px 8px;background:${bg};border-left:3px solid ${col};cursor:pointer;min-height:44px">
-                <div style="font-size:10px;font-weight:700;color:${col};text-transform:uppercase;letter-spacing:0.4px">${ico} ${s.type === 'evenement' ? 'Événement' : 'Indisponible'}</div>
+                <div style="font-size:10px;font-weight:700;color:${col};text-transform:uppercase;letter-spacing:0.4px">${s.type === 'evenement' ? 'Événement' : 'Indisponible'}</div>
                 <div style="font-size:11px;color:var(--t2);margin-top:2px;font-weight:500">${s.label}</div>
               </div>
             </td>`;
