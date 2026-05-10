@@ -2909,6 +2909,7 @@
     }
 
     // Re-render tous les plannings
+    addLog('cours', `Nouveau créneau créé — ${monit} · ${typeCapital} · ${date} à ${heure}`);
     closeDetail();
     renderCoursMoniteur();
     if (monit !== activePresenceMon) renderMoniCoursView(monit);
