@@ -2326,6 +2326,46 @@
     { label:'Ven', date:'2026-05-15', num:15 }, { label:'Sam', date:'2026-05-16', num:16 },
   ];
 
+  function renderDashboardStats() {
+    const today      = new Date();
+    const todayISO   = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+    const thisMonth  = todayISO.slice(0,7);
+    const lastMonth  = (() => { const d = new Date(today.getFullYear(), today.getMonth()-1, 1); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; })();
+    const yesterday  = (() => { const d = new Date(today); d.setDate(d.getDate()-1); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; })();
+
+    // 1. Réservations aujourd'hui vs hier
+    const resaToday = reservations.filter(r => r.date === todayISO && r.status !== 'Annulé').length;
+    const resaYest  = reservations.filter(r => r.date === yesterday && r.status !== 'Annulé').length;
+    const resaDiff  = resaToday - resaYest;
+    document.getElementById('kpi-resa-val').textContent   = resaToday;
+    document.getElementById('kpi-resa-delta').innerHTML   = resaDiff === 0
+      ? `<span>= vs hier</span>`
+      : `<span class="${resaDiff > 0 ? 'up' : 'down'}">${resaDiff > 0 ? '+' : ''}${resaDiff}</span> vs hier`;
+
+    // 2. Revenus du mois vs mois précédent
+    const revThis = paiements.filter(p => p.statut === 'Payé' && p.date.startsWith(thisMonth)).reduce((s,p) => s + p.montant, 0);
+    const revLast = paiements.filter(p => p.statut === 'Payé' && p.date.startsWith(lastMonth)).reduce((s,p) => s + p.montant, 0);
+    const revPct  = revLast > 0 ? Math.round((revThis - revLast) / revLast * 100) : null;
+    document.getElementById('kpi-revenus-val').textContent  = revThis.toLocaleString('fr-FR') + '€';
+    document.getElementById('kpi-revenus-delta').innerHTML  = revPct === null
+      ? `<span>Pas de données</span>`
+      : `<span class="${revPct >= 0 ? 'up' : 'down'}">${revPct >= 0 ? '+' : ''}${revPct}%</span> vs mois dernier`;
+
+    // 3. Clients actifs (uniques, non annulés ce mois)
+    const clientsThis = new Set(reservations.filter(r => r.date.startsWith(thisMonth) && r.status !== 'Annulé').map(r => r.client)).size;
+    const clientsLast = new Set(reservations.filter(r => r.date.startsWith(lastMonth) && r.status !== 'Annulé').map(r => r.client)).size;
+    const clientsDiff = clientsThis - clientsLast;
+    document.getElementById('kpi-clients-val').textContent  = clientsThis;
+    document.getElementById('kpi-clients-delta').innerHTML  = `<span class="${clientsDiff >= 0 ? 'up' : 'down'}">${clientsDiff >= 0 ? '+' : ''}${clientsDiff}</span> vs mois dernier`;
+
+    // 4. En attente paiement
+    const attente = paiements.filter(p => p.statut === 'En attente' || p.statut === 'En retard').length;
+    document.getElementById('kpi-attente-val').textContent  = attente;
+    document.getElementById('kpi-attente-delta').innerHTML  = attente === 0
+      ? `<span class="up">Tout est à jour</span>`
+      : `<span class="down">À traiter</span>`;
+  }
+
   function renderDashboardWeek() {
     document.getElementById('dash-week-grid').innerHTML = DASH_WEEK.map(j => {
       const slots = getSlotsByDate(j.date);
