@@ -2226,6 +2226,7 @@
     if (monit !== activePresenceMon) renderMoniCoursView(monit);
     renderMoniCoursView(activePresenceMon);
     renderMonthCalendar();
+    renderDashboardWeek();
     document.getElementById('badge-resa').textContent = reservations.filter(r => r.status === 'En attente').length || '';
     filterResas();
   }
