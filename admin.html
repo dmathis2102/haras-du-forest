@@ -1541,8 +1541,7 @@
         <div class="dp-row"><span class="dp-key">Nom</span><span class="dp-val">${r.client}</span></div>
         <div class="dp-row"><span class="dp-key">ID réservation</span><span class="dp-val">#${String(r.id).padStart(4,'0')}</span></div>
       </div>
-      <div class="dp-section">
-        <div class="dp-section-title">Actions</div>
+      ${(isStage && isPending) || (!isStage && isPending) ? `<div class="dp-section">
         <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px">
           ${isStage && isPending ? `
             <button class="btn btn-primary" style="width:100%;background:var(--green)" onclick="traiterStage(${r.id},'Confirmé')">Accepter la demande</button>
@@ -1550,7 +1549,7 @@
           ` : ''}
           ${!isStage && isPending ? `<button class="btn btn-primary" style="width:100%" onclick="confirmResa(${r.id})">Confirmer la réservation</button>` : ''}
         </div>
-      </div>`;
+      </div>` : ''}`;
     document.getElementById('dp-footer').innerHTML = `
       ${r.status !== 'Annulé' && !isStage ? `<button class="btn btn-outline" style="flex:1;color:var(--red);border-color:#F5C6C2" onclick="cancelResaFromDetail()">Annuler le cours</button>` : ''}
       <button class="btn btn-primary" style="flex:1" onclick="closeDetail()">Fermer</button>`;
