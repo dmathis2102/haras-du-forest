@@ -1709,6 +1709,7 @@
   function resetFilters() {
     ['f-type','f-monitor','f-status','f-date'].forEach(id => document.getElementById(id).value = '');
     renderResas(reservations);
+    renderDashboardStats();
   }
 
   /* ── NOUVELLE RÉSERVATION ── */
