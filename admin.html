@@ -2618,48 +2618,60 @@
   let _slotDate = '', _slotHeure = '09h00', _slotMoniteur = '';
 
   function openAddSlotModal(date, heure, prefillType, prefillLabel, prefillInscrit) {
-    const iso       = date || '';
-    const h         = heure || '09h00';
-    _slotDate     = iso;
-    _slotHeure    = h;
-    _slotMoniteur = activeCoursMoniteur;
-    const initType  = prefillType || 'particulier';
-    const isGroup   = initType !== 'particulier';
+    const iso      = date  || '';
+    const h        = heure || '09h00';
+    _slotDate      = iso;
+    _slotHeure     = h;
+    _slotMoniteur  = activeCoursMoniteur;
+    const initType = prefillType || 'particulier';
+    const isSpecial  = initType === 'evenement' || initType === 'indisponible';
+    const isGroupe   = !isSpecial && initType !== 'particulier';
+    const showClient = initType === 'particulier';
     openDetailId = null;
     document.getElementById('dp-title').textContent = 'Nouveau créneau';
     document.getElementById('dp-body').innerHTML = `
       <div style="display:flex;flex-direction:column;gap:14px">
-        <div class="form-group"><div class="form-label">Type de cours</div>
+        <div class="form-group">
+          <div class="form-label">Type</div>
           <select class="form-select" id="ns-type" onchange="toggleNewSlotFields()">
-            <option value="particulier"${initType==='particulier'?' selected':''}>Cours particulier</option>
-            <option value="collectif"${initType==='collectif'?' selected':''}>Cours collectif</option>
-            <option value="enfants"${initType==='enfants'?' selected':''}>Cours enfants</option>
-            <option value="stage"${initType==='stage'?' selected':''}>Stage</option>
-            <option value="evenement"${initType==='evenement'?' selected':''}>Événement</option>
-            <option value="indisponible"${initType==='indisponible'?' selected':''}>Indisponible</option>
-          </select></div>
+            <option value="particulier"  ${initType==='particulier'  ?'selected':''}>Cours particulier</option>
+            <option value="collectif"    ${initType==='collectif'    ?'selected':''}>Cours collectif</option>
+            <option value="enfants"      ${initType==='enfants'      ?'selected':''}>Cours enfants</option>
+            <option value="stage"        ${initType==='stage'        ?'selected':''}>Stage</option>
+            <option value="evenement"    ${initType==='evenement'    ?'selected':''}>Événement</option>
+            <option value="indisponible" ${initType==='indisponible' ?'selected':''}>Indisponible</option>
+          </select>
+        </div>
         <div class="form-row">
-          <div class="form-group"><div class="form-label">Date</div>
-            <input class="form-input" type="date" id="ns-date" value="${iso}"></div>
-          <div class="form-group"><div class="form-label">Heure</div>
+          <div class="form-group">
+            <div class="form-label">Date</div>
+            <input class="form-input" type="date" id="ns-date" value="${iso}">
+          </div>
+          <div class="form-group">
+            <div class="form-label">Heure</div>
             <select class="form-select" id="ns-heure">
               ${ALL_TIMES_ADMIN.map(t => `<option${t===h?' selected':''}>${t}</option>`).join('')}
-            </select></div>
+            </select>
+          </div>
         </div>
-        <div class="form-group" id="ns-client-group" style="${isGroup ? 'display:none' : ''}">
+        <div class="form-group" id="ns-client-group" style="${showClient ? '' : 'display:none'}">
           <div class="form-label">Client</div>
           <input class="form-input" type="text" id="ns-client" placeholder="Nom du client">
         </div>
-        <div class="form-group" id="ns-special-group" style="display:none">
+        <div class="form-group" id="ns-special-group" style="${isSpecial ? '' : 'display:none'}">
           <div class="form-label">Intitulé (optionnel)</div>
-          <input class="form-input" type="text" id="ns-special-label" placeholder="Ex : Portes ouvertes, Maintenance…">
+          <input class="form-input" type="text" id="ns-special-label" placeholder="Ex : Portes ouvertes, Maintenance…" value="${prefillLabel || ''}">
         </div>
-        <div id="ns-group-fields" style="${isGroup ? '' : 'display:none'}">
+        <div id="ns-group-fields" style="${isGroupe ? '' : 'display:none'}">
           <div class="form-row">
-            <div class="form-group"><div class="form-label">Intitulé</div>
-              <input class="form-input" type="text" id="ns-label" placeholder="Ex: Stage été" value="${prefillLabel || ''}"></div>
-            <div class="form-group"><div class="form-label">Places max</div>
-              <input class="form-input" type="number" id="ns-max" value="6" min="1" max="20"></div>
+            <div class="form-group">
+              <div class="form-label">Intitulé</div>
+              <input class="form-input" type="text" id="ns-label" placeholder="Ex: Stage été" value="${prefillLabel || ''}">
+            </div>
+            <div class="form-group">
+              <div class="form-label">Places max</div>
+              <input class="form-input" type="number" id="ns-max" value="6" min="1" max="20">
+            </div>
           </div>
           ${prefillInscrit ? `
           <div class="form-group" style="margin-top:4px">
@@ -2678,11 +2690,11 @@
   }
 
   function toggleNewSlotFields() {
-    const type       = document.getElementById('ns-type').value;
-    const isSpecial  = type === 'evenement' || type === 'indisponible';
+    const type      = document.getElementById('ns-type').value;
+    const isSpecial = type === 'evenement' || type === 'indisponible';
     document.getElementById('ns-client-group').style.display  = type === 'particulier' ? '' : 'none';
-    document.getElementById('ns-group-fields').style.display  = (!isSpecial && type !== 'particulier') ? '' : 'none';
     document.getElementById('ns-special-group').style.display = isSpecial ? '' : 'none';
+    document.getElementById('ns-group-fields').style.display  = (!isSpecial && type !== 'particulier') ? '' : 'none';
   }
 
   function saveNewSlot(prefillInscrit) {
