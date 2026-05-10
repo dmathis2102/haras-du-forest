@@ -2343,6 +2343,10 @@
     '2026-05-30': [{label:'09h · Pierre — Particulier',cls:'wg-part'},{label:'10h · Collectif (6/6)',cls:'wg-coll'},{label:'14h · Enfants (4/6)',cls:'wg-enf'},{label:'16h · Marie — Particulier',cls:'wg-part'}],
   };
 
+  // Appels différés après monthSlots
+  renderDashboardWeek();
+  renderMonthCalendar();
+
   function openMonthCalendar() {
     document.getElementById('month-modal').classList.add('open');
     renderMonthCalendar();
