@@ -2651,7 +2651,14 @@
     const typeCapital = type.charAt(0).toUpperCase() + type.slice(1);
     let slotData;
 
-    if (type === 'particulier') {
+    if (type === 'evenement' || type === 'indisponible') {
+      const labelEl = document.getElementById('ns-special-label');
+      const label = (labelEl ? labelEl.value.trim() : '') || (type === 'evenement' ? 'Événement' : 'Indisponible');
+      slotData = { type, label };
+      const cls  = type === 'evenement' ? 'wg-coll' : 'wg-part';
+      if (!monthSlots[date]) monthSlots[date] = [];
+      monthSlots[date].push({ label: `${heure.replace('h00','h')} · ${label}`, cls });
+    } else if (type === 'particulier') {
       const clientName = document.getElementById('ns-client').value.trim() || 'À définir';
       slotData = { type, client: clientName, status: 'reserve' };
       const ini = clientName.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
@@ -2670,7 +2677,9 @@
         });
       }
     }
-    coursParMoniteur[monit][date][heure] = slotData;
+    if (type !== 'evenement' && type !== 'indisponible') {
+      coursParMoniteur[monit][date][heure] = slotData;
+    }
 
     // Re-render tous les plannings
     closeDetail();
