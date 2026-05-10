@@ -2161,7 +2161,7 @@
       paiements.unshift({ id: paiements.length + 1, client: nomComplet, initials, type: `Formule ${newClient.formule}`, montant, date: dateISO, statut: 'En attente', methode: '—' });
 
       closeNouveauClient();
-      showToast(`💳 Lien de paiement envoyé à ${newClient.email !== '—' ? newClient.email : nomComplet}`);
+      showToast(`Lien de paiement envoyé à ${newClient.email !== '—' ? newClient.email : nomComplet}`);
     }
   }
 
