@@ -2710,6 +2710,7 @@
     }
     renderCoursMoniteur();
     renderMoniCoursView(monId);
+    addLog('cours', `Créneau modifié — ${monId} · ${date} à ${heure}`);
     showToast('Créneau mis à jour');
     openSlotDetail(date, heure);
   }
