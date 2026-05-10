@@ -1836,26 +1836,48 @@
     }).join('');
   }
 
+  let moniWeekStart = new Date(2026, 4, 11); // lundi 11 mai 2026
+
+  const JOURS_LONG = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+  const MOIS_LONG  = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+
+  function getMoniWeekDays() {
+    return Array.from({ length: 6 }, (_, i) => {
+      const d = new Date(moniWeekStart);
+      d.setDate(d.getDate() + i);
+      const iso = d.toISOString().slice(0, 10);
+      return { label: `${JOURS_LONG[d.getDay()]} ${d.getDate()} ${MOIS_LONG[d.getMonth()]}`, date: iso };
+    });
+  }
+
+  function updateMoniWeekLabel() {
+    const days = getMoniWeekDays();
+    const d1 = new Date(days[0].date), d2 = new Date(days[5].date);
+    document.getElementById('moni-week-label').textContent =
+      `${d1.getDate()} – ${d2.getDate()} ${MOIS_LONG[d2.getMonth()]}`;
+  }
+
+  function moniWeekPrev() { moniWeekStart.setDate(moniWeekStart.getDate() - 7); renderMoniCoursView(activePresenceMon); }
+  function moniWeekNext() { moniWeekStart.setDate(moniWeekStart.getDate() + 7); renderMoniCoursView(activePresenceMon); }
+
   function showMonitorTab(btn, id) {
-    document.querySelectorAll('.moni-tab').forEach(t => t.classList.remove('active'));
-    btn.classList.add('active');
+    document.querySelectorAll('.moni-tab').forEach(t => {
+      t.classList.remove('active', 'btn-primary');
+      t.classList.add('btn-outline');
+    });
+    btn.classList.remove('btn-outline');
+    btn.classList.add('btn-primary', 'active');
     activePresenceMon = id;
     renderMoniCoursView(id);
     renderAbsCalendar();
   }
 
   function renderMoniCoursView(monId) {
+    updateMoniWeekLabel();
     const typeLabel = { particulier:'Particulier', collectif:'Collectif', enfants:'Enfants', stage:'Stage' };
     const typeColor = { particulier:'#3B82F6', collectif:'#2B6657', enfants:'#D97706', stage:'#8B5CF6' };
     const typeBg    = { particulier:'var(--blue-l)', collectif:'var(--green-l)', enfants:'var(--orange-l)', stage:'#F3E8FF' };
-    const jours = [
-      { label:'Lundi 11 mai',    date:'2026-05-11' },
-      { label:'Mardi 12 mai',    date:'2026-05-12' },
-      { label:'Mercredi 13 mai', date:'2026-05-13' },
-      { label:'Jeudi 14 mai',    date:'2026-05-14' },
-      { label:'Vendredi 15 mai', date:'2026-05-15' },
-      { label:'Samedi 16 mai',   date:'2026-05-16' },
-    ];
+    const jours = getMoniWeekDays();
     const monData = (coursParMoniteur[monId] || {});
     let html = '';
     jours.forEach(j => {
