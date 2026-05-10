@@ -2271,18 +2271,6 @@
     }
     coursParMoniteur[monit][date][heure] = slotData;
 
-    // Planning mensuel — toujours écraser/ajouter sans doublon sur l'heure exacte
-    const h      = heure.replace('h00','h');
-    const clsMap = { particulier:'wg-part', collectif:'wg-coll', enfants:'wg-enf', stage:'wg-coll' };
-    const msLabel = type === 'particulier'
-      ? `${h} · ${slotData.client} — Particulier`
-      : `${h} · ${slotData.label} (${slotData.inscrits.length}/${slotData.maxPlaces})`;
-    if (!monthSlots[date]) monthSlots[date] = [];
-    const existIdx = monthSlots[date].findIndex(s => s.label.startsWith(h + ' ·'));
-    if (existIdx >= 0) monthSlots[date][existIdx] = { label: msLabel, cls: clsMap[type] || 'wg-part' };
-    else monthSlots[date].push({ label: msLabel, cls: clsMap[type] || 'wg-part' });
-    monthSlots[date].sort((a, b) => a.label.localeCompare(b.label));
-
     // Re-render tous les plannings
     closeDetail();
     renderCoursMoniteur();
