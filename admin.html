@@ -1892,6 +1892,37 @@
     closeDetail();
   }
 
+  /* ── TARIFS ── */
+  const tarifs = {
+    Essentielle: 300,
+    Confort:     400,
+    Premium:     600,
+    'Pack 20 pts':  200,
+    'Pack 50 pts':  450,
+    'Pack 100 pts': 800,
+  };
+
+  function renderTarifs() {
+    const keys = Object.keys(tarifs);
+    document.getElementById('tarifs-grid').innerHTML = keys.map(k => `
+      <div class="tarif-card">
+        <div class="tarif-label">${k}</div>
+        <div class="tarif-input-row">
+          <input class="tarif-input" type="number" min="0" value="${tarifs[k]}" onchange="saveTarif('${k}', this.value)" onblur="saveTarif('${k}', this.value)">
+          <span class="tarif-euro">€</span>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function saveTarif(key, val) {
+    const n = parseInt(val);
+    if (!isNaN(n) && n >= 0) {
+      tarifs[key] = n;
+      showToast('✅ Tarif mis à jour');
+    }
+  }
+
   /* ── CLIENTS ── */
   const clients = [
     { id:1, nom:'Marie Lefebvre',   initials:'ML', email:'marie.lefebvre@email.com',    tel:'06 12 34 56 78', galop:'5+',  formule:'Confort',    points:240, reservations:8  },
