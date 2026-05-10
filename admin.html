@@ -2569,7 +2569,7 @@
         ${(s.inscrits||[]).map((name,i) => `
           <div style="display:flex;align-items:center;justify-content:space-between;padding:7px 10px;background:var(--bg);border-radius:6px;margin-bottom:5px">
             <span style="font-size:13px">${name}</span>
-            <button onclick="removeInscrit('${date}','${heure}',${i})" style="background:none;border:none;color:var(--t3);cursor:pointer;font-size:13px;padding:0 4px" title="Retirer">✕</button>
+            <button onclick="removeInscrit('${monId}','${date}','${heure}',${i})" style="background:none;border:none;color:var(--t3);cursor:pointer;font-size:13px;padding:0 4px" title="Retirer">✕</button>
           </div>`).join('')}
         <div style="display:flex;gap:6px;margin-top:10px">
           <input class="form-input" type="text" id="add-inscrit-input" placeholder="Ajouter un participant..." style="flex:1;font-size:13px">
