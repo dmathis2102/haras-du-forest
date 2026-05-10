@@ -2891,6 +2891,23 @@
       </tr>`).join('');
   }
 
+  function renderPayStats() {
+    const thisMonth = new Date().toISOString().slice(0, 7);
+    const encaisse  = paiements.filter(p => p.statut === 'Payé' && p.date.startsWith(thisMonth));
+    const attente   = paiements.filter(p => p.statut === 'En attente');
+    const retard    = paiements.filter(p => p.statut === 'En retard');
+    const sum = arr => arr.reduce((s, p) => s + p.montant, 0);
+
+    document.getElementById('pay-kpi-encaisse').textContent       = sum(encaisse).toLocaleString('fr-FR') + '€';
+    document.getElementById('pay-kpi-encaisse-delta').textContent  = `${encaisse.length} paiement${encaisse.length !== 1 ? 's' : ''} confirmé${encaisse.length !== 1 ? 's' : ''}`;
+    document.getElementById('pay-kpi-attente').textContent         = sum(attente).toLocaleString('fr-FR') + '€';
+    document.getElementById('pay-kpi-attente-delta').innerHTML     = `<span class="down">${attente.length} paiement${attente.length !== 1 ? 's' : ''}</span>`;
+    document.getElementById('pay-kpi-retard').textContent          = sum(retard).toLocaleString('fr-FR') + '€';
+    document.getElementById('pay-kpi-retard-delta').innerHTML      = retard.length === 0
+      ? `<span class="up">Aucun retard</span>`
+      : `<span class="down">${retard.length} paiement${retard.length !== 1 ? 's' : ''}</span>`;
+  }
+
   function filterPaiements() {
     const status = document.getElementById('fp-status').value;
     const type   = document.getElementById('fp-type').value;
@@ -2898,6 +2915,7 @@
       (!status || p.statut === status) &&
       (!type   || p.type.includes(type))
     ));
+    renderPayStats();
     if (typeof renderDashboardStats === 'function') renderDashboardStats();
   }
 
