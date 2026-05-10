@@ -3283,6 +3283,30 @@
     const s = monitorStats[id];
     if (!m || !s) return;
 
+    // Calcul temps réel depuis coursParMoniteur
+    const today     = new Date();
+    const thisMonth = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}`;
+    const dayData   = coursParMoniteur[id] || {};
+    const datesThisMonth = Object.keys(dayData).filter(d => d.startsWith(thisMonth));
+    const coursMois = datesThisMonth.reduce((n, d) => n + Object.keys(dayData[d]).length, 0);
+    const heuresMois = coursMois; // 1 créneau = 1h
+
+    // Activité par semaine (4 semaines du mois en cours)
+    const year = today.getFullYear(), month = today.getMonth();
+    const weeks = [1,8,15,22].map(startDay => {
+      const endDay = startDay + 6;
+      return Object.keys(dayData).filter(d => {
+        const day = parseInt(d.slice(8,10));
+        const sameMonth = d.startsWith(thisMonth);
+        return sameMonth && day >= startDay && day <= endDay;
+      }).reduce((n, d) => n + Object.keys(dayData[d]).length, 0);
+    });
+
+    // Réservations liées à ce moniteur ce mois
+    const resaMois = reservations.filter(r =>
+      r.monitor === (m.full.split(' ')[0]) && r.date.startsWith(thisMonth) && r.status !== 'Annulé'
+    ).length;
+
     document.getElementById('sm-avatar').textContent    = m.initials;
     document.getElementById('sm-name').textContent      = m.full;
     document.getElementById('sm-spec').textContent      = m.specialite + ' · ' + m.galop;
@@ -3291,14 +3315,14 @@
     // KPIs
     document.getElementById('sm-kpis').innerHTML = `
       <div class="stats-kpi">
-        <div class="stats-kpi-val">${s.coursMois}</div>
+        <div class="stats-kpi-val">${coursMois}</div>
         <div class="stats-kpi-lbl">Cours ce mois</div>
-        <div class="stats-kpi-sub">~${Math.round(s.coursMois/4)} par semaine</div>
+        <div class="stats-kpi-sub">~${Math.round(coursMois/4)} par semaine</div>
       </div>
       <div class="stats-kpi">
-        <div class="stats-kpi-val">${s.heuresMois}h</div>
+        <div class="stats-kpi-val">${heuresMois}h</div>
         <div class="stats-kpi-lbl">Heures planifiées</div>
-        <div class="stats-kpi-sub">${(s.heuresMois/s.coursMois*60).toFixed(0)} min / cours en moy.</div>
+        <div class="stats-kpi-sub">${resaMois} élève${resaMois !== 1 ? 's' : ''} ce mois</div>
       </div>
       <div class="stats-kpi">
         <div class="stats-kpi-val">${s.tauxSatisfaction}%</div>
@@ -3307,14 +3331,14 @@
       </div>`;
 
     // Barres d'activité
-    const maxVal = Math.max(...s.activite);
-    const semaines = ['S1 — 28 avr.','S2 — 5 mai','S3 — 12 mai','S4 — 19 mai'];
-    document.getElementById('sm-bars').innerHTML = s.activite.map((v,i) => `
+    const maxVal = Math.max(...weeks, 1);
+    const semainesLabels = ['S1','S2 — 8','S3 — 15','S4 — 22'];
+    document.getElementById('sm-bars').innerHTML = weeks.map((v,i) => `
       <div class="activity-bar-wrap">
         <div class="activity-bar-val">${v}</div>
         <div class="activity-bar" style="height:${Math.round((v/maxVal)*50)}px"></div>
       </div>`).join('');
-    document.getElementById('sm-bar-labels').innerHTML = semaines.map(l => `
+    document.getElementById('sm-bar-labels').innerHTML = semainesLabels.map(l => `
       <div style="flex:1;text-align:center;font-size:10px;color:var(--t3)">${l}</div>`).join('');
 
     // Avis
