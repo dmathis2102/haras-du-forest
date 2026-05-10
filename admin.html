@@ -1849,6 +1849,7 @@
     const r = reservations.find(r => r.id === id);
     if (!r) return;
     r.status = statut;
+    addLog(statut === 'Annulé' ? 'annulation' : 'resa', `Demande de stage ${statut === 'Confirmé' ? 'acceptée' : 'refusée'} — ${r.client} · ${r.date}`);
     filterResas();
     openDetail(id);
   }
