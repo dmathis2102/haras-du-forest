@@ -3489,5 +3489,72 @@
     document.getElementById('stats-modal').classList.remove('open');
   }
 </script>
+
+<!-- ══ FIREBASE ══ -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script>
+  /* ── CONNEXION FIREBASE ── */
+  const firebaseConfig = {
+    apiKey:            "AIzaSyAwspb2AUT9JvV4x3hn362ttKtHmfEc6Fc",
+    authDomain:        "haras-du-forest.firebaseapp.com",
+    projectId:         "haras-du-forest",
+    storageBucket:     "haras-du-forest.firebasestorage.app",
+    messagingSenderId: "661096788450",
+    appId:             "1:661096788450:web:49783a922deb41fa01c9bb"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  /* ── ÉCRITURE DANS FIRESTORE ──
+     Chaque fois qu'une donnée est créée/modifiée dans le backoffice,
+     on la sauvegarde aussi dans la base Firebase.
+     Comme ça, à terme, l'app moniteurs et l'app client voient la même chose.
+  ── */
+
+  // Sauvegarde une réservation dans Firebase
+  function fbSaveResa(r) {
+    db.collection('reservations').doc(String(r.id)).set(r)
+      .catch(e => console.warn('Firebase resa:', e));
+  }
+
+  // Sauvegarde un client dans Firebase
+  function fbSaveClient(c) {
+    db.collection('clients').doc(String(c.id)).set(c)
+      .catch(e => console.warn('Firebase client:', e));
+  }
+
+  // Sauvegarde un paiement dans Firebase
+  function fbSavePaiement(p) {
+    db.collection('paiements').doc(String(p.id)).set(p)
+      .catch(e => console.warn('Firebase paiement:', e));
+  }
+
+  // Met à jour le statut d'une réservation dans Firebase
+  function fbUpdateResaStatus(id, status) {
+    db.collection('reservations').doc(String(id)).update({ status })
+      .catch(e => console.warn('Firebase update resa:', e));
+  }
+
+  // Met à jour le statut d'un paiement dans Firebase
+  function fbUpdatePaiementStatus(id, statut, methode) {
+    db.collection('paiements').doc(String(id)).update({ statut, methode })
+      .catch(e => console.warn('Firebase update paiement:', e));
+  }
+
+  /* ── ÉCOUTE EN TEMPS RÉEL ──
+     Firebase prévient le backoffice dès qu'une autre app modifie les données.
+     (activé mais ne remplace pas encore les données locales — phase suivante)
+  ── */
+  db.collection('reservations').onSnapshot(snapshot => {
+    snapshot.docChanges().forEach(change => {
+      if (change.type === 'modified' || change.type === 'added') {
+        addLog('resa', `[Firebase] Sync réservation #${change.doc.id}`);
+      }
+    });
+  }, e => console.warn('Firebase listener resa:', e));
+
+  console.log('Firebase connecté au projet haras-du-forest');
+</script>
 </body>
 </html>
