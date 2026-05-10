@@ -3129,18 +3129,21 @@
   }
 
   /* ── INIT ── */
-  renderResas(reservations);
-  renderClients(clients);
-  renderMoniteurCards();
-  renderMoniCoursView('sophie');
-  renderPresenceWeek('sophie');
-  renderAbsCalendar();
-  renderCoursMoniteur();
-  renderPaiements(paiements);
-  renderPayStats();
-  renderTarifs();
-  renderDashboardStats();
-  renderBadges();
+  function initApp() {
+    renderResas(reservations);
+    renderClients(clients);
+    renderMoniteurCards();
+    renderMoniCoursView('sophie');
+    renderPresenceWeek('sophie');
+    renderAbsCalendar();
+    renderCoursMoniteur();
+    renderPaiements(paiements);
+    renderPayStats();
+    renderTarifs();
+    renderDashboardStats();
+    renderBadges();
+  }
+  // initApp() sera appelé par Firebase après chargement des données
 
   /* ── PLANNING MENSUEL ── */
   let currentMonth = 4; // Mai 2026
