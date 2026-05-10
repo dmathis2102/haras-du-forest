@@ -2972,12 +2972,11 @@
       ? `<span>Pas de données</span>`
       : `<span class="${revPct >= 0 ? 'up' : 'down'}">${revPct >= 0 ? '+' : ''}${revPct}%</span> vs mois dernier`;
 
-    // 3. Clients actifs (uniques, non annulés ce mois)
-    const clientsThis = new Set(reservations.filter(r => r.date.startsWith(thisMonth) && r.status !== 'Annulé').map(r => r.client)).size;
-    const clientsLast = new Set(reservations.filter(r => r.date.startsWith(lastMonth) && r.status !== 'Annulé').map(r => r.client)).size;
-    const clientsDiff = clientsThis - clientsLast;
-    document.getElementById('kpi-clients-val').textContent  = clientsThis;
-    document.getElementById('kpi-clients-delta').innerHTML  = `<span class="${clientsDiff >= 0 ? 'up' : 'down'}">${clientsDiff >= 0 ? '+' : ''}${clientsDiff}</span> vs mois dernier`;
+    // 3. Total clients dans la base
+    const totalClients = clients.length;
+    const clientsAvecResaMois = new Set(reservations.filter(r => r.date.startsWith(thisMonth) && r.status !== 'Annulé').map(r => r.client)).size;
+    document.getElementById('kpi-clients-val').textContent  = totalClients;
+    document.getElementById('kpi-clients-delta').innerHTML  = `<span class="up">${clientsAvecResaMois} actif${clientsAvecResaMois !== 1 ? 's' : ''} ce mois</span>`;
 
     // 4. En attente paiement
     const attente = paiements.filter(p => p.statut === 'En attente' || p.statut === 'En retard').length;
