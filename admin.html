@@ -1479,6 +1479,7 @@
       (!date    || r.date === date)
     );
     renderResas(filtered);
+    if (typeof renderDashboardStats === 'function') renderDashboardStats();
   }
 
   function resetFilters() {
