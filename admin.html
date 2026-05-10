@@ -2398,24 +2398,41 @@
     renderMonthCalendar();
   }
 
+  // Source unique : lit coursParMoniteur + événements manuels monthSlots
+  function getSlotsByDate(iso) {
+    const clsMap = { particulier:'wg-part', collectif:'wg-coll', enfants:'wg-enf', stage:'wg-coll' };
+    const all = [], seen = new Set();
+    ['sophie','thomas','camille'].forEach(mon => {
+      const dayData = (coursParMoniteur[mon] || {})[iso] || {};
+      Object.keys(dayData).sort().forEach(h => {
+        const s = dayData[h];
+        const hLabel = h.replace('h00','h');
+        const label = s.type === 'particulier'
+          ? `${hLabel} · ${s.client} — Particulier`
+          : `${hLabel} · ${s.label} (${(s.inscrits||[]).length}/${s.maxPlaces})`;
+        if (!seen.has(label)) { seen.add(label); all.push({ label, cls: clsMap[s.type] || 'wg-part' }); }
+      });
+    });
+    (monthSlots[iso] || []).forEach(s => { if (!seen.has(s.label)) { seen.add(s.label); all.push(s); } });
+    return all.sort((a, b) => a.label.localeCompare(b.label));
+  }
+
   function renderMonthCalendar() {
     document.getElementById('month-label').textContent = `${MONTH_NAMES[currentMonth]} ${currentYear}`;
     const firstDay  = new Date(currentYear, currentMonth, 1);
     const totalDays = new Date(currentYear, currentMonth + 1, 0).getDate();
     let startDow = firstDay.getDay();
-    startDow = startDow === 0 ? 6 : startDow - 1; // Lundi = 0
+    startDow = startDow === 0 ? 6 : startDow - 1;
     const today = new Date();
-
     let cells = [];
     for (let i = 0; i < startDow; i++) cells.push(null);
     for (let d = 1; d <= totalDays; d++) cells.push(d);
     while (cells.length % 7 !== 0) cells.push(null);
-
     document.getElementById('month-grid-body').innerHTML = cells.map(d => {
       if (!d) return `<div class="month-cell empty"></div>`;
       const iso = `${currentYear}-${String(currentMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
       const isToday = today.getFullYear()===currentYear && today.getMonth()===currentMonth && today.getDate()===d;
-      const slots = monthSlots[iso] || [];
+      const slots = getSlotsByDate(iso);
       const MAX_VISIBLE = 4;
       const visible = slots.slice(0, MAX_VISIBLE);
       const extra   = slots.length - MAX_VISIBLE;
