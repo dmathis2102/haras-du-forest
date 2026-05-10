@@ -2532,6 +2532,11 @@
       </tr>`).join('');
   }
 
+  function openSlotFromMoniView(monId, date, heure) {
+    activeCoursMoniteur = monId;
+    openSlotDetail(date, heure);
+  }
+
   function openSlotDetail(date, heure) {
     const slots = coursParMoniteur[activeCoursMoniteur] || {};
     const s = (slots[date] || {})[heure];
