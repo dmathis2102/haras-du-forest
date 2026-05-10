@@ -2061,6 +2061,7 @@
       statut:  document.getElementById('np-statut').value,
       methode: document.getElementById('np-methode').value,
     });
+    fbSavePaiement(paiements[0]);
     addLog('paiement', `Nouveau paiement — ${client} · ${montant}€ · ${document.getElementById('np-type').value} · ${document.getElementById('np-statut').value}`);
     filterPaiements();
     renderDashboardStats();
