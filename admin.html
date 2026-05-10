@@ -2995,7 +2995,7 @@
 
   function marquerPaye(id) {
     const p = paiements.find(p => p.id === id);
-    if (p) { p.statut = 'Payé'; p.methode = 'Espèces'; addLog('paiement', `Paiement encaissé — ${p.client} · ${p.montant}€ · ${p.type}`); filterPaiements(); renderDashboardStats(); }
+    if (p) { p.statut = 'Payé'; p.methode = 'Espèces'; fbUpdatePaiementStatus(p.id, 'Payé', 'Espèces'); addLog('paiement', `Paiement encaissé — ${p.client} · ${p.montant}€ · ${p.type}`); filterPaiements(); renderDashboardStats(); }
   }
 
   /* ── PLANNING SEMAINE DASHBOARD ── */
