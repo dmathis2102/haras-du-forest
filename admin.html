@@ -437,6 +437,14 @@
   .pres-opt:hover { background: var(--bg); }
   .pres-dot { width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; color: white; flex-shrink: 0; }
 
+  .tarifs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+  .tarif-card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--r); padding: 14px 16px; }
+  .tarif-label { font-size: 12px; font-weight: 600; color: var(--t2); margin-bottom: 10px; }
+  .tarif-input-row { display: flex; align-items: center; gap: 6px; }
+  .tarif-input { width: 100%; border: 1.5px solid var(--border); border-radius: 6px; padding: 7px 10px; font-size: 16px; font-weight: 700; color: var(--t1); background: var(--card); outline: none; }
+  .tarif-input:focus { border-color: var(--gold); }
+  .tarif-euro { font-size: 15px; font-weight: 700; color: var(--t3); }
+
   .toast {
     position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(20px);
     background: var(--navy); color: #fff; padding: 12px 22px; border-radius: 10px;
