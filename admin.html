@@ -1341,6 +1341,60 @@
   </div>
 </div>
 
+<!-- ══ MODAL NOUVEAU PAIEMENT ══ -->
+<div class="modal-overlay" id="modal-nouveau-paiement">
+  <div class="modal" style="max-width:460px">
+    <div class="modal-header">
+      <div class="modal-title">Enregistrer un paiement</div>
+      <button class="modal-close" onclick="closeNouveauPaiement()">✕</button>
+    </div>
+    <div class="modal-body" style="padding:20px;display:flex;flex-direction:column;gap:14px">
+      <div class="form-group">
+        <div class="form-label">Client</div>
+        <input class="form-input" type="text" id="np-client" placeholder="Nom du client">
+      </div>
+      <div class="form-group">
+        <div class="form-label">Type</div>
+        <select class="form-select" id="np-type">
+          <option value="Formule Essentielle">Formule Essentielle</option>
+          <option value="Formule Confort">Formule Confort</option>
+          <option value="Formule Premium">Formule Premium</option>
+          <option value="Pack 10 points">Pack 10 points</option>
+          <option value="Pack 20 points">Pack 20 points</option>
+          <option value="Stage">Stage</option>
+          <option value="Autre">Autre</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <div class="form-label">Montant (€)</div>
+          <input class="form-input" type="number" id="np-montant" placeholder="300" min="0">
+        </div>
+        <div class="form-group">
+          <div class="form-label">Méthode</div>
+          <select class="form-select" id="np-methode">
+            <option value="Carte">Carte</option>
+            <option value="Virement">Virement</option>
+            <option value="Espèces">Espèces</option>
+            <option value="Chèque">Chèque</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="form-label">Statut</div>
+        <select class="form-select" id="np-statut">
+          <option value="Payé">Payé</option>
+          <option value="En attente">En attente</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer" style="display:flex;gap:10px;padding:16px 20px;border-top:1px solid var(--border)">
+      <button class="btn btn-outline" style="flex:1" onclick="closeNouveauPaiement()">Annuler</button>
+      <button class="btn btn-primary" style="flex:1" onclick="sauvegarderNouveauPaiement()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
 <!-- ══ MODAL AJOUT DE POINTS ══ -->
 <div class="modal-overlay" id="modal-points">
   <div class="modal" style="max-width:380px">
