@@ -2203,6 +2203,7 @@
       filterPaiements();
       renderDashboardStats();
 
+      addLog('client', `Nouveau client créé — ${nomComplet} · Formule ${newClient.formule}`);
       closeNouveauClient();
       showToast(`Lien de paiement envoyé à ${newClient.email !== '—' ? newClient.email : nomComplet}`);
     }
