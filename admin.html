@@ -2283,6 +2283,7 @@
     closeDetail();
     renderCoursMoniteur();
     renderMoniCoursView(activeCoursMoniteur);
+    renderMonthCalendar();
     document.getElementById('badge-resa').textContent = reservations.filter(r => r.status === 'En attente').length || '';
     filterResas();
   }
