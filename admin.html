@@ -1082,15 +1082,24 @@
     <div class="page" id="page-moniteurs">
       <div class="monitor-cards"></div>
       <div class="table-wrap" style="margin-top:20px">
-        <div class="card-header" style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
-          <span class="card-title">Planning semaine du 11 au 16 mai</span>
-          <div style="display:flex;gap:6px">
+        <div class="card-header" style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+          <div>
+            <span class="card-title">Présences & Absences</span>
+            <div style="font-size:12px;color:var(--t3);margin-top:2px">Semaine du 11 au 16 mai — cliquez sur un jour pour modifier</div>
+          </div>
+          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
             <button class="btn btn-outline btn-sm moni-tab active" onclick="showMonitorTab(this,'sophie')">Sophie L.</button>
             <button class="btn btn-outline btn-sm moni-tab" onclick="showMonitorTab(this,'thomas')">Thomas D.</button>
             <button class="btn btn-outline btn-sm moni-tab" onclick="showMonitorTab(this,'camille')">Camille R.</button>
+            <button class="btn btn-primary btn-sm" style="margin-left:4px" onclick="openAbsenceModal()">📅 Voir en grand</button>
           </div>
         </div>
-        <div id="monitor-schedule" style="padding:16px 20px"></div>
+        <div id="presence-week" style="padding:16px 20px;display:grid;grid-template-columns:repeat(6,1fr);gap:10px"></div>
+        <div style="padding:10px 20px;border-top:1px solid var(--border);display:flex;gap:20px;font-size:12px;color:var(--t2)">
+          <span><span class="pres-dot" style="background:var(--green)"></span>Présent</span>
+          <span><span class="pres-dot" style="background:var(--red)"></span>Absent</span>
+          <span><span class="pres-dot" style="background:#F59E0B"></span>Congé</span>
+        </div>
       </div>
     </div>
 
