@@ -2924,6 +2924,15 @@
       : `<span class="down">${retard.length} paiement${retard.length !== 1 ? 's' : ''}</span>`;
   }
 
+  function renderBadges() {
+    const resaEn = reservations.filter(r => r.status === 'En attente').length;
+    const payEn  = paiements.filter(p => p.statut === 'En attente' || p.statut === 'En retard').length;
+    const br = document.getElementById('badge-resa');
+    const bp = document.getElementById('badge-pay');
+    if (br) br.textContent = resaEn || '';
+    if (bp) bp.textContent = payEn  || '';
+  }
+
   function filterPaiements() {
     const status = document.getElementById('fp-status').value;
     const type   = document.getElementById('fp-type').value;
@@ -2932,6 +2941,7 @@
       (!type   || p.type.includes(type))
     ));
     renderPayStats();
+    renderBadges();
     if (typeof renderDashboardStats === 'function') renderDashboardStats();
   }
 
