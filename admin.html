@@ -2153,6 +2153,7 @@
     closeModalPoints();
     renderClients(clients);
     openClientDetail(c.id);
+    addLog('client', `Points ajoutés — ${c.nom} · +${nb} pts (nouveau solde : ${c.points} pts)`);
     showToast(`${nb} points ajoutés à ${c.nom} (solde : ${c.points} pts)`);
   }
 
