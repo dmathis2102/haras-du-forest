@@ -1737,7 +1737,7 @@
 
     // 1. Réservations
     reservations.unshift({ id: nextId++, client, initials, type: typeKey, date, heure, monitor: monKey, status });
-    document.getElementById('badge-resa').textContent = reservations.filter(r => r.status === 'En attente').length || '';
+    renderBadges();
 
     // 2. Cours & Créneaux (coursParMoniteur)
     const cpmKey = monKey.toLowerCase();
@@ -2873,7 +2873,7 @@
     renderMoniCoursView(activePresenceMon);
     renderMonthCalendar();
     renderDashboardWeek();
-    document.getElementById('badge-resa').textContent = reservations.filter(r => r.status === 'En attente').length || '';
+    renderBadges();
     filterResas();
   }
 
