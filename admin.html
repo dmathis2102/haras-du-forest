@@ -1304,20 +1304,20 @@
 
 <div class="toast" id="toast"></div>
 
-<div class="presence-popover" id="presence-popover" onclick="event.stopPropagation()">
-  <div class="pres-opt" onclick="setPresence('present')">
+<div class="presence-popover" id="presence-popover">
+  <div class="pres-opt" data-statut="present">
     <div class="pres-dot" style="background:var(--green)">✓</div>
     <span style="color:var(--green)">Présent</span>
   </div>
-  <div class="pres-opt" onclick="setPresence('absent')">
+  <div class="pres-opt" data-statut="absent">
     <div class="pres-dot" style="background:var(--red)">✕</div>
     <span style="color:var(--red)">Absent</span>
   </div>
-  <div class="pres-opt" onclick="setPresence('conge')">
+  <div class="pres-opt" data-statut="conge">
     <div class="pres-dot" style="background:#F59E0B">~</div>
     <span style="color:#F59E0B">Congé</span>
   </div>
-  <div class="pres-opt" onclick="setPresence('indisponible')">
+  <div class="pres-opt" data-statut="indisponible">
     <div class="pres-dot" style="background:#6B7280">—</div>
     <span style="color:#6B7280">Indisponible</span>
   </div>
