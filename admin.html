@@ -1438,6 +1438,25 @@
   </div>
 </div>
 
+<!-- ══ MODAL SUPPRESSION CRÉNEAU ══ -->
+<div class="modal-overlay" id="modal-delete-slot">
+  <div class="modal" style="max-width:400px">
+    <div class="modal-header">
+      <div class="modal-title">Supprimer le créneau</div>
+      <button class="modal-close" onclick="document.getElementById('modal-delete-slot').classList.remove('open')">✕</button>
+    </div>
+    <div class="modal-body" style="padding:20px">
+      <p style="margin:0 0 10px;color:var(--t2);font-size:14px">Vous êtes sur le point de supprimer :</p>
+      <div style="background:var(--bg);border-radius:8px;padding:12px;font-size:13px;font-weight:600;color:var(--t1)" id="delete-slot-label"></div>
+      <p style="margin:12px 0 0;color:var(--t3);font-size:12px">Les réservations associées seront automatiquement annulées.</p>
+    </div>
+    <div class="modal-footer" style="display:flex;gap:10px;padding:16px 20px;border-top:1px solid var(--border)">
+      <button class="btn btn-outline" style="flex:1" onclick="document.getElementById('modal-delete-slot').classList.remove('open')">Annuler</button>
+      <button class="btn btn-primary" style="flex:1;background:var(--red)" onclick="confirmerDeleteSlot()">Supprimer</button>
+    </div>
+  </div>
+</div>
+
 <!-- ══ MODAL AJOUT DE POINTS ══ -->
 <div class="modal-overlay" id="modal-points">
   <div class="modal" style="max-width:380px">
