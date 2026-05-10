@@ -2599,26 +2599,31 @@
     document.getElementById('dp-overlay').classList.add('open');
   }
 
-  function saveSlotEdit(date, heure) {
-    const s = ((coursParMoniteur[activeCoursMoniteur]||{})[date]||{})[heure];
+  function saveSlotEdit(monId, date, heure) {
+    activeCoursMoniteur = monId;
+    const s = ((coursParMoniteur[monId]||{})[date]||{})[heure];
     if (!s) return;
     if (s.type === 'particulier') {
-      s.client = document.getElementById('edit-slot-client').value.trim() || s.client;
+      const v = document.getElementById('edit-slot-client').value.trim();
+      if (v) s.client = v;
     } else {
-      s.label     = document.getElementById('edit-slot-label').value.trim() || s.label;
-      s.maxPlaces = parseInt(document.getElementById('edit-slot-max').value) || s.maxPlaces;
+      const v = document.getElementById('edit-slot-label').value.trim();
+      if (v) s.label = v;
+      const mx = parseInt(document.getElementById('edit-slot-max').value);
+      if (!isNaN(mx) && mx > 0) s.maxPlaces = mx;
     }
     renderCoursMoniteur();
-    renderMoniCoursView(activeCoursMoniteur);
+    renderMoniCoursView(monId);
     showToast('✅ Créneau mis à jour');
     openSlotDetail(date, heure);
   }
 
-  function addInscrit(date, heure) {
+  function addInscrit(monId, date, heure) {
+    activeCoursMoniteur = monId;
     const input = document.getElementById('add-inscrit-input');
     const name  = input.value.trim();
     if (!name) return;
-    const s = ((coursParMoniteur[activeCoursMoniteur]||{})[date]||{})[heure];
+    const s = ((coursParMoniteur[monId]||{})[date]||{})[heure];
     if (!s) return;
     if (!s.inscrits) s.inscrits = [];
     if (s.inscrits.length >= (s.maxPlaces||6)) { alert('Le cours est complet !'); return; }
@@ -2628,8 +2633,9 @@
     openSlotDetail(date, heure);
   }
 
-  function removeInscrit(date, heure, idx) {
-    const s = ((coursParMoniteur[activeCoursMoniteur]||{})[date]||{})[heure];
+  function removeInscrit(monId, date, heure, idx) {
+    activeCoursMoniteur = monId;
+    const s = ((coursParMoniteur[monId]||{})[date]||{})[heure];
     if (s && s.inscrits) { s.inscrits.splice(idx, 1); renderCoursMoniteur(); openSlotDetail(date, heure); }
   }
 
