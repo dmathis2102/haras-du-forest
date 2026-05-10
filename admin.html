@@ -1845,7 +1845,7 @@
 
   function confirmResa(id) {
     const r = reservations.find(r => r.id === id);
-    if (r) { r.status = 'Confirmé'; addLog('resa', `Réservation confirmée — ${r.client} · ${r.date} à ${r.heure}`); filterResas(); openDetail(id); }
+    if (r) { r.status = 'Confirmé'; fbUpdateResaStatus(r.id, 'Confirmé'); addLog('resa', `Réservation confirmée — ${r.client} · ${r.date} à ${r.heure}`); filterResas(); openDetail(id); }
   }
 
   function traiterStage(id, statut) {
