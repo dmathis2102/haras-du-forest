@@ -2242,14 +2242,48 @@
     if (!date) { alert('Veuillez choisir une date.'); return; }
     if (!coursParMoniteur[activeCoursMoniteur]) coursParMoniteur[activeCoursMoniteur] = {};
     if (!coursParMoniteur[activeCoursMoniteur][date]) coursParMoniteur[activeCoursMoniteur][date] = {};
+
+    const monKey      = activeCoursMoniteur.charAt(0).toUpperCase() + activeCoursMoniteur.slice(1); // "sophie"→"Sophie"
+    const typeCapital = type.charAt(0).toUpperCase() + type.slice(1);
+    let slotData;
+
     if (type === 'particulier') {
-      coursParMoniteur[activeCoursMoniteur][date][heure] = { type, client: document.getElementById('ns-client').value.trim() || 'À définir', status: 'reserve' };
+      const clientName = document.getElementById('ns-client').value.trim() || 'À définir';
+      slotData = { type, client: clientName, status: 'reserve' };
+      // → réservation
+      const ini = clientName.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+      reservations.unshift({ id: nextId++, client: clientName, initials: ini, type: 'Particulier', date, heure, monitor: monKey, status: 'Confirmé' });
     } else {
       const initInscrits = prefillInscrit ? [prefillInscrit] : [];
-      coursParMoniteur[activeCoursMoniteur][date][heure] = { type, label: document.getElementById('ns-label').value.trim() || (type==='collectif'?'Collectif':type==='stage'?'Stage':'Enfants'), maxPlaces: parseInt(document.getElementById('ns-max').value)||6, inscrits: initInscrits };
+      const label     = document.getElementById('ns-label').value.trim() || (type==='collectif'?'Collectif':type==='stage'?'Stage':'Enfants');
+      const maxPlaces = parseInt(document.getElementById('ns-max').value) || 6;
+      slotData = { type, label, maxPlaces, inscrits: initInscrits };
+      // → réservations (une par inscrit)
+      initInscrits.forEach(name => {
+        const ini = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+        reservations.unshift({ id: nextId++, client: name, initials: ini, type: typeCapital, date, heure, monitor: monKey, status: 'En attente' });
+      });
     }
+    coursParMoniteur[activeCoursMoniteur][date][heure] = slotData;
+
+    // Planning mensuel (monthSlots)
+    const h      = heure.replace('h00','h');
+    const clsMap = { particulier:'wg-part', collectif:'wg-coll', enfants:'wg-enf', stage:'wg-coll' };
+    const msLabel = type === 'particulier'
+      ? `${h} · ${slotData.client} — Particulier`
+      : `${h} · ${slotData.label} (${slotData.inscrits.length}/${slotData.maxPlaces})`;
+    if (!monthSlots[date]) monthSlots[date] = [];
+    if (!monthSlots[date].find(s => s.label.startsWith(h + ' ·'))) {
+      monthSlots[date].push({ label: msLabel, cls: clsMap[type] || 'wg-part' });
+      monthSlots[date].sort((a, b) => a.label.localeCompare(b.label));
+    }
+
+    // Re-render tous les plannings
     closeDetail();
     renderCoursMoniteur();
+    renderMoniCoursView(activeCoursMoniteur);
+    document.getElementById('badge-resa').textContent = reservations.filter(r => r.status === 'En attente').length || '';
+    filterResas();
   }
 
   /* ── PAIEMENTS ── */
