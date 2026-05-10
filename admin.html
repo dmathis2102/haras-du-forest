@@ -2430,7 +2430,7 @@
   }
 
   function renderDayPanel() {
-    const slots = getSlotsByDate(currentDayISO);
+    const slots = monthSlots[currentDayISO] ? [...monthSlots[currentDayISO]] : [];
     document.getElementById('day-panel-body').innerHTML = `
       <div style="margin-bottom:24px">
         <div class="day-section-title">${slots.length} créneau${slots.length !== 1 ? 'x' : ''} planifié${slots.length !== 1 ? 's' : ''}</div>
