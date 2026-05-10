@@ -1549,7 +1549,6 @@
             <button class="btn btn-outline" style="width:100%;color:var(--red);border-color:#F5C6C2" onclick="traiterStage(${r.id},'Annulé')">Refuser la demande</button>
           ` : ''}
           ${!isStage && isPending ? `<button class="btn btn-primary" style="width:100%" onclick="confirmResa(${r.id})">Confirmer la réservation</button>` : ''}
-          ${!isStage ? `<button class="btn btn-outline" style="width:100%" onclick="sendRappel(this)">Envoyer un rappel</button>` : ''}
         </div>
       </div>`;
     document.getElementById('dp-footer').innerHTML = `

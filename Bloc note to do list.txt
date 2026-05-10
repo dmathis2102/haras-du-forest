@@ -1,0 +1,37 @@
+Section Paiement 
+rattacher : - bouton nouveau paiement
+- envoyer un lien de paiement 
+- envoyer un rappel
+Actualisation des prixs
+
+Section Moniteurs 
+Actualisation des cours 
+synchro avec l'app moniteurs 
+récap actualiser et cohérents entre tous les onglets
+modifier la selection absence/congé/présence
+avis relié apres à l'app
+
+Section clients
+Relié à l'app pour les points les formules et toutes les infos et création via l'app
+Raccorder le bouton nouveau client 
+raccorder les boutons de la fiche client
+avoir accès a l'historique des clients via le bouton
+
+Section Réservations
+Enlever l'actions envoyé un rappel du détail 
+ouvrir une pop up lorsqu'on clique sur annuler 
+que les annulations se retrouve sur l'app et qu'une notifications soit envoyer sur téléphone lorsqu'un cours est annulé 
+
+Section cours et créneaux 
+lorsqu'un cours et créer il doit se retrouver dans la section reservation
+Possibilité de fermer des créneaux et que ce soit relier aux planning des moniteurs si c'est la cas et également sur le planning du tableau de bord 
+
+Section Tableau de bord
+Relié les quatre card du haut au différentes infos et quelles s'actualise 
+Card moniteurs qui renvoit vers leur planning et qu'elle soit cohérentes avec les planning 
+sur le planning du bas de page possibilité de rajouter un événement ou un créneaux autre 
+cohérents avec tous les planning et reservation etc 
+card du haut actualisation et comparaison des statistiques mois par mois 
+
+Création des logs du logiciel 
+Export du code vers un logiciel installable sur pc 
