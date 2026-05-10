@@ -1878,6 +1878,7 @@
     const nb = parseInt(document.getElementById('points-choix').value);
     c.points += nb;
     closeModalPoints();
+    renderClients(clients);
     openClientDetail(c.id);
     showToast(`✅ ${nb} points ajoutés à ${c.nom} (solde : ${c.points} pts)`);
   }
