@@ -1275,6 +1275,25 @@
   </div>
 </div>
 
+<!-- ══ MODAL CONFIRMATION ANNULATION ══ -->
+<div class="modal-overlay" id="modal-cancel">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-header">
+      <div class="modal-title">Annuler la réservation</div>
+      <button class="modal-close" onclick="closeModalCancel()">✕</button>
+    </div>
+    <div class="modal-body" style="padding:20px">
+      <p style="margin:0 0 16px;color:var(--t2);font-size:14px">Êtes-vous sûr de vouloir annuler cette réservation ? Cette action est irréversible.</p>
+      <label style="font-size:13px;font-weight:600;color:var(--t1);display:block;margin-bottom:6px">Motif (optionnel)</label>
+      <textarea id="cancel-motif" rows="3" placeholder="Ex : client absent, problème de santé du cheval…" style="width:100%;box-sizing:border-box;border:1px solid var(--border);border-radius:8px;padding:10px;font-size:13px;font-family:inherit;resize:none;color:var(--t1)"></textarea>
+    </div>
+    <div class="modal-footer" style="display:flex;gap:10px;padding:16px 20px;border-top:1px solid var(--border)">
+      <button class="btn btn-outline" style="flex:1" onclick="closeModalCancel()">Retour</button>
+      <button class="btn btn-primary" style="flex:1;background:var(--red)" onclick="confirmerAnnulation()">Confirmer l'annulation</button>
+    </div>
+  </div>
+</div>
+
 <!-- ══ MODAL NOUVELLE RÉSERVATION ══ -->
 <div class="modal-overlay" id="modal-resa">
   <div class="modal">
