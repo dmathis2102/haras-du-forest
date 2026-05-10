@@ -1767,7 +1767,9 @@
     const slotType = typeKey.toLowerCase();       // "particulier", "collectif", "stage"
 
     // 1. Réservations
-    reservations.unshift({ id: nextId++, client, initials, type: typeKey, date, heure, monitor: monKey, status });
+    const newResa = { id: nextId++, client, initials, type: typeKey, date, heure, monitor: monKey, status };
+    reservations.unshift(newResa);
+    fbSaveResa(newResa);
     addLog('resa', `Nouvelle réservation créée — ${client} · ${type} · ${date} à ${heure} (${monitorFull[monKey]||monKey})`);
     renderBadges();
 
