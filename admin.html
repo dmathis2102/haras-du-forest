@@ -2190,6 +2190,7 @@
       renderClients(clients);
       closeNouveauClient();
       openClientDetail(_editClientId);
+      addLog('client', `Profil modifié — ${nomComplet}`);
       showToast(`Profil de ${nomComplet} mis à jour`);
     } else {
       clients.unshift(newClient);
