@@ -1852,6 +1852,42 @@
 
   let _editClientId = null;
 
+  function openNouveauPaiement() {
+    document.getElementById('np-client').value = '';
+    document.getElementById('np-montant').value = '';
+    document.getElementById('np-type').value = 'Formule Essentielle';
+    document.getElementById('np-methode').value = 'Carte';
+    document.getElementById('np-statut').value = 'Payé';
+    document.getElementById('modal-nouveau-paiement').classList.add('open');
+  }
+
+  function closeNouveauPaiement() {
+    document.getElementById('modal-nouveau-paiement').classList.remove('open');
+  }
+
+  function sauvegarderNouveauPaiement() {
+    const client  = document.getElementById('np-client').value.trim();
+    const montant = parseInt(document.getElementById('np-montant').value);
+    if (!client) { alert('Veuillez renseigner le nom du client.'); return; }
+    if (!montant || montant <= 0) { alert('Veuillez renseigner un montant valide.'); return; }
+    const initials = client.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+    const today    = new Date();
+    const dateISO  = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+    paiements.unshift({
+      id:      paiements.length + 1,
+      client,
+      initials,
+      type:    document.getElementById('np-type').value,
+      montant,
+      date:    dateISO,
+      statut:  document.getElementById('np-statut').value,
+      methode: document.getElementById('np-methode').value,
+    });
+    filterPaiements();
+    closeNouveauPaiement();
+    showToast('✅ Paiement enregistré');
+  }
+
   function openNouveauClient() {
     _editClientId = null;
     ['nc-prenom','nc-nom','nc-email','nc-tel'].forEach(id => document.getElementById(id).value = '');
