@@ -1915,7 +1915,7 @@
     let html = '';
     jours.forEach(j => {
       const daySlots = monData[j.date] || {};
-      const heures = Object.keys(daySlots);
+      const heures = Object.keys(daySlots).sort();
       if (!heures.length) return;
       html += `<div style="margin-bottom:14px">
         <div style="font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:6px">${j.label}</div>`;
