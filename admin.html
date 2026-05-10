@@ -2625,21 +2625,11 @@
   }
 
   function toggleNewSlotFields() {
-    const type = document.getElementById('ns-type').value;
-    const isParticulier   = type === 'particulier';
-    const isSpecial       = type === 'evenement' || type === 'indisponible';
-    document.getElementById('ns-client-group').style.display = isParticulier ? '' : 'none';
-    document.getElementById('ns-group-fields').style.display = (!isParticulier && !isSpecial) ? '' : 'none';
-    // Pour événement/indisponible : on montre juste un champ intitulé simplifié
-    let specialGroup = document.getElementById('ns-special-group');
-    if (!specialGroup) {
-      specialGroup = document.createElement('div');
-      specialGroup.id = 'ns-special-group';
-      specialGroup.className = 'form-group';
-      specialGroup.innerHTML = '<div class="form-label">Intitulé (optionnel)</div><input class="form-input" type="text" id="ns-special-label" placeholder="Ex : Portes ouvertes, Maintenance…">';
-      document.getElementById('ns-client-group').parentNode.insertBefore(specialGroup, document.getElementById('ns-client-group').nextSibling);
-    }
-    specialGroup.style.display = isSpecial ? '' : 'none';
+    const type       = document.getElementById('ns-type').value;
+    const isSpecial  = type === 'evenement' || type === 'indisponible';
+    document.getElementById('ns-client-group').style.display  = type === 'particulier' ? '' : 'none';
+    document.getElementById('ns-group-fields').style.display  = (!isSpecial && type !== 'particulier') ? '' : 'none';
+    document.getElementById('ns-special-group').style.display = isSpecial ? '' : 'none';
   }
 
   function saveNewSlot(prefillInscrit) {
