@@ -1304,6 +1304,21 @@
 
 <div class="toast" id="toast"></div>
 
+<div class="presence-popover" id="presence-popover">
+  <div class="pres-opt" onclick="setPresence('present')">
+    <div class="pres-dot" style="background:var(--green)">✓</div>
+    <span style="color:var(--green)">Présent</span>
+  </div>
+  <div class="pres-opt" onclick="setPresence('absent')">
+    <div class="pres-dot" style="background:var(--red)">✕</div>
+    <span style="color:var(--red)">Absent</span>
+  </div>
+  <div class="pres-opt" onclick="setPresence('conge')">
+    <div class="pres-dot" style="background:#F59E0B">~</div>
+    <span style="color:#F59E0B">Congé</span>
+  </div>
+</div>
+
 <!-- ══ MODAL NOUVEAU CLIENT ══ -->
 <div class="modal-overlay" id="modal-nouveau-client">
   <div class="modal" style="max-width:480px">
