@@ -2338,7 +2338,7 @@
       const st = getPresence(activePresenceMon, iso);
       const { color, icon } = presStatus[st];
       const isToday = iso === todayISO;
-      html += `<div onclick="togglePresence('${activePresenceMon}','${iso}',event)"
+      html += `<div onclick="togglePresence('${activePresenceMon}','${iso}')"
         style="cursor:pointer;border-radius:8px;padding:7px 4px;border:${isToday ? '2px solid var(--gold)' : '1px solid var(--border)'};background:var(--bg);text-align:center;transition:background 0.1s"
         onmouseover="this.style.background='#f0f2f5'" onmouseout="this.style.background='var(--bg)'">
         <div style="font-size:12px;font-weight:${isToday?'700':'400'};color:var(--t1);margin-bottom:5px">${d}</div>
