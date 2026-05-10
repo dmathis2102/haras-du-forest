@@ -1759,6 +1759,13 @@
   ];
   const formuleBadge = { Essentielle:'badge-gray', Confort:'badge-gold', Premium:'badge-blue' };
 
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
   function openNouveauClient() {
     ['nc-prenom','nc-nom','nc-email','nc-tel'].forEach(id => document.getElementById(id).value = '');
     document.getElementById('modal-nouveau-client').classList.add('open');
