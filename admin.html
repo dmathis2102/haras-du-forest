@@ -1848,14 +1848,37 @@
       </div>`;
   }
 
+  let _pointsClientId = null;
+
   function ajouterPoints(id) {
     const c = clients.find(c => c.id === id);
     if (!c) return;
-    const val = prompt(`Ajouter des points à ${c.nom}\nSolde actuel : ${c.points} pts\n\nNombre de points à ajouter :`);
-    const nb = parseInt(val);
-    if (!val || isNaN(nb) || nb <= 0) return;
+    _pointsClientId = id;
+    document.getElementById('points-client-info').textContent = `${c.nom} — Solde actuel : ${c.points} pts`;
+    document.getElementById('points-choix').value = '20';
+    majNouveauSolde();
+    document.getElementById('modal-points').classList.add('open');
+  }
+
+  function majNouveauSolde() {
+    const c = clients.find(c => c.id === _pointsClientId);
+    if (!c) return;
+    const nb = parseInt(document.getElementById('points-choix').value);
+    document.getElementById('points-nouveau-solde').textContent = c.points + nb;
+  }
+
+  function closeModalPoints() {
+    document.getElementById('modal-points').classList.remove('open');
+    _pointsClientId = null;
+  }
+
+  function confirmerAjoutPoints() {
+    const c = clients.find(c => c.id === _pointsClientId);
+    if (!c) return;
+    const nb = parseInt(document.getElementById('points-choix').value);
     c.points += nb;
-    openClientDetail(id);
+    closeModalPoints();
+    openClientDetail(c.id);
     showToast(`✅ ${nb} points ajoutés à ${c.nom} (solde : ${c.points} pts)`);
   }
 
