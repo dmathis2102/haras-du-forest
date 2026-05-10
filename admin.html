@@ -2954,14 +2954,14 @@
     const lastMonth  = (() => { const d = new Date(today.getFullYear(), today.getMonth()-1, 1); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; })();
     const yesterday  = (() => { const d = new Date(today); d.setDate(d.getDate()-1); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; })();
 
-    // 1. Réservations aujourd'hui vs hier
-    const resaToday = reservations.filter(r => r.date === todayISO && r.status !== 'Annulé').length;
-    const resaYest  = reservations.filter(r => r.date === yesterday && r.status !== 'Annulé').length;
-    const resaDiff  = resaToday - resaYest;
-    document.getElementById('kpi-resa-val').textContent   = resaToday;
-    document.getElementById('kpi-resa-delta').innerHTML   = resaDiff === 0
-      ? `<span>= vs hier</span>`
-      : `<span class="${resaDiff > 0 ? 'up' : 'down'}">${resaDiff > 0 ? '+' : ''}${resaDiff}</span> vs hier`;
+    // 1. Réservations ce mois vs mois précédent
+    const resaThis = reservations.filter(r => r.date.startsWith(thisMonth) && r.status !== 'Annulé').length;
+    const resaLast = reservations.filter(r => r.date.startsWith(lastMonth) && r.status !== 'Annulé').length;
+    const resaDiff = resaThis - resaLast;
+    document.getElementById('kpi-resa-val').textContent  = resaThis;
+    document.getElementById('kpi-resa-delta').innerHTML  = resaDiff === 0
+      ? `<span>= vs mois dernier</span>`
+      : `<span class="${resaDiff > 0 ? 'up' : 'down'}">${resaDiff > 0 ? '+' : ''}${resaDiff}</span> vs mois dernier`;
 
     // 2. Revenus du mois vs mois précédent
     const revThis = paiements.filter(p => p.statut === 'Payé' && p.date.startsWith(thisMonth)).reduce((s,p) => s + p.montant, 0);
