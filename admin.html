@@ -1932,7 +1932,12 @@
   function confirmerAnnulation() {
     if (!_cancelTargetId) return;
     const r = reservations.find(r => r.id === _cancelTargetId);
-    if (r) { r.status = 'Annulé'; filterResas(); }
+    if (r) {
+      r.status = 'Annulé';
+      const motif = document.getElementById('cancel-motif')?.value.trim();
+      addLog('annulation', `Réservation annulée — ${r.client} · ${r.date} à ${r.heure}${motif ? ' · Motif : ' + motif : ''}`);
+      filterResas();
+    }
     closeModalCancel();
     closeDetail();
   }
