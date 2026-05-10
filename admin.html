@@ -2274,6 +2274,29 @@
     if (p) { p.statut = 'Payé'; p.methode = 'Espèces'; filterPaiements(); }
   }
 
+  /* ── PLANNING SEMAINE DASHBOARD ── */
+  const DASH_WEEK = [
+    { label:'Lun', date:'2026-05-11', num:11 }, { label:'Mar', date:'2026-05-12', num:12 },
+    { label:'Mer', date:'2026-05-13', num:13 }, { label:'Jeu', date:'2026-05-14', num:14 },
+    { label:'Ven', date:'2026-05-15', num:15 }, { label:'Sam', date:'2026-05-16', num:16 },
+  ];
+
+  function renderDashboardWeek() {
+    document.getElementById('dash-week-grid').innerHTML = DASH_WEEK.map(j => {
+      const slots = getSlotsByDate(j.date);
+      const MAX = 4;
+      const visible = slots.slice(0, MAX);
+      const extra   = slots.length - MAX;
+      return `<div class="wg-day">
+        <div class="wg-day-label">${j.label}</div>
+        <div class="wg-day-num">${j.num}</div>
+        ${visible.map(s => `<div class="wg-slot ${s.cls}">${s.label}</div>`).join('')}
+        ${extra > 0 ? `<div style="font-size:10px;color:var(--t3);margin-top:2px">+${extra} autre${extra>1?'s':''}</div>` : ''}
+        ${slots.length === 0 ? `<div style="font-size:11px;color:var(--t3);font-style:italic;margin-top:4px">Aucun cours</div>` : ''}
+      </div>`;
+    }).join('');
+  }
+
   /* ── INIT ── */
   renderResas(reservations);
   renderClients(clients);
@@ -2282,6 +2305,8 @@
   renderAbsCalendar();
   renderCoursMoniteur();
   renderPaiements(paiements);
+  renderDashboardWeek();
+  renderMonthCalendar();
 
   /* ── PLANNING MENSUEL ── */
   let currentMonth = 4; // Mai 2026
