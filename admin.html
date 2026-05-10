@@ -1710,7 +1710,7 @@
   function openNewResa() {
     document.getElementById('modal-resa').classList.add('open');
     // Pré-remplir date d'aujourd'hui
-    document.getElementById('nr-date').value = '2026-05-09';
+    const _t = new Date(); document.getElementById('nr-date').value = `${_t.getFullYear()}-${String(_t.getMonth()+1).padStart(2,'0')}-${String(_t.getDate()).padStart(2,'0')}`;
   }
   function closeNewResa() {
     document.getElementById('modal-resa').classList.remove('open');
