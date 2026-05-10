@@ -2407,7 +2407,7 @@
         const bg    = typeBg[s.type]    || '#f5f5f5';
         const label = s.type === 'particulier'
           ? s.client
-          : `${s.label} · ${s.inscrits.length}/${s.maxPlaces}`;
+          : (s.inscrits ? `${s.label} · ${s.inscrits.length}/${s.maxPlaces}` : s.label);
         html += `<div onclick="openSlotFromMoniView('${monId}','${j.date}','${h}')" style="display:flex;align-items:center;gap:8px;padding:7px 10px;background:${bg};border-radius:7px;margin-bottom:4px;font-size:12px;border-left:3px solid ${color};cursor:pointer;transition:opacity 0.15s" onmouseenter="this.style.opacity='.8'" onmouseleave="this.style.opacity='1'">
           <span style="color:var(--t3);min-width:36px;font-size:11px">${h}</span>
           <span style="color:var(--t1);font-weight:500">${label}</span>
