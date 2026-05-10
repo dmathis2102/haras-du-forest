@@ -1304,22 +1304,31 @@
 
 <div class="toast" id="toast"></div>
 
-<div class="presence-popover" id="presence-popover">
-  <div class="pres-opt" data-statut="present">
-    <div class="pres-dot" style="background:var(--green)">✓</div>
-    <span style="color:var(--green)">Présent</span>
-  </div>
-  <div class="pres-opt" data-statut="absent">
-    <div class="pres-dot" style="background:var(--red)">✕</div>
-    <span style="color:var(--red)">Absent</span>
-  </div>
-  <div class="pres-opt" data-statut="conge">
-    <div class="pres-dot" style="background:#F59E0B">~</div>
-    <span style="color:#F59E0B">Congé</span>
-  </div>
-  <div class="pres-opt" data-statut="indisponible">
-    <div class="pres-dot" style="background:#6B7280">—</div>
-    <span style="color:#6B7280">Indisponible</span>
+<!-- ══ MODAL PRÉSENCE ══ -->
+<div class="modal-overlay" id="modal-presence">
+  <div class="modal" style="max-width:320px">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-presence-title">Modifier la présence</div>
+      <button class="modal-close" onclick="document.getElementById('modal-presence').classList.remove('open')">✕</button>
+    </div>
+    <div class="modal-body" style="padding:16px;display:flex;flex-direction:column;gap:8px">
+      <div class="pres-opt" data-statut="present" onclick="setPresence('present')">
+        <div class="pres-dot" style="background:var(--green)">✓</div>
+        <span style="color:var(--green)">Présent</span>
+      </div>
+      <div class="pres-opt" data-statut="absent" onclick="setPresence('absent')">
+        <div class="pres-dot" style="background:var(--red)">✕</div>
+        <span style="color:var(--red)">Absent</span>
+      </div>
+      <div class="pres-opt" data-statut="conge" onclick="setPresence('conge')">
+        <div class="pres-dot" style="background:#F59E0B">~</div>
+        <span style="color:#F59E0B">Congé</span>
+      </div>
+      <div class="pres-opt" data-statut="indisponible" onclick="setPresence('indisponible')">
+        <div class="pres-dot" style="background:#6B7280">—</div>
+        <span style="color:#6B7280">Indisponible</span>
+      </div>
+    </div>
   </div>
 </div>
 
