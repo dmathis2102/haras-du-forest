@@ -1767,6 +1767,7 @@
 
     // 1. Réservations
     reservations.unshift({ id: nextId++, client, initials, type: typeKey, date, heure, monitor: monKey, status });
+    addLog('resa', `Nouvelle réservation créée — ${client} · ${type} · ${date} à ${heure} (${monitorFull[monKey]||monKey})`);
     renderBadges();
 
     // 2. Cours & Créneaux (coursParMoniteur)
