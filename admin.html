@@ -422,6 +422,21 @@
     border-top: 1px solid var(--border);
     display: flex; gap: 10px; justify-content: flex-end;
   }
+  .presence-popover {
+    position: fixed; z-index: 9000;
+    background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.13); padding: 8px; display: none;
+    flex-direction: column; gap: 4px; min-width: 130px;
+  }
+  .presence-popover.open { display: flex; }
+  .pres-opt {
+    display: flex; align-items: center; gap: 8px;
+    padding: 7px 10px; border-radius: 7px; cursor: pointer;
+    font-size: 13px; font-weight: 600; transition: background 0.1s;
+  }
+  .pres-opt:hover { background: var(--bg); }
+  .pres-dot { width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; color: white; flex-shrink: 0; }
+
   .toast {
     position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(20px);
     background: var(--navy); color: #fff; padding: 12px 22px; border-radius: 10px;
