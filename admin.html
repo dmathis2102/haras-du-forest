@@ -2252,10 +2252,14 @@
       const label     = document.getElementById('ns-label').value.trim() || (type==='collectif'?'Collectif':type==='stage'?'Stage':'Enfants');
       const maxPlaces = parseInt(document.getElementById('ns-max').value) || 6;
       slotData = { type, label, maxPlaces, inscrits: initInscrits };
-      initInscrits.forEach(name => {
-        const ini = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
-        reservations.unshift({ id: nextId++, client: name, initials: ini, type: typeCapital, date, heure, monitor: monKey, status: 'En attente' });
-      });
+      if (initInscrits.length === 0) {
+        reservations.unshift({ id: nextId++, client: label, initials: typeCapital.slice(0,2).toUpperCase(), type: typeCapital, date, heure, monitor: monKey, status: 'Confirmé' });
+      } else {
+        initInscrits.forEach(name => {
+          const ini = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+          reservations.unshift({ id: nextId++, client: name, initials: ini, type: typeCapital, date, heure, monitor: monKey, status: 'En attente' });
+        });
+      }
     }
     coursParMoniteur[monit][date][heure] = slotData;
 
