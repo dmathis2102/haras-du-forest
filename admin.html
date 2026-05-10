@@ -2191,13 +2191,33 @@
     return (presenceData[monId] || {})[iso] || 'present';
   }
 
-  function togglePresence(monId, iso) {
-    if (!presenceData[monId]) presenceData[monId] = {};
-    const next = { present:'absent', absent:'conge', conge:'present' }[getPresence(monId, iso)];
-    if (next === 'present') delete presenceData[monId][iso];
-    else presenceData[monId][iso] = next;
-    renderAbsCalendar();
+  let _presMonId = null, _presIso = null;
+
+  function togglePresence(monId, iso, event) {
+    event.stopPropagation();
+    _presMonId = monId;
+    _presIso   = iso;
+    const pop = document.getElementById('presence-popover');
+    const rect = event.currentTarget.getBoundingClientRect();
+    pop.style.top  = (rect.bottom + 6) + 'px';
+    pop.style.left = rect.left + 'px';
+    pop.classList.add('open');
   }
+
+  function setPresence(statut) {
+    if (!_presMonId || !_presIso) return;
+    if (!presenceData[_presMonId]) presenceData[_presMonId] = {};
+    if (statut === 'present') delete presenceData[_presMonId][_presIso];
+    else presenceData[_presMonId][_presIso] = statut;
+    document.getElementById('presence-popover').classList.remove('open');
+    renderPresenceWeek(_presMonId);
+    renderAbsCalendar();
+    _presMonId = null; _presIso = null;
+  }
+
+  document.addEventListener('click', () => {
+    document.getElementById('presence-popover')?.classList.remove('open');
+  });
 
   function renderPresenceWeek(monId) {
     activePresenceMon = monId;
