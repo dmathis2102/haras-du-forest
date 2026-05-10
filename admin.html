@@ -1997,11 +1997,18 @@
     showToast('✅ Paiement enregistré');
   }
 
+  function renderFormuleOptions(selectId, selected) {
+    const formules = ['Essentielle','Confort','Premium'];
+    document.getElementById(selectId).innerHTML = formules.map(f =>
+      `<option value="${f}" ${f === selected ? 'selected' : ''}>${f} (${tarifs[f] ?? '?'}€)</option>`
+    ).join('');
+  }
+
   function openNouveauClient() {
     _editClientId = null;
     ['nc-prenom','nc-nom','nc-email','nc-tel'].forEach(id => document.getElementById(id).value = '');
     document.getElementById('nc-galop').value = '1-2';
-    document.getElementById('nc-formule').value = 'Essentielle';
+    renderFormuleOptions('nc-formule', 'Essentielle');
     document.querySelector('#modal-nouveau-client .modal-title').textContent = 'Nouveau client';
     document.querySelector('#modal-nouveau-client .btn-primary').textContent = 'Créer le client';
     document.getElementById('modal-nouveau-client').classList.add('open');
