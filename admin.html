@@ -1808,8 +1808,7 @@
     const next = { present:'absent', absent:'conge', conge:'present' }[getPresence(monId, iso)];
     if (next === 'present') delete presenceData[monId][iso];
     else presenceData[monId][iso] = next;
-    renderPresenceWeek(monId);
-    if (document.getElementById('absence-modal').classList.contains('open')) renderAbsCalendar();
+    renderAbsCalendar();
   }
 
   function renderPresenceWeek(monId) {
