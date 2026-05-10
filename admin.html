@@ -2648,6 +2648,7 @@
       (!status || p.statut === status) &&
       (!type   || p.type.includes(type))
     ));
+    if (typeof renderDashboardStats === 'function') renderDashboardStats();
   }
 
   function marquerPaye(id) {
