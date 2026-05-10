@@ -1952,12 +1952,42 @@
 
   let _editClientId = null;
 
+  function renderNpTypeOptions() {
+    const formules = ['Essentielle','Confort','Premium'];
+    const packs    = Object.keys(tarifs).filter(k => k.startsWith('Pack'));
+    const opts = [
+      ...formules.map(f => `<option value="Formule ${f}">Formule ${f} (${tarifs[f]}€)</option>`),
+      ...packs.map(p    => `<option value="${p}">${p} (${tarifs[p]}€)</option>`),
+      `<option value="Stage">Stage</option>`,
+      `<option value="Autre">Autre</option>`,
+    ];
+    document.getElementById('np-type').innerHTML = opts.join('');
+  }
+
+  function npTypeChange() {
+    const val = document.getElementById('np-type').value;
+    const formuleKey = val.startsWith('Formule ') ? val.replace('Formule ', '') : null;
+    const prix = formuleKey ? tarifs[formuleKey] : (tarifs[val] ?? null);
+    const input = document.getElementById('np-montant');
+    if (prix !== null && prix !== undefined) {
+      input.value = prix;
+      input.readOnly = true;
+      input.style.background = 'var(--bg)';
+      input.style.color = 'var(--t2)';
+    } else {
+      input.value = '';
+      input.readOnly = false;
+      input.style.background = '';
+      input.style.color = '';
+    }
+  }
+
   function openNouveauPaiement() {
     document.getElementById('np-client').value = '';
-    document.getElementById('np-montant').value = '';
-    document.getElementById('np-type').value = 'Formule Essentielle';
+    renderNpTypeOptions();
     document.getElementById('np-methode').value = 'Carte';
     document.getElementById('np-statut').value = 'Payé';
+    npTypeChange();
     document.getElementById('modal-nouveau-paiement').classList.add('open');
   }
 
