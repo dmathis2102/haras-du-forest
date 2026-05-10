@@ -1794,7 +1794,15 @@
     };
     clients.unshift(newClient);
     renderClients(clients);
+
+    const tarifs = { Essentielle: 300, Confort: 400, Premium: 600 };
+    const montant = tarifs[newClient.formule] || 300;
+    const today = new Date();
+    const dateISO = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+    paiements.unshift({ id: paiements.length + 1, client: nomComplet, initials, type: `Formule ${newClient.formule}`, montant, date: dateISO, statut: 'En attente', methode: '—' });
+
     closeNouveauClient();
+    showToast(`💳 Lien de paiement envoyé à ${newClient.email !== '—' ? newClient.email : nomComplet}`);
   }
 
   function renderClients(list) {
