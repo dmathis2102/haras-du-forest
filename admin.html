@@ -3626,6 +3626,41 @@
       });
       if (changed) { filterResas(); renderBadges(); renderDashboardStats(); }
     }, e => console.warn('Listener resa:', e));
+
+    // Écoute les changements sur les clients
+    db.collection('clients').onSnapshot(snapshot => {
+      let changed = false;
+      snapshot.docChanges().forEach(change => {
+        const data = change.doc.data();
+        if (change.type === 'modified') {
+          const idx = clients.findIndex(c => c.id === data.id);
+          if (idx !== -1) { clients[idx] = data; changed = true; }
+        } else if (change.type === 'added') {
+          const exists = clients.find(c => c.id === data.id);
+          if (!exists) { clients.unshift(data); changed = true; }
+        } else if (change.type === 'removed') {
+          const idx = clients.findIndex(c => c.id === data.id);
+          if (idx !== -1) { clients.splice(idx, 1); changed = true; }
+        }
+      });
+      if (changed) { renderClients(clients); renderDashboardStats(); }
+    }, e => console.warn('Listener clients:', e));
+
+    // Écoute les changements sur les paiements
+    db.collection('paiements').onSnapshot(snapshot => {
+      let changed = false;
+      snapshot.docChanges().forEach(change => {
+        const data = change.doc.data();
+        if (change.type === 'modified') {
+          const idx = paiements.findIndex(p => p.id === data.id);
+          if (idx !== -1) { paiements[idx] = data; changed = true; }
+        } else if (change.type === 'added') {
+          const exists = paiements.find(p => p.id === data.id);
+          if (!exists) { paiements.unshift(data); changed = true; }
+        }
+      });
+      if (changed) { filterPaiements(); renderBadges(); renderDashboardStats(); }
+    }, e => console.warn('Listener paiements:', e));
   }
 
   // Supprime le document de test s'il existe
