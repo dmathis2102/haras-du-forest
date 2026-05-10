@@ -1650,15 +1650,33 @@
     openPaiementDetail(id);
   }
 
+  let _cancelTargetId = null;
+
   function cancelResaFromDetail() {
-    if (openDetailId) quickCancel(openDetailId);
-    closeDetail();
+    if (openDetailId) openModalCancel(openDetailId);
   }
 
   function quickCancel(id) {
-    if (!confirm('Confirmer l\'annulation de cette réservation ?')) return;
-    const r = reservations.find(r => r.id === id);
+    openModalCancel(id);
+  }
+
+  function openModalCancel(id) {
+    _cancelTargetId = id;
+    document.getElementById('cancel-motif').value = '';
+    document.getElementById('modal-cancel').style.display = 'flex';
+  }
+
+  function closeModalCancel() {
+    document.getElementById('modal-cancel').style.display = 'none';
+    _cancelTargetId = null;
+  }
+
+  function confirmerAnnulation() {
+    if (!_cancelTargetId) return;
+    const r = reservations.find(r => r.id === _cancelTargetId);
     if (r) { r.status = 'Annulé'; filterResas(); }
+    closeModalCancel();
+    closeDetail();
   }
 
   /* ── CLIENTS ── */
