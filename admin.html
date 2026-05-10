@@ -2395,7 +2395,7 @@
       if (!d) return `<div class="month-cell empty"></div>`;
       const iso = `${currentYear}-${String(currentMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
       const isToday = today.getFullYear()===currentYear && today.getMonth()===currentMonth && today.getDate()===d;
-      const slots = getSlotsByDate(iso);
+      const slots = monthSlots[iso] || [];
       const MAX_VISIBLE = 4;
       const visible = slots.slice(0, MAX_VISIBLE);
       const extra   = slots.length - MAX_VISIBLE;
