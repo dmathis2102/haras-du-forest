@@ -2654,7 +2654,7 @@
 
   function marquerPaye(id) {
     const p = paiements.find(p => p.id === id);
-    if (p) { p.statut = 'Payé'; p.methode = 'Espèces'; filterPaiements(); }
+    if (p) { p.statut = 'Payé'; p.methode = 'Espèces'; filterPaiements(); renderDashboardStats(); }
   }
 
   /* ── PLANNING SEMAINE DASHBOARD ── */
