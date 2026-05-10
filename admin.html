@@ -3143,6 +3143,45 @@
     renderLogs();
   }
 
+  async function reinitialiserDonnees() {
+    // Première confirmation
+    if (!confirm('Tu es sur le point de supprimer TOUTES les données (clients, réservations, paiements).\n\nCette action est irréversible.\n\nContinuer ?')) return;
+    // Deuxième confirmation — tape le mot
+    const saisie = prompt('Pour confirmer, tape exactement : REINITIALISER');
+    if (saisie !== 'REINITIALISER') { alert('Annulé — le mot de confirmation est incorrect.'); return; }
+
+    try {
+      showToast('Réinitialisation en cours...');
+
+      // Supprime tout dans Firebase
+      const collections = ['reservations', 'clients', 'paiements'];
+      for (const col of collections) {
+        const snap = await db.collection(col).get();
+        const batch = db.batch();
+        snap.forEach(doc => batch.delete(doc.ref));
+        await batch.commit();
+      }
+
+      // Vide les tableaux locaux
+      reservations.length = 0;
+      clients.length = 0;
+      paiements.length = 0;
+      nextId = 1;
+
+      // Rafraîchit l'affichage
+      filterResas();
+      renderClients(clients);
+      filterPaiements();
+      renderDashboardStats();
+      renderBadges();
+      addLog('systeme', 'Réinitialisation complète — toutes les données fictives ont été supprimées');
+
+      showToast('Réinitialisation terminée — vous repartez de zéro');
+    } catch(e) {
+      alert('Erreur lors de la réinitialisation : ' + e.message);
+    }
+  }
+
   /* ── INIT ── */
   function initApp() {
     renderResas(reservations);
