@@ -2023,8 +2023,8 @@
     document.getElementById('nc-nom').value     = parts.slice(1).join(' ') || '';
     document.getElementById('nc-email').value   = c.email !== '—' ? c.email : '';
     document.getElementById('nc-tel').value     = c.tel !== '—' ? c.tel : '';
-    document.getElementById('nc-galop').value   = c.galop;
-    document.getElementById('nc-formule').value = c.formule;
+    document.getElementById('nc-galop').value = c.galop;
+    renderFormuleOptions('nc-formule', c.formule);
     document.querySelector('#modal-nouveau-client .modal-title').textContent = 'Modifier le profil';
     document.querySelector('#modal-nouveau-client .btn-primary').textContent = 'Enregistrer';
     document.getElementById('modal-nouveau-client').classList.add('open');
