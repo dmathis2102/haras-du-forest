@@ -1082,25 +1082,51 @@
     <!-- ══ MONITEURS ══ -->
     <div class="page" id="page-moniteurs">
       <div class="monitor-cards"></div>
-      <div class="table-wrap" style="margin-top:20px">
-        <div class="card-header" style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
-          <div>
-            <span class="card-title">Présences & Absences</span>
-            <div style="font-size:12px;color:var(--t3);margin-top:2px">Semaine du 11 au 16 mai — cliquez sur un jour pour modifier</div>
+
+      <!-- Onglets partagés -->
+      <div style="display:flex;gap:6px;align-items:center;margin-top:20px;margin-bottom:12px;flex-wrap:wrap">
+        <button class="btn btn-primary btn-sm moni-tab active" onclick="showMonitorTab(this,'sophie')">Sophie L.</button>
+        <button class="btn btn-outline btn-sm moni-tab" onclick="showMonitorTab(this,'thomas')">Thomas D.</button>
+        <button class="btn btn-outline btn-sm moni-tab" onclick="showMonitorTab(this,'camille')">Camille R.</button>
+      </div>
+
+      <!-- Deux colonnes -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start">
+
+        <!-- Colonne gauche : Planning des cours -->
+        <div class="table-wrap">
+          <div class="card-header" style="padding:14px 16px;border-bottom:1px solid var(--border)">
+            <span class="card-title" style="font-size:13px">Planning des cours — semaine du 11 au 16 mai</span>
           </div>
-          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
-            <button class="btn btn-outline btn-sm moni-tab active" onclick="showMonitorTab(this,'sophie')">Sophie L.</button>
-            <button class="btn btn-outline btn-sm moni-tab" onclick="showMonitorTab(this,'thomas')">Thomas D.</button>
-            <button class="btn btn-outline btn-sm moni-tab" onclick="showMonitorTab(this,'camille')">Camille R.</button>
-            <button class="btn btn-primary btn-sm" style="margin-left:4px" onclick="openAbsenceModal()">📅 Voir en grand</button>
+          <div id="moni-cours-view" style="padding:12px 16px"></div>
+        </div>
+
+        <!-- Colonne droite : Présences & Absences -->
+        <div class="table-wrap">
+          <div class="card-header" style="padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+            <span class="card-title" style="font-size:13px">Présences & Absences</span>
+            <div style="display:flex;align-items:center;gap:6px">
+              <button class="btn btn-outline btn-sm" onclick="absMonthPrev()">&#8592;</button>
+              <span id="abs-month-label" style="font-size:12px;font-weight:600;color:var(--t1);white-space:nowrap"></span>
+              <button class="btn btn-outline btn-sm" onclick="absMonthNext()">&#8594;</button>
+            </div>
+          </div>
+          <div style="padding:12px 16px">
+            <div class="month-dow-row" style="margin-bottom:4px">
+              <div class="month-dow">L</div><div class="month-dow">M</div><div class="month-dow">M</div>
+              <div class="month-dow">J</div><div class="month-dow">V</div><div class="month-dow">S</div>
+              <div class="month-dow">D</div>
+            </div>
+            <div id="abs-calendar-grid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px"></div>
+            <div style="display:flex;gap:14px;margin-top:10px;font-size:11px;color:var(--t2);flex-wrap:wrap">
+              <span><span class="pres-dot" style="background:var(--green)"></span>Présent</span>
+              <span><span class="pres-dot" style="background:var(--red)"></span>Absent</span>
+              <span><span class="pres-dot" style="background:#F59E0B"></span>Congé</span>
+              <span style="margin-left:auto;color:var(--t3);font-size:10px">Cliquez pour modifier</span>
+            </div>
           </div>
         </div>
-        <div id="presence-week" style="padding:16px 20px;display:grid;grid-template-columns:repeat(6,1fr);gap:10px"></div>
-        <div style="padding:10px 20px;border-top:1px solid var(--border);display:flex;gap:20px;font-size:12px;color:var(--t2)">
-          <span><span class="pres-dot" style="background:var(--green)"></span>Présent</span>
-          <span><span class="pres-dot" style="background:var(--red)"></span>Absent</span>
-          <span><span class="pres-dot" style="background:#F59E0B"></span>Congé</span>
-        </div>
+
       </div>
     </div>
 
