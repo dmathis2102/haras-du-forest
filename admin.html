@@ -2554,12 +2554,46 @@
     if (s && s.inscrits) { s.inscrits.splice(idx, 1); renderCoursMoniteur(); openSlotDetail(date, heure); }
   }
 
+  let _deleteSlotDate = null, _deleteSlotHeure = null;
+
   function deleteSlot(date, heure) {
-    if (!confirm('Supprimer ce créneau ?')) return;
-    const day = (coursParMoniteur[activeCoursMoniteur]||{})[date];
-    if (day) { delete day[heure]; if (!Object.keys(day).length) delete coursParMoniteur[activeCoursMoniteur][date]; }
+    _deleteSlotDate  = date;
+    _deleteSlotHeure = heure;
+    const slot = ((coursParMoniteur[activeCoursMoniteur]||{})[date]||{})[heure];
+    const label = slot ? (slot.client || slot.label || 'ce créneau') : 'ce créneau';
+    document.getElementById('delete-slot-label').textContent = `${heure} — ${label}`;
+    document.getElementById('modal-delete-slot').classList.add('open');
+  }
+
+  function confirmerDeleteSlot() {
+    const date  = _deleteSlotDate;
+    const heure = _deleteSlotHeure;
+    const monit = activeCoursMoniteur;
+    const slot  = ((coursParMoniteur[monit]||{})[date]||{})[heure];
+
+    // Annuler les réservations liées
+    if (slot) {
+      const clientsLies = slot.type === 'particulier' ? [slot.client] : (slot.inscrits || []);
+      clientsLies.forEach(nom => {
+        const r = reservations.find(r => r.client === nom && r.date === date && r.heure === heure);
+        if (r) r.status = 'Annulé';
+      });
+      if (!clientsLies.length) {
+        const r = reservations.find(r => r.date === date && r.heure === heure);
+        if (r) r.status = 'Annulé';
+      }
+    }
+
+    const day = (coursParMoniteur[monit]||{})[date];
+    if (day) { delete day[heure]; if (!Object.keys(day).length) delete coursParMoniteur[monit][date]; }
+
+    document.getElementById('modal-delete-slot').classList.remove('open');
+    _deleteSlotDate = null; _deleteSlotHeure = null;
     closeDetail();
     renderCoursMoniteur();
+    renderMoniCoursView(monit);
+    renderDashboardWeek();
+    filterResas();
   }
 
   let _slotDate = '', _slotHeure = '09h00', _slotMoniteur = '';
