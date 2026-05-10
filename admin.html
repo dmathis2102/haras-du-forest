@@ -2769,8 +2769,15 @@
       const visible = slots.slice(0, MAX);
       const extra   = slots.length - MAX;
       return `<div class="wg-day">
-        <div class="wg-day-label">${j.label}</div>
-        <div class="wg-day-num">${j.num}</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px">
+          <div>
+            <div class="wg-day-label">${j.label}</div>
+            <div class="wg-day-num">${j.num}</div>
+          </div>
+          <button onclick="navigateTo('cours', () => openAddSlotModal('${j.date}','09h00'))"
+            style="width:22px;height:22px;border-radius:50%;border:1px solid var(--border);background:var(--bg);color:var(--t2);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;flex-shrink:0"
+            title="Ajouter un créneau">+</button>
+        </div>
         ${visible.map(s => `<div class="wg-slot ${s.cls}">${s.label}</div>`).join('')}
         ${extra > 0 ? `<div style="font-size:10px;color:var(--t3);margin-top:2px">+${extra} autre${extra>1?'s':''}</div>` : ''}
         ${slots.length === 0 ? `<div style="font-size:11px;color:var(--t3);font-style:italic;margin-top:4px">Aucun cours</div>` : ''}
