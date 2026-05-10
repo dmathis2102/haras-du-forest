@@ -1938,6 +1938,7 @@
     const r = reservations.find(r => r.id === _cancelTargetId);
     if (r) {
       r.status = 'Annulé';
+      fbUpdateResaStatus(r.id, 'Annulé');
       const motif = document.getElementById('cancel-motif')?.value.trim();
       addLog('annulation', `Réservation annulée — ${r.client} · ${r.date} à ${r.heure}${motif ? ' · Motif : ' + motif : ''}`);
       filterResas();
