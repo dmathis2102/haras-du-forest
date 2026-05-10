@@ -3551,19 +3551,88 @@
       .catch(e => console.warn('Firebase update paiement:', e));
   }
 
-  /* ── ÉCOUTE EN TEMPS RÉEL ──
-     Firebase prévient le backoffice dès qu'une autre app modifie les données.
-     (activé mais ne remplace pas encore les données locales — phase suivante)
-  ── */
-  db.collection('reservations').onSnapshot(snapshot => {
-    snapshot.docChanges().forEach(change => {
-      if (change.type === 'modified' || change.type === 'added') {
-        addLog('resa', `[Firebase] Sync réservation #${change.doc.id}`);
+  /* ── CHARGEMENT DES DONNÉES DEPUIS FIREBASE ── */
+  async function loadFromFirebase() {
+    try {
+      // --- Réservations ---
+      const resaSnap = await db.collection('reservations').get();
+      if (!resaSnap.empty) {
+        // Des données existent dans Firebase → on les utilise
+        reservations.length = 0;
+        resaSnap.forEach(doc => {
+          const d = doc.data();
+          // Ignore le document de test
+          if (d.id !== 999) reservations.push(d);
+        });
+        reservations.sort((a, b) => b.id - a.id);
+        // Met à jour nextId pour éviter les doublons
+        const maxId = Math.max(...reservations.map(r => r.id || 0));
+        if (maxId >= nextId) nextId = maxId + 1;
+      } else {
+        // Firebase est vide → on y écrit les données actuelles (seed initial)
+        const batch = db.batch();
+        reservations.forEach(r => batch.set(db.collection('reservations').doc(String(r.id)), r));
+        await batch.commit();
+        console.log('Firebase seedé avec les réservations initiales');
       }
-    });
-  }, e => console.warn('Firebase listener resa:', e));
 
-  console.log('Firebase connecté au projet haras-du-forest');
+      // --- Clients ---
+      const clientSnap = await db.collection('clients').get();
+      if (!clientSnap.empty) {
+        clients.length = 0;
+        clientSnap.forEach(doc => clients.push(doc.data()));
+        clients.sort((a, b) => a.nom?.localeCompare(b.nom));
+      } else {
+        const batch = db.batch();
+        clients.forEach(c => batch.set(db.collection('clients').doc(String(c.id)), c));
+        await batch.commit();
+        console.log('Firebase seedé avec les clients initiaux');
+      }
+
+      // --- Paiements ---
+      const paySnap = await db.collection('paiements').get();
+      if (!paySnap.empty) {
+        paiements.length = 0;
+        paySnap.forEach(doc => paiements.push(doc.data()));
+        paiements.sort((a, b) => b.id - a.id);
+      } else {
+        const batch = db.batch();
+        paiements.forEach(p => batch.set(db.collection('paiements').doc(String(p.id)), p));
+        await batch.commit();
+        console.log('Firebase seedé avec les paiements initiaux');
+      }
+
+      console.log(`Données chargées — ${reservations.length} réservations, ${clients.length} clients, ${paiements.length} paiements`);
+    } catch(e) {
+      console.warn('Erreur Firebase, données locales utilisées:', e.message);
+    }
+
+    // Lance l'app dans tous les cas (même si Firebase échoue)
+    initApp();
+
+    // Écoute en temps réel les changements extérieurs (app moniteurs, etc.)
+    db.collection('reservations').onSnapshot(snapshot => {
+      let changed = false;
+      snapshot.docChanges().forEach(change => {
+        const data = change.doc.data();
+        if (data.id === 999) return; // ignore le doc de test
+        if (change.type === 'modified') {
+          const idx = reservations.findIndex(r => r.id === data.id);
+          if (idx !== -1) { reservations[idx] = data; changed = true; }
+        } else if (change.type === 'added') {
+          const exists = reservations.find(r => r.id === data.id);
+          if (!exists && data.id !== 999) { reservations.unshift(data); changed = true; }
+        }
+      });
+      if (changed) { filterResas(); renderBadges(); renderDashboardStats(); }
+    }, e => console.warn('Listener resa:', e));
+  }
+
+  // Supprime le document de test s'il existe
+  db.collection('reservations').doc('999').delete().catch(() => {});
+
+  loadFromFirebase();
+  console.log('Firebase connecté — haras-du-forest');
 </script>
 </body>
 </html>
