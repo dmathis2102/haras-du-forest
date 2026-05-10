@@ -2264,12 +2264,8 @@
   function renderMoniteurCards() {
     const today = new Date();
     const todayISO = today.toISOString().slice(0,10);
-    // Semaine en cours : lundi au samedi
-    const dow = (today.getDay() + 6) % 7; // lundi = 0
-    const weekDates = Array.from({length:6}, (_,i) => {
-      const d = new Date(today); d.setDate(today.getDate() - dow + i);
-      return d.toISOString().slice(0,10);
-    });
+    // Même semaine que le planning affiché (moniWeekStart)
+    const weekDates = getMoniWeekDays().map(j => j.date);
 
     document.querySelector('#page-moniteurs .monitor-cards').innerHTML = moniteurs.map(m => {
       const dayData   = coursParMoniteur[m.id] || {};
