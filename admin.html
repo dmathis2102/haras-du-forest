@@ -1248,6 +1248,31 @@
       </div>
     </div>
 
+    <!-- ══ LOGS ══ -->
+    <div class="page" id="page-logs">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+        <div>
+          <div style="font-size:15px;font-weight:700;color:var(--t1)">Logs d'activité</div>
+          <div style="font-size:12px;color:var(--t3);margin-top:2px">Historique de toutes les actions effectuées dans le logiciel</div>
+        </div>
+        <button class="btn btn-outline btn-sm" onclick="clearLogs()">Effacer les logs</button>
+      </div>
+      <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+        <select id="log-filter-type" class="filter-select" onchange="renderLogs()" style="width:auto">
+          <option value="">Tous les types</option>
+          <option value="resa">Réservations</option>
+          <option value="client">Clients</option>
+          <option value="paiement">Paiements</option>
+          <option value="cours">Cours & Créneaux</option>
+          <option value="annulation">Annulations</option>
+        </select>
+        <button class="btn btn-outline btn-sm" onclick="document.getElementById('log-filter-type').value='';renderLogs()">Réinitialiser</button>
+      </div>
+      <div class="card" style="padding:0;overflow:hidden">
+        <div id="logs-list" style="min-height:200px"></div>
+      </div>
+    </div>
+
   </div><!-- /content -->
 </div><!-- /main -->
 
