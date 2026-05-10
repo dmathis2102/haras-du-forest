@@ -1278,6 +1278,58 @@
   </div>
 </div>
 
+<!-- ══ MODAL NOUVEAU CLIENT ══ -->
+<div class="modal-overlay" id="modal-nouveau-client">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-header">
+      <div class="modal-title">Nouveau client</div>
+      <button class="modal-close" onclick="closeNouveauClient()">✕</button>
+    </div>
+    <div class="modal-body" style="padding:20px;display:flex;flex-direction:column;gap:14px">
+      <div class="form-row">
+        <div class="form-group">
+          <div class="form-label">Prénom</div>
+          <input class="form-input" type="text" id="nc-prenom" placeholder="Marie">
+        </div>
+        <div class="form-group">
+          <div class="form-label">Nom</div>
+          <input class="form-input" type="text" id="nc-nom" placeholder="Lefebvre">
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="form-label">Email</div>
+        <input class="form-input" type="email" id="nc-email" placeholder="marie@email.com">
+      </div>
+      <div class="form-group">
+        <div class="form-label">Téléphone</div>
+        <input class="form-input" type="tel" id="nc-tel" placeholder="06 12 34 56 78">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <div class="form-label">Niveau Galop</div>
+          <select class="form-select" id="nc-galop">
+            <option value="1-2">Galop 1-2</option>
+            <option value="3-4">Galop 3-4</option>
+            <option value="5+">Galop 5+</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <div class="form-label">Formule</div>
+          <select class="form-select" id="nc-formule">
+            <option value="Essentielle">Essentielle</option>
+            <option value="Confort">Confort</option>
+            <option value="Premium">Premium</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer" style="display:flex;gap:10px;padding:16px 20px;border-top:1px solid var(--border)">
+      <button class="btn btn-outline" style="flex:1" onclick="closeNouveauClient()">Annuler</button>
+      <button class="btn btn-primary" style="flex:1" onclick="sauvegarderNouveauClient()">Créer le client</button>
+    </div>
+  </div>
+</div>
+
 <!-- ══ MODAL CONFIRMATION ANNULATION ══ -->
 <div class="modal-overlay" id="modal-cancel">
   <div class="modal" style="max-width:420px">
