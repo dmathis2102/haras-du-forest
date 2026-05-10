@@ -902,29 +902,32 @@
               <span class="card-title">Moniteurs aujourd'hui</span>
             </div>
             <div class="card-body" style="padding:12px 0">
-              <div class="tl-item">
+              <div class="tl-item" style="cursor:pointer" onclick="navigateTo('moniteurs', () => renderPresenceWeek('sophie'))">
                 <div class="tl-dot dot-green"></div>
                 <div class="tl-info">
                   <div class="tl-name">Sophie L.</div>
                   <div class="tl-sub">3 cours · 09h, 16h, 18h</div>
                 </div>
                 <span class="tl-badge badge-green">Disponible</span>
+                <span style="color:var(--t3);font-size:16px;margin-left:4px">›</span>
               </div>
-              <div class="tl-item">
+              <div class="tl-item" style="cursor:pointer" onclick="navigateTo('moniteurs', () => renderPresenceWeek('thomas'))">
                 <div class="tl-dot dot-green"></div>
                 <div class="tl-info">
                   <div class="tl-name">Thomas D.</div>
                   <div class="tl-sub">3 cours · 09h, 10h, 17h</div>
                 </div>
                 <span class="tl-badge badge-green">Disponible</span>
+                <span style="color:var(--t3);font-size:16px;margin-left:4px">›</span>
               </div>
-              <div class="tl-item">
+              <div class="tl-item" style="cursor:pointer" onclick="navigateTo('moniteurs', () => renderPresenceWeek('camille'))">
                 <div class="tl-dot dot-gold"></div>
                 <div class="tl-info">
                   <div class="tl-name">Camille R.</div>
                   <div class="tl-sub">2 cours · 14h, 15h</div>
                 </div>
                 <span class="tl-badge badge-gold">Après-midi</span>
+                <span style="color:var(--t3);font-size:16px;margin-left:4px">›</span>
               </div>
             </div>
           </div>
