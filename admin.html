@@ -2179,9 +2179,14 @@
     renderCoursMoniteur();
   }
 
+  let _slotDate = '', _slotHeure = '09h00', _slotMoniteur = '';
+
   function openAddSlotModal(date, heure, prefillType, prefillLabel, prefillInscrit) {
     const iso       = date || '';
     const h         = heure || '09h00';
+    _slotDate     = iso;
+    _slotHeure    = h;
+    _slotMoniteur = activeCoursMoniteur;
     const initType  = prefillType || 'particulier';
     const isGroup   = initType !== 'particulier';
     openDetailId = null;
