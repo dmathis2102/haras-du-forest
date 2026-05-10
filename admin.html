@@ -1766,9 +1766,67 @@
     setTimeout(() => t.classList.remove('show'), 3000);
   }
 
+  let _editClientId = null;
+
   function openNouveauClient() {
+    _editClientId = null;
     ['nc-prenom','nc-nom','nc-email','nc-tel'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('nc-galop').value = '1-2';
+    document.getElementById('nc-formule').value = 'Essentielle';
+    document.querySelector('#modal-nouveau-client .modal-title').textContent = 'Nouveau client';
+    document.querySelector('#modal-nouveau-client .btn-primary').textContent = 'Créer le client';
     document.getElementById('modal-nouveau-client').classList.add('open');
+  }
+
+  function openModifierClient(id) {
+    const c = clients.find(c => c.id === id);
+    if (!c) return;
+    _editClientId = id;
+    const parts = c.nom.split(' ');
+    document.getElementById('nc-prenom').value  = parts[0] || '';
+    document.getElementById('nc-nom').value     = parts.slice(1).join(' ') || '';
+    document.getElementById('nc-email').value   = c.email !== '—' ? c.email : '';
+    document.getElementById('nc-tel').value     = c.tel !== '—' ? c.tel : '';
+    document.getElementById('nc-galop').value   = c.galop;
+    document.getElementById('nc-formule').value = c.formule;
+    document.querySelector('#modal-nouveau-client .modal-title').textContent = 'Modifier le profil';
+    document.querySelector('#modal-nouveau-client .btn-primary').textContent = 'Enregistrer';
+    document.getElementById('modal-nouveau-client').classList.add('open');
+  }
+
+  function afficherHistorique(id) {
+    const c = clients.find(c => c.id === id);
+    if (!c) return;
+    const histo = reservations.filter(r => r.client === c.nom);
+    const statusBadge = { 'Confirmé':'badge-green', 'En attente':'badge-orange', 'Annulé':'badge-red' };
+    const rows = histo.length === 0
+      ? `<div style="font-size:13px;color:var(--t3);padding:8px 0">Aucune réservation trouvée.</div>`
+      : histo.map(r => `
+          <div class="dp-row">
+            <span class="dp-key">${r.date} · ${r.heure}</span>
+            <span class="dp-val" style="display:flex;align-items:center;gap:6px">
+              ${r.type} <span class="tl-badge ${statusBadge[r.status]||'badge-gray'}">${r.status}</span>
+            </span>
+          </div>`).join('');
+    document.getElementById('dp-body').innerHTML = `
+      <div class="dp-section">
+        <div class="dp-section-title" style="display:flex;align-items:center;justify-content:space-between">
+          Historique — ${c.nom}
+          <button class="btn btn-outline btn-sm" onclick="openClientDetail(${id})">Retour</button>
+        </div>
+        ${rows}
+      </div>`;
+  }
+
+  function ajouterPoints(id) {
+    const c = clients.find(c => c.id === id);
+    if (!c) return;
+    const val = prompt(`Ajouter des points à ${c.nom}\nSolde actuel : ${c.points} pts\n\nNombre de points à ajouter :`);
+    const nb = parseInt(val);
+    if (!val || isNaN(nb) || nb <= 0) return;
+    c.points += nb;
+    openClientDetail(id);
+    showToast(`✅ ${nb} points ajoutés à ${c.nom} (solde : ${c.points} pts)`);
   }
 
   function closeNouveauClient() {
