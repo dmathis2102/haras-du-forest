@@ -1304,7 +1304,7 @@
 
 <div class="toast" id="toast"></div>
 
-<div class="presence-popover" id="presence-popover">
+<div class="presence-popover" id="presence-popover" onclick="event.stopPropagation()">
   <div class="pres-opt" onclick="setPresence('present')">
     <div class="pres-dot" style="background:var(--green)">✓</div>
     <span style="color:var(--green)">Présent</span>
