@@ -1835,25 +1835,48 @@
   function showMonitorTab(btn, id) {
     document.querySelectorAll('.moni-tab').forEach(t => t.classList.remove('active'));
     btn.classList.add('active');
-    renderPresenceWeek(id);
-  }
-
-  function openAbsenceModal() {
-    absCalYear = 2026; absCalMonth = 4;
-    document.getElementById('abs-modal-title').textContent = 'Planning présences — ' + (moniteurs.find(m => m.id === activePresenceMon)||{full:activePresenceMon}).full;
-    document.querySelectorAll('.moni-tab-abs').forEach(t => t.classList.toggle('active', t.getAttribute('onclick').includes("'"+activePresenceMon+"'")));
-    renderAbsCalendar();
-    document.getElementById('absence-modal').classList.add('open');
-  }
-
-  function closeAbsenceModal() { document.getElementById('absence-modal').classList.remove('open'); }
-
-  function switchAbsMon(btn, id) {
-    document.querySelectorAll('.moni-tab-abs').forEach(t => t.classList.remove('active'));
-    btn.classList.add('active');
     activePresenceMon = id;
-    document.getElementById('abs-modal-title').textContent = 'Planning présences — ' + (moniteurs.find(m => m.id === id)||{full:id}).full;
+    renderMoniCoursView(id);
     renderAbsCalendar();
+  }
+
+  function renderMoniCoursView(monId) {
+    const typeLabel = { particulier:'Particulier', collectif:'Collectif', enfants:'Enfants', stage:'Stage' };
+    const typeColor = { particulier:'#3B82F6', collectif:'#2B6657', enfants:'#D97706', stage:'#8B5CF6' };
+    const typeBg    = { particulier:'var(--blue-l)', collectif:'var(--green-l)', enfants:'var(--orange-l)', stage:'#F3E8FF' };
+    const jours = [
+      { label:'Lundi 11 mai',    date:'2026-05-11' },
+      { label:'Mardi 12 mai',    date:'2026-05-12' },
+      { label:'Mercredi 13 mai', date:'2026-05-13' },
+      { label:'Jeudi 14 mai',    date:'2026-05-14' },
+      { label:'Vendredi 15 mai', date:'2026-05-15' },
+      { label:'Samedi 16 mai',   date:'2026-05-16' },
+    ];
+    const monData = (coursParMoniteur[monId] || {});
+    let html = '';
+    jours.forEach(j => {
+      const daySlots = monData[j.date] || {};
+      const heures = Object.keys(daySlots);
+      if (!heures.length) return;
+      html += `<div style="margin-bottom:14px">
+        <div style="font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:6px">${j.label}</div>`;
+      heures.forEach(h => {
+        const s = daySlots[h];
+        const color = typeColor[s.type] || '#888';
+        const bg    = typeBg[s.type]    || '#f5f5f5';
+        const label = s.type === 'particulier'
+          ? s.client
+          : `${s.label} · ${s.inscrits.length}/${s.maxPlaces}`;
+        html += `<div style="display:flex;align-items:center;gap:8px;padding:7px 10px;background:${bg};border-radius:7px;margin-bottom:4px;font-size:12px;border-left:3px solid ${color}">
+          <span style="color:var(--t3);min-width:36px;font-size:11px">${h}</span>
+          <span style="color:var(--t1);font-weight:500">${label}</span>
+          <span style="margin-left:auto;font-size:10px;color:${color};font-weight:600">${typeLabel[s.type]||s.type}</span>
+        </div>`;
+      });
+      html += '</div>';
+    });
+    document.getElementById('moni-cours-view').innerHTML = html ||
+      '<p style="color:var(--t3);font-size:13px;padding:4px 0">Aucun cours planifié cette semaine.</p>';
   }
 
   function absMonthPrev() { absCalMonth--; if (absCalMonth < 0) { absCalMonth = 11; absCalYear--; } renderAbsCalendar(); }
