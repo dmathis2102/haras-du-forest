@@ -1897,6 +1897,11 @@
     renderAbsCalendar();
   }
 
+  function switchToMonitor(id) {
+    const btn = document.querySelector(`.moni-tab[onclick*="'${id}'"]`);
+    if (btn) showMonitorTab(btn, id);
+  }
+
   function renderMoniCoursView(monId) {
     updateMoniWeekLabel();
     const typeLabel = { particulier:'Particulier', collectif:'Collectif', enfants:'Enfants', stage:'Stage' };
