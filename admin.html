@@ -2808,9 +2808,14 @@
       const labelEl = document.getElementById('ns-special-label');
       const label = (labelEl ? labelEl.value.trim() : '') || (type === 'evenement' ? 'Événement' : 'Indisponible');
       slotData = { type, label };
-      const cls  = type === 'evenement' ? 'wg-coll' : 'wg-part';
+      // Visible dans le dashboard (monthSlots)
+      const cls = type === 'evenement' ? 'wg-coll' : 'wg-part';
       if (!monthSlots[date]) monthSlots[date] = [];
       monthSlots[date].push({ label: `${heure.replace('h00','h')} · ${label}`, cls });
+      // Visible dans la grille Cours & Créneaux
+      if (!coursParMoniteur[monit]) coursParMoniteur[monit] = {};
+      if (!coursParMoniteur[monit][date]) coursParMoniteur[monit][date] = {};
+      coursParMoniteur[monit][date][heure] = slotData;
     } else if (type === 'particulier') {
       const clientName = document.getElementById('ns-client').value.trim() || 'À définir';
       slotData = { type, client: clientName, status: 'reserve' };
