@@ -2262,7 +2262,23 @@
   ];
 
   function renderMoniteurCards() {
-    document.querySelector('#page-moniteurs .monitor-cards').innerHTML = moniteurs.map(m => `
+    const today = new Date();
+    const todayISO = today.toISOString().slice(0,10);
+    // Semaine en cours : lundi au samedi
+    const dow = (today.getDay() + 6) % 7; // lundi = 0
+    const weekDates = Array.from({length:6}, (_,i) => {
+      const d = new Date(today); d.setDate(today.getDate() - dow + i);
+      return d.toISOString().slice(0,10);
+    });
+
+    document.querySelector('#page-moniteurs .monitor-cards').innerHTML = moniteurs.map(m => {
+      const dayData   = coursParMoniteur[m.id] || {};
+      const coursWeek = weekDates.reduce((n, d) => n + Object.keys(dayData[d] || {}).length, 0);
+      const coursAujourdhui = Object.keys(dayData[todayISO] || {}).length;
+      const presAujourdhui  = getPresence(m.id, todayISO);
+      const { label: presLabel, color: presColor } = presStatus[presAujourdhui];
+
+      return `
       <div class="monitor-card" style="position:relative">
         <button class="btn btn-outline btn-sm"
           style="position:absolute;top:14px;right:14px;font-size:11px;padding:4px 10px"
@@ -2272,16 +2288,17 @@
           <div>
             <div class="monitor-card-name">${m.full}</div>
             <div class="monitor-card-spec">${m.specialite}</div>
-            <div class="monitor-card-spec">${m.galop}</div>
+            <div class="monitor-card-spec" style="color:${presColor};font-weight:600">${presLabel}</div>
           </div>
         </div>
         <div style="font-size:12px;color:var(--t3);margin-bottom:2px">${m.email}</div>
         <div style="font-size:12px;color:var(--t3)">${m.tel}</div>
         <div class="monitor-stat-row">
-          <div class="monitor-stat"><div class="monitor-stat-val">${m.coursWeek}</div><div class="monitor-stat-lbl">Cours cette semaine</div></div>
-          <div class="monitor-stat"><div class="monitor-stat-val">${m.heuresWeek}h</div><div class="monitor-stat-lbl">Heures planifiées</div></div>
+          <div class="monitor-stat"><div class="monitor-stat-val">${coursWeek}</div><div class="monitor-stat-lbl">Cours cette semaine</div></div>
+          <div class="monitor-stat"><div class="monitor-stat-val">${coursAujourdhui}</div><div class="monitor-stat-lbl">Cours aujourd'hui</div></div>
         </div>
-      </div>`).join('');
+      </div>`;
+    }).join('');
   }
 
   /* ── PRÉSENCES & ABSENCES ── */
