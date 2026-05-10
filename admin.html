@@ -1341,6 +1341,36 @@
   </div>
 </div>
 
+<!-- ══ MODAL AJOUT DE POINTS ══ -->
+<div class="modal-overlay" id="modal-points">
+  <div class="modal" style="max-width:380px">
+    <div class="modal-header">
+      <div class="modal-title">Ajouter des points</div>
+      <button class="modal-close" onclick="closeModalPoints()">✕</button>
+    </div>
+    <div class="modal-body" style="padding:20px;display:flex;flex-direction:column;gap:14px">
+      <div style="font-size:13px;color:var(--t2)" id="points-client-info"></div>
+      <div class="form-group">
+        <div class="form-label">Nombre de points</div>
+        <select class="form-select" id="points-choix">
+          <option value="10">10 points — Pack découverte</option>
+          <option value="20">20 points — Pack essentiel</option>
+          <option value="50">50 points — Pack confort</option>
+          <option value="100">100 points — Pack premium</option>
+          <option value="200">200 points — Pack annuel</option>
+        </select>
+      </div>
+      <div style="background:var(--bg);border-radius:8px;padding:12px;font-size:13px;color:var(--t2)">
+        Nouveau solde : <strong id="points-nouveau-solde">—</strong> pts
+      </div>
+    </div>
+    <div class="modal-footer" style="display:flex;gap:10px;padding:16px 20px;border-top:1px solid var(--border)">
+      <button class="btn btn-outline" style="flex:1" onclick="closeModalPoints()">Annuler</button>
+      <button class="btn btn-primary" style="flex:1" onclick="confirmerAjoutPoints()">Confirmer</button>
+    </div>
+  </div>
+</div>
+
 <!-- ══ MODAL CONFIRMATION ANNULATION ══ -->
 <div class="modal-overlay" id="modal-cancel">
   <div class="modal" style="max-width:420px">
