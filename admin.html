@@ -1877,7 +1877,7 @@
     return Array.from({ length: 6 }, (_, i) => {
       const d = new Date(moniWeekStart);
       d.setDate(d.getDate() + i);
-      const iso = d.toISOString().slice(0, 10);
+      const iso = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
       return { label: `${JOURS_LONG[d.getDay()]} ${d.getDate()} ${MOIS_LONG[d.getMonth()]}`, date: iso };
     });
   }
