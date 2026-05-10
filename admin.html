@@ -2608,6 +2608,8 @@
       s.maxPlaces = parseInt(document.getElementById('edit-slot-max').value) || s.maxPlaces;
     }
     renderCoursMoniteur();
+    renderMoniCoursView(activeCoursMoniteur);
+    showToast('✅ Créneau mis à jour');
     openSlotDetail(date, heure);
   }
 
