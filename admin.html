@@ -2243,8 +2243,9 @@
 
   function saveNewSlot(prefillInscrit) {
     const type  = document.getElementById('ns-type').value;
-    const date  = document.getElementById('ns-date').value;
-    const heure = document.getElementById('ns-heure').value;
+    const date  = document.getElementById('ns-date').value || _slotDate;
+    const heure = document.getElementById('ns-heure').value || _slotHeure;
+    const monit = _slotMoniteur || activeCoursMoniteur;
     if (!date) { alert('Veuillez choisir une date.'); return; }
     if (!coursParMoniteur[activeCoursMoniteur]) coursParMoniteur[activeCoursMoniteur] = {};
     if (!coursParMoniteur[activeCoursMoniteur][date]) coursParMoniteur[activeCoursMoniteur][date] = {};
