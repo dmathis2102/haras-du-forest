@@ -1543,17 +1543,7 @@
       }
     }
 
-    // 3. Planning mensuel (monthSlots)
-    const h = heure.replace('h00','h');
-    const clsMap = { particulier:'wg-part', collectif:'wg-coll', enfants:'wg-enf', stage:'wg-coll' };
-    const msLabel = slotType === 'particulier' ? `${h} · ${client} — Particulier` : `${h} · ${typeKey} (1/6)`;
-    if (!monthSlots[date]) monthSlots[date] = [];
-    if (!monthSlots[date].find(s => s.label.startsWith(h + ' ·'))) {
-      monthSlots[date].push({ label: msLabel, cls: clsMap[slotType] || 'wg-part' });
-      monthSlots[date].sort((a, b) => a.label.localeCompare(b.label));
-    }
-
-    // 4. Re-render tous les plannings
+    // 3. Re-render tous les plannings
     renderCoursMoniteur();
     renderMoniCoursView(activePresenceMon);
     renderMonthCalendar();
