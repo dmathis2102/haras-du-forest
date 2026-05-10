@@ -2209,6 +2209,8 @@
       filterPaiements();
       renderDashboardStats();
 
+      fbSaveClient(newClient);
+      fbSavePaiement(paiements[0]);
       addLog('client', `Nouveau client créé — ${nomComplet} · Formule ${newClient.formule}`);
       closeNouveauClient();
       showToast(`Lien de paiement envoyé à ${newClient.email !== '—' ? newClient.email : nomComplet}`);
