@@ -3486,18 +3486,36 @@
     if (user) {
       await handleUserLogin(user);
     } else {
-      document.getElementById('auth-screen').classList.remove('hidden');
+      showAuthForms();
     }
   });
 
-  /* ── Après connexion : lit le rôle et redirige ── */
+  function showAuthForms() {
+    document.getElementById('auth-screen').classList.remove('hidden');
+    document.getElementById('verify-block').style.display = 'none';
+    document.getElementById('auth-forms-block').style.display = '';
+  }
+
+  function showVerifyScreen(email) {
+    document.getElementById('auth-screen').classList.remove('hidden');
+    document.getElementById('auth-forms-block').style.display = 'none';
+    document.getElementById('verify-block').style.display = '';
+    document.getElementById('verify-email-display').textContent = email;
+  }
+
+  /* ── Après connexion : vérifie email + rôle + redirige ── */
   async function handleUserLogin(user) {
+    // Email non vérifié → écran de vérification
+    if (!user.emailVerified) {
+      showVerifyScreen(user.email);
+      return;
+    }
+
     try {
       const snap = await db.collection('users').doc(user.uid).get();
       const role = snap.exists ? snap.data().role : 'client';
 
       if (role === 'moniteur') {
-        // Redirige vers l'interface moniteur
         window.location.href = '../Moniteur/index.html';
         return;
       }
@@ -3509,7 +3527,6 @@
       // Client → affiche l'app
       const data = snap.data() || {};
       const prenom = data.prenom || user.email.split('@')[0];
-      // Met à jour le nom affiché dans la sidebar si l'élément existe
       const nameEl = document.getElementById('user-display-name');
       if (nameEl) nameEl.textContent = prenom;
       document.getElementById('auth-screen').classList.add('hidden');
@@ -3517,6 +3534,34 @@
       console.warn('Erreur lecture rôle :', e.message);
       document.getElementById('auth-screen').classList.add('hidden');
     }
+  }
+
+  /* ── Vérifie si l'email a été confirmé (bouton "J'ai vérifié") ── */
+  async function checkVerification() {
+    const user = auth.currentUser;
+    if (!user) return;
+    await user.reload(); // recharge les infos depuis Firebase
+    if (user.emailVerified) {
+      await handleUserLogin(user);
+    } else {
+      alert('Email pas encore vérifié. Vérifie ta boîte mail et clique sur le lien.');
+    }
+  }
+
+  /* ── Renvoie l'email de vérification ── */
+  async function resendVerification() {
+    const user = auth.currentUser;
+    if (!user) return;
+    try {
+      await user.sendEmailVerification();
+      alert('Email renvoyé à ' + user.email);
+    } catch(e) {
+      alert('Erreur : ' + e.message);
+    }
+  }
+
+  function doLogoutApp() {
+    auth.signOut();
   }
 
   /* ── Connexion ── */
