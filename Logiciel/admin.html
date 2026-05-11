@@ -3998,47 +3998,49 @@
       });
   }
 
-  /* ══ SYSTÈME DE MODALE CUSTOM ══ */
-  function showModal({ icon='', title='', message='', inputLabel='', inputPlaceholder='', inputExpected='',
-                       btnCancel='Annuler', btnConfirm='Confirmer', btnConfirmClass='modal-btn-danger',
+  /* ══ SYSTÈME DE POPUP CONFIRMATION CUSTOM ══ */
+  function showModal({ icon='', title='', message='', inputPlaceholder='', inputExpected='',
+                       btnCancel='Annuler', btnConfirm='Confirmer', btnConfirmClass='cp-btn-danger',
                        onConfirm=()=>{}, onCancel=()=>{} }) {
-    // Supprime une éventuelle modale déjà ouverte
-    document.getElementById('__modal__')?.remove();
+    // Supprime une éventuelle popup déjà ouverte
+    document.getElementById('__cpopup__')?.remove();
 
     const needsInput = !!inputExpected;
     const overlay = document.createElement('div');
-    overlay.id = '__modal__';
-    overlay.className = 'modal-overlay';
+    overlay.id = '__cpopup__';
+    overlay.className = 'cp-overlay';
     overlay.innerHTML = `
-      <div class="modal-box" onclick="event.stopPropagation()">
-        ${icon ? `<div class="modal-icon">${icon}</div>` : ''}
-        <div class="modal-title">${title}</div>
-        <div class="modal-msg">${message}</div>
-        ${needsInput ? `<input id="__modal_input__" class="modal-input" type="text" placeholder="${inputPlaceholder}" autocomplete="off">` : ''}
-        <div class="modal-btns">
-          <button class="modal-btn-cancel" id="__modal_cancel__">${btnCancel}</button>
-          <button class="${btnConfirmClass}" id="__modal_confirm__">${btnConfirm}</button>
+      <div class="cp-box" onclick="event.stopPropagation()">
+        ${icon ? `<div class="cp-icon">${icon}</div>` : ''}
+        <div class="cp-title">${title}</div>
+        <div class="cp-msg">${message}</div>
+        ${needsInput ? `<input id="__cpopup_input__" class="cp-input" type="text" placeholder="${inputPlaceholder}" autocomplete="off" spellcheck="false">` : ''}
+        <div class="cp-btns">
+          ${btnCancel ? `<button class="cp-btn-cancel" id="__cpopup_cancel__">${btnCancel}</button>` : ''}
+          <button class="${btnConfirmClass}" id="__cpopup_confirm__">${btnConfirm}</button>
         </div>
       </div>`;
     document.body.appendChild(overlay);
 
     // Focus sur le champ si besoin
-    if (needsInput) setTimeout(() => document.getElementById('__modal_input__')?.focus(), 50);
+    if (needsInput) setTimeout(() => document.getElementById('__cpopup_input__')?.focus(), 60);
 
     // Fermeture sur clic overlay
     overlay.addEventListener('click', () => { overlay.remove(); onCancel(); });
 
-    document.getElementById('__modal_cancel__').onclick = () => { overlay.remove(); onCancel(); };
-    document.getElementById('__modal_confirm__').onclick = () => {
+    if (btnCancel) {
+      document.getElementById('__cpopup_cancel__').onclick = () => { overlay.remove(); onCancel(); };
+    }
+    document.getElementById('__cpopup_confirm__').onclick = () => {
       if (needsInput) {
-        const val = (document.getElementById('__modal_input__')?.value || '').trim();
+        const val = (document.getElementById('__cpopup_input__')?.value || '').trim();
         if (val !== inputExpected) {
-          const inp = document.getElementById('__modal_input__');
-          inp.classList.remove('shake');
-          void inp.offsetWidth; // force reflow
-          inp.classList.add('shake');
+          const inp = document.getElementById('__cpopup_input__');
+          inp.classList.remove('cp-shake');
+          void inp.offsetWidth;
+          inp.classList.add('cp-shake');
           inp.value = '';
-          inp.placeholder = `Tape exactement : ${inputExpected}`;
+          setTimeout(() => inp.classList.remove('cp-shake'), 400);
           return;
         }
       }
@@ -4049,7 +4051,7 @@
     // Enter valide, Escape annule
     overlay.addEventListener('keydown', e => {
       if (e.key === 'Escape') { overlay.remove(); onCancel(); }
-      if (e.key === 'Enter' && needsInput) document.getElementById('__modal_confirm__').click();
+      if (e.key === 'Enter') document.getElementById('__cpopup_confirm__').click();
     });
   }
 
