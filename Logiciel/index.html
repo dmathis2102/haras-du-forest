@@ -4048,6 +4048,96 @@
   }
 
   console.log('Firebase Auth prêt — haras-du-forest');
+
+  /* ══ GESTION DES UTILISATEURS ══ */
+  let _usersCache = [];
+
+  async function loadUsers() {
+    const tbody = document.getElementById('users-tbody');
+    if (!tbody) return;
+    tbody.innerHTML = `<tr><td colspan="5" style="padding:40px;text-align:center;color:var(--t3)">Chargement…</td></tr>`;
+
+    try {
+      const snap = await db.collection('users').orderBy('createdAt', 'desc').get();
+      _usersCache = snap.docs.map(d => ({ uid: d.id, ...d.data() }));
+      renderUsers(_usersCache);
+    } catch(e) {
+      tbody.innerHTML = `<tr><td colspan="5" style="padding:40px;text-align:center;color:var(--red)">Erreur : ${e.message}</td></tr>`;
+    }
+  }
+
+  function renderUsers(list) {
+    const tbody = document.getElementById('users-tbody');
+    if (!tbody) return;
+
+    // Stats
+    const nbClient   = list.filter(u => u.role === 'client').length;
+    const nbMoniteur = list.filter(u => u.role === 'moniteur').length;
+    const el = (id, val) => { const e = document.getElementById(id); if(e) e.textContent = val; };
+    el('users-count-client',   nbClient);
+    el('users-count-moniteur', nbMoniteur);
+    el('users-count-total',    list.length);
+
+    // Badge sidebar
+    const badge = document.getElementById('badge-users');
+    if (badge) { badge.textContent = list.length || ''; }
+
+    if (list.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="5" style="padding:40px;text-align:center;color:var(--t3)">Aucun utilisateur inscrit via l'application</td></tr>`;
+      return;
+    }
+
+    const roleLabel = { client: 'Client', moniteur: 'Moniteur', admin: 'Admin' };
+    const roleBadge = { client: 'badge-blue', moniteur: 'badge-gold', admin: 'badge-green' };
+
+    tbody.innerHTML = list.map(u => {
+      const nom = u.prenom && u.nom ? `${u.prenom} ${u.nom}` : (u.email || '—');
+      const initials = u.prenom && u.nom ? (u.prenom[0] + u.nom[0]).toUpperCase() : '?';
+      const role = u.role || 'client';
+      const isAdmin = role === 'admin';
+
+      return `<tr style="border-top:1px solid var(--border)">
+        <td style="padding:14px 16px">
+          <div style="display:flex;align-items:center;gap:10px">
+            <div style="width:34px;height:34px;border-radius:50%;background:var(--navy);color:var(--gold);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">${initials}</div>
+            <div>
+              <div style="font-size:13px;font-weight:600;color:var(--t1)">${nom}</div>
+              ${u.niveau ? `<div style="font-size:11px;color:var(--t3)">${u.niveau}</div>` : ''}
+            </div>
+          </div>
+        </td>
+        <td style="padding:14px 16px;font-size:13px;color:var(--t2)">${u.email || '—'}</td>
+        <td style="padding:14px 16px;font-size:13px;color:var(--t2)">${u.niveau || '—'}</td>
+        <td style="padding:14px 16px">
+          <span class="badge ${roleBadge[role] || 'badge-gray'}" style="font-size:11px">${roleLabel[role] || role}</span>
+        </td>
+        <td style="padding:14px 16px">
+          ${isAdmin ? `<span style="font-size:12px;color:var(--t3);font-style:italic">Non modifiable</span>` : `
+          <select onchange="changeUserRole('${u.uid}', this.value, this)"
+            style="padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px;color:var(--t1);background:#fff;cursor:pointer">
+            <option value="client"   ${role==='client'   ? 'selected' : ''}>Client</option>
+            <option value="moniteur" ${role==='moniteur' ? 'selected' : ''}>Moniteur</option>
+          </select>`}
+        </td>
+      </tr>`;
+    }).join('');
+  }
+
+  async function changeUserRole(uid, newRole, selectEl) {
+    const prev = selectEl.value === 'client' ? 'moniteur' : 'client';
+    selectEl.disabled = true;
+    try {
+      await db.collection('users').doc(uid).update({ role: newRole });
+      // Met à jour le cache local
+      const u = _usersCache.find(u => u.uid === uid);
+      if (u) u.role = newRole;
+      renderUsers(_usersCache);
+      showToast(`Rôle mis à jour → ${newRole === 'moniteur' ? 'Moniteur' : 'Client'}`);
+    } catch(e) {
+      selectEl.disabled = false;
+      showToast('Erreur : ' + e.message);
+    }
+  }
 </script>
 </body>
 </html>
