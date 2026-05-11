@@ -4197,66 +4197,6 @@
     }).join('');
   }
 
-  async function creerAdmin() {
-    const prenom   = document.getElementById('new-admin-prenom').value.trim();
-    const nom      = document.getElementById('new-admin-nom').value.trim();
-    const email    = document.getElementById('new-admin-email').value.trim();
-    const password = document.getElementById('new-admin-password').value;
-    const msgEl    = document.getElementById('new-admin-msg');
-
-    msgEl.style.display = 'none';
-    if (!prenom || !nom || !email || !password) {
-      msgEl.textContent = 'Remplis tous les champs.';
-      msgEl.style.color = 'var(--red)';
-      msgEl.style.display = 'block';
-      return;
-    }
-    if (password.length < 6) {
-      msgEl.textContent = 'Le mot de passe doit faire au moins 6 caractères.';
-      msgEl.style.color = 'var(--red)';
-      msgEl.style.display = 'block';
-      return;
-    }
-
-    const btn = document.querySelector('[onclick="creerAdmin()"]');
-    btn.textContent = 'Création…';
-    btn.disabled = true;
-
-    try {
-      // Crée le compte Firebase Auth via une instance secondaire pour ne pas déconnecter l'admin actuel
-      const secondApp = firebase.initializeApp(firebase.app().options, 'secondary-' + Date.now());
-      const secondAuth = secondApp.auth();
-      const cred = await secondAuth.createUserWithEmailAndPassword(email, password);
-      const uid = cred.user.uid;
-      await secondAuth.signOut();
-      await secondApp.delete();
-
-      // Crée le document Firestore avec rôle admin
-      await db.collection('users').doc(uid).set({
-        uid, email, prenom, nom, role: 'admin',
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      });
-
-      // Réinitialise le formulaire
-      ['new-admin-prenom','new-admin-nom','new-admin-email','new-admin-password'].forEach(id => document.getElementById(id).value = '');
-      msgEl.textContent = `Accès créé pour ${prenom} ${nom} (${email})`;
-      msgEl.style.color = 'var(--green)';
-      msgEl.style.display = 'block';
-      loadUsers();
-    } catch(e) {
-      let msg = 'Erreur lors de la création.';
-      if (e.code === 'auth/email-already-in-use') msg = 'Un compte existe déjà avec cet email.';
-      else if (e.code === 'auth/invalid-email')   msg = 'Adresse email invalide.';
-      else if (e.code === 'auth/weak-password')   msg = 'Mot de passe trop faible.';
-      msgEl.textContent = msg;
-      msgEl.style.color = 'var(--red)';
-      msgEl.style.display = 'block';
-    } finally {
-      btn.textContent = "Créer l'accès";
-      btn.disabled = false;
-    }
-  }
-
   async function changeUserRole(uid, newRole, selectEl) {
     const prev = selectEl.value === 'client' ? 'moniteur' : 'client';
     selectEl.disabled = true;
