@@ -3211,42 +3211,81 @@
     renderLogs();
   }
 
-  async function reinitialiserDonnees() {
-    // Première confirmation
-    if (!confirm('Tu es sur le point de supprimer TOUTES les données (clients, réservations, paiements).\n\nCette action est irréversible.\n\nContinuer ?')) return;
-    // Deuxième confirmation — tape le mot
-    const saisie = prompt('Pour confirmer, tape exactement : REINITIALISER');
-    if (saisie !== 'REINITIALISER') { alert('Annulé — le mot de confirmation est incorrect.'); return; }
+  function reinitialiserDonnees() {
+    // Étape 1 — confirmation initiale
+    showModal({
+      icon: '⚠️',
+      title: 'Réinitialiser toutes les données ?',
+      message: 'Cette action va <strong>supprimer définitivement</strong> tous les clients, réservations, paiements, cours et moniteurs.<br><br>Cette action est <strong>irréversible</strong>.',
+      btnCancel: 'Annuler',
+      btnConfirm: 'Continuer →',
+      btnConfirmClass: 'modal-btn-danger',
+      onConfirm: () => {
+        // Étape 2 — saisie du mot de confirmation
+        showModal({
+          icon: '🔐',
+          title: 'Dernière confirmation',
+          message: 'Pour confirmer la suppression définitive, tape exactement le mot ci-dessous dans le champ :',
+          inputLabel: 'Mot de confirmation',
+          inputPlaceholder: 'REINITIALISER',
+          inputExpected: 'REINITIALISER',
+          btnCancel: 'Annuler',
+          btnConfirm: 'Tout supprimer',
+          btnConfirmClass: 'modal-btn-danger',
+          onConfirm: () => _executerReinitialisation()
+        });
+      }
+    });
+  }
 
+  async function _executerReinitialisation() {
     try {
       showToast('Réinitialisation en cours...');
 
-      // Supprime tout dans Firebase
-      const collections = ['reservations', 'clients', 'paiements'];
+      // Supprime tout dans Firebase — toutes les collections
+      const collections = ['reservations', 'clients', 'paiements', 'cours', 'moniteurs', '_meta'];
       for (const col of collections) {
         const snap = await db.collection(col).get();
-        const batch = db.batch();
-        snap.forEach(doc => batch.delete(doc.ref));
-        await batch.commit();
+        if (snap.empty) continue;
+        // Firestore limite les batchs à 500 ops
+        const chunks = [];
+        let batch = db.batch(); let count = 0;
+        snap.forEach(doc => {
+          batch.delete(doc.ref);
+          count++;
+          if (count === 499) { chunks.push(batch); batch = db.batch(); count = 0; }
+        });
+        chunks.push(batch);
+        for (const b of chunks) await b.commit();
       }
 
-      // Vide les tableaux locaux
+      // Vide les tableaux et objets locaux
       reservations.length = 0;
       clients.length = 0;
       paiements.length = 0;
+      moniteurs.length = 0;
+      Object.keys(coursParMoniteur).forEach(k => delete coursParMoniteur[k]);
       nextId = 1;
 
-      // Rafraîchit l'affichage
+      // Rafraîchit tout l'affichage
       filterResas();
       renderClients(clients);
       filterPaiements();
+      renderMoniteurCards();
       renderDashboardStats();
       renderBadges();
-      addLog('systeme', 'Réinitialisation complète — toutes les données fictives ont été supprimées');
+      addLog('systeme', 'Réinitialisation complète — toutes les données ont été supprimées');
 
-      showToast('Réinitialisation terminée — vous repartez de zéro');
+      showToast('✓ Réinitialisation terminée — vous repartez de zéro');
     } catch(e) {
-      alert('Erreur lors de la réinitialisation : ' + e.message);
+      showModal({
+        icon: '❌',
+        title: 'Erreur',
+        message: 'La réinitialisation a échoué :<br><code>' + e.message + '</code>',
+        btnCancel: '',
+        btnConfirm: 'OK',
+        btnConfirmClass: 'modal-btn-danger'
+      });
     }
   }
 
