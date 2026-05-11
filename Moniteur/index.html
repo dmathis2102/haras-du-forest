@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Haras du Forest — Espace Moniteur</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #152240;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 24px;
+    padding: 24px;
+  }
+  .card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 40px 32px;
+    max-width: 420px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  }
+  .logo { color: #C4A97E; font-size: 20px; font-weight: 800; margin-bottom: 4px; }
+  .sub  { color: #8A96A8; font-size: 12px; margin-bottom: 32px; }
+  .badge {
+    display: inline-block;
+    background: #EEF2FB;
+    color: #152240;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  h1 { font-size: 22px; font-weight: 700; color: #0E1C35; margin-bottom: 12px; }
+  p  { font-size: 14px; color: #4A5568; line-height: 1.6; margin-bottom: 28px; }
+  .user-info {
+    background: #F0F2F7;
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 13px;
+    color: #4A5568;
+    margin-bottom: 24px;
+    text-align: left;
+  }
+  .user-info span { font-weight: 600; color: #0E1C35; }
+  button {
+    width: 100%;
+    padding: 12px;
+    background: #152240;
+    color: #C4A97E;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.3px;
+  }
+  button:hover { background: #1E3260; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">Haras du Forest</div>
+  <div class="sub">Espace de gestion</div>
+  <div class="badge">Interface Moniteur</div>
+  <h1>Interface en cours de création</h1>
+  <p>Ton espace dédié est en cours de développement.<br>Il sera disponible très prochainement.</p>
+  <div class="user-info" id="user-info">
+    Connecté en tant que : <span id="user-email">—</span>
+  </div>
+  <button onclick="doLogout()">Se déconnecter</button>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script>
+  firebase.initializeApp({
+    apiKey:            "AIzaSyAwspb2AUT9JvV4x3hn362ttKtHmfEc6Fc",
+    authDomain:        "haras-du-forest.firebaseapp.com",
+    projectId:         "haras-du-forest",
+    storageBucket:     "haras-du-forest.firebasestorage.app",
+    messagingSenderId: "661096788450",
+    appId:             "1:661096788450:web:49783a922deb41fa01c9bb"
+  });
+  const auth = firebase.auth();
+
+  auth.onAuthStateChanged(user => {
+    if (!user) { window.location.href = '../Application/index.html'; return; }
+    document.getElementById('user-email').textContent = user.email;
+  });
+
+  function doLogout() {
+    auth.signOut().then(() => window.location.href = '../Application/index.html');
+  }
+</script>
+</body>
+</html>
