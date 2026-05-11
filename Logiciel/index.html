@@ -2247,8 +2247,10 @@
     }
     const nomComplet = `${prenom} ${nom}`;
     const initials   = (prenom[0] + nom[0]).toUpperCase();
+    const newKey     = Date.now().toString();
     const newClient  = {
-      id: clients.length + 1,
+      _key: newKey,
+      id: newKey,
       nom: nomComplet,
       initials,
       email:        document.getElementById('nc-email').value.trim() || '—',
