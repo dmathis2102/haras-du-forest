@@ -952,83 +952,12 @@
         <div class="dash-left-col">
           <div class="card">
             <div class="card-header">
-              <span class="card-title">Planning du jour — Vendredi 9 mai</span>
-              <span class="badge-gray tl-badge">8 créneaux</span>
+              <span class="card-title" id="dash-today-title">Planning du jour</span>
+              <span class="tl-badge badge-gray" id="dash-today-count"></span>
             </div>
-            <div class="card-body" style="max-height:420px;overflow-y:auto">
-              <div class="timeline">
-                <div class="tl-item">
-                  <div class="tl-time">09h00</div>
-                  <div class="tl-dot dot-blue"></div>
-                  <div class="tl-info">
-                    <div class="tl-name">Marie Lefebvre</div>
-                    <div class="tl-sub">Cours particulier · Sophie L.</div>
-                  </div>
-                  <span class="tl-badge badge-green">Confirmé</span>
-                </div>
-                <div class="tl-item">
-                  <div class="tl-time">09h00</div>
-                  <div class="tl-dot dot-green"></div>
-                  <div class="tl-info">
-                    <div class="tl-name">Cours collectif débutants</div>
-                    <div class="tl-sub">4/6 places · Thomas D.</div>
-                  </div>
-                  <span class="tl-badge badge-green">Confirmé</span>
-                </div>
-                <div class="tl-item">
-                  <div class="tl-time">10h00</div>
-                  <div class="tl-dot dot-blue"></div>
-                  <div class="tl-info">
-                    <div class="tl-name">Lucas Martin</div>
-                    <div class="tl-sub">Cours particulier · Thomas D.</div>
-                  </div>
-                  <span class="tl-badge badge-green">Confirmé</span>
-                </div>
-                <div class="tl-item">
-                  <div class="tl-time">14h00</div>
-                  <div class="tl-dot dot-gold"></div>
-                  <div class="tl-info">
-                    <div class="tl-name">Cours enfants — Galop 1-2</div>
-                    <div class="tl-sub">3/6 places · Camille R.</div>
-                  </div>
-                  <span class="tl-badge badge-green">Confirmé</span>
-                </div>
-                <div class="tl-item">
-                  <div class="tl-time">15h00</div>
-                  <div class="tl-dot dot-blue"></div>
-                  <div class="tl-info">
-                    <div class="tl-name">Isabelle Morel</div>
-                    <div class="tl-sub">Cours particulier · Camille R.</div>
-                  </div>
-                  <span class="tl-badge badge-orange">En attente</span>
-                </div>
-                <div class="tl-item">
-                  <div class="tl-time">16h00</div>
-                  <div class="tl-dot dot-green"></div>
-                  <div class="tl-info">
-                    <div class="tl-name">Cours collectif confirmés</div>
-                    <div class="tl-sub">5/6 places · Sophie L.</div>
-                  </div>
-                  <span class="tl-badge badge-green">Confirmé</span>
-                </div>
-                <div class="tl-item">
-                  <div class="tl-time">17h00</div>
-                  <div class="tl-dot dot-blue"></div>
-                  <div class="tl-info">
-                    <div class="tl-name">Nathan Dupuis</div>
-                    <div class="tl-sub">Cours particulier · Thomas D.</div>
-                  </div>
-                  <span class="tl-badge badge-green">Confirmé</span>
-                </div>
-                <div class="tl-item">
-                  <div class="tl-time">18h00</div>
-                  <div class="tl-dot dot-blue"></div>
-                  <div class="tl-info">
-                    <div class="tl-name">Clara Petit</div>
-                    <div class="tl-sub">Cours particulier · Sophie L.</div>
-                  </div>
-                  <span class="tl-badge badge-red">Annulé</span>
-                </div>
+            <div class="card-body" style="max-height:420px;overflow-y:auto;padding:0">
+              <div class="timeline" id="dash-today-list">
+                <div style="padding:40px;text-align:center;color:var(--t3);font-size:13px">Chargement…</div>
               </div>
             </div>
           </div>
@@ -1041,34 +970,11 @@
           <div class="card">
             <div class="card-header">
               <span class="card-title">Alertes</span>
-              <span class="tl-badge badge-red">3</span>
+              <span class="tl-badge badge-red" id="dash-alerts-badge" style="display:none"></span>
             </div>
-            <div class="card-body">
-              <div class="alert-list">
-                <div class="alert-item" onclick="navigateTo('paiements', () => openPaiementDetail(2))">
-                  <div class="alert-icon si-red" style="border-radius:8px">⚠</div>
-                  <div class="alert-txt">
-                    <div class="alert-title">Paiement en attente</div>
-                    <div class="alert-sub">Isabelle Morel · Formule Confort</div>
-                  </div>
-                  <span style="color:var(--t3);font-size:18px;align-self:center">›</span>
-                </div>
-                <div class="alert-item" onclick="navigateTo('cours')">
-                  <div class="alert-icon si-orange" style="border-radius:8px;background:var(--orange-l)">📋</div>
-                  <div class="alert-txt">
-                    <div class="alert-title">Cours presque complet</div>
-                    <div class="alert-sub">Collectif confirmés — Sam 16 mai · 5/6</div>
-                  </div>
-                  <span style="color:var(--t3);font-size:18px;align-self:center">›</span>
-                </div>
-                <div class="alert-item" onclick="navigateTo('cours', () => { switchCoursMoniteur('thomas', document.querySelector('.cours-mon-tab[data-id=\'thomas\']')); openAddSlotModal('2026-07-07','09h00','stage','Stage été juillet','Nathan Dupuis'); })">
-                  <div class="alert-icon si-blue" style="border-radius:8px">💬</div>
-                  <div class="alert-txt">
-                    <div class="alert-title">Demande de stage</div>
-                    <div class="alert-sub">Nathan Dupuis · Stage été juillet</div>
-                  </div>
-                  <span style="color:var(--t3);font-size:18px;align-self:center">›</span>
-                </div>
+            <div class="card-body" style="padding:0">
+              <div class="alert-list" id="dash-alerts-list">
+                <div style="padding:24px;text-align:center;color:var(--t3);font-size:13px">Chargement…</div>
               </div>
             </div>
           </div>
@@ -1078,34 +984,8 @@
             <div class="card-header">
               <span class="card-title">Moniteurs aujourd'hui</span>
             </div>
-            <div class="card-body" style="padding:12px 0">
-              <div class="tl-item" style="cursor:pointer" onclick="navigateTo('moniteurs', () => switchToMonitor('sophie'))">
-                <div class="tl-dot dot-green"></div>
-                <div class="tl-info">
-                  <div class="tl-name">Sophie L.</div>
-                  <div class="tl-sub">3 cours · 09h, 16h, 18h</div>
-                </div>
-                <span class="tl-badge badge-green">Disponible</span>
-                <span style="color:var(--t3);font-size:16px;margin-left:4px">›</span>
-              </div>
-              <div class="tl-item" style="cursor:pointer" onclick="navigateTo('moniteurs', () => switchToMonitor('thomas'))">
-                <div class="tl-dot dot-green"></div>
-                <div class="tl-info">
-                  <div class="tl-name">Thomas D.</div>
-                  <div class="tl-sub">3 cours · 09h, 10h, 17h</div>
-                </div>
-                <span class="tl-badge badge-green">Disponible</span>
-                <span style="color:var(--t3);font-size:16px;margin-left:4px">›</span>
-              </div>
-              <div class="tl-item" style="cursor:pointer" onclick="navigateTo('moniteurs', () => switchToMonitor('camille'))">
-                <div class="tl-dot dot-gold"></div>
-                <div class="tl-info">
-                  <div class="tl-name">Camille R.</div>
-                  <div class="tl-sub">2 cours · 14h, 15h</div>
-                </div>
-                <span class="tl-badge badge-gold">Après-midi</span>
-                <span style="color:var(--t3);font-size:16px;margin-left:4px">›</span>
-              </div>
+            <div class="card-body" style="padding:12px 0" id="dash-moniteurs-list">
+              <div style="padding:20px;text-align:center;color:var(--t3);font-size:13px">Chargement…</div>
             </div>
           </div>
         </div>
