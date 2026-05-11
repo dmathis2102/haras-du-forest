@@ -3771,8 +3771,186 @@
   // Supprime le document de test s'il existe
   db.collection('reservations').doc('999').delete().catch(() => {});
 
-  loadFromFirebase();
-  console.log('Firebase connecté — haras-du-forest');
+  /* ══ FIREBASE AUTH ══ */
+  const auth = firebase.auth();
+
+  // Observer — déclenche l'app uniquement si l'utilisateur est connecté
+  auth.onAuthStateChanged(user => {
+    if (user) {
+      // Mise à jour de l'affichage dans la sidebar
+      const email = user.email || '';
+      const initials = email.slice(0, 2).toUpperCase();
+      const elEmail    = document.getElementById('sb-user-email');
+      const elInitials = document.getElementById('sb-avatar-initials');
+      if (elEmail)    elEmail.textContent    = email;
+      if (elInitials) elInitials.textContent = initials;
+
+      // Cache l'écran de connexion + charge les données
+      document.getElementById('login-screen').style.display = 'none';
+      loadFromFirebase();
+    } else {
+      // Pas connecté — affiche l'écran de connexion
+      document.getElementById('login-screen').style.display = 'flex';
+      // Vérifie s'il existe déjà des utilisateurs (premier accès)
+      // Firebase ne permet pas de lister les users côté client, donc on
+      // utilise un document sentinelle dans Firestore pour détecter le premier accès
+      db.collection('_meta').doc('setup').get().then(snap => {
+        if (snap.exists && snap.data().initialized) {
+          showLoginForm();
+        } else {
+          showSetupForm();
+        }
+      }).catch(() => showLoginForm());
+    }
+  });
+
+  /* ── Connexion ── */
+  function doLogin() {
+    const email    = (document.getElementById('login-email').value || '').trim();
+    const password = document.getElementById('login-password').value || '';
+    const errEl    = document.getElementById('login-error');
+    const btn      = document.getElementById('login-btn');
+
+    errEl.style.display = 'none';
+    if (!email || !password) {
+      errEl.textContent = 'Remplis les deux champs.';
+      errEl.style.display = 'block';
+      return;
+    }
+
+    btn.textContent = 'Connexion…';
+    btn.disabled = true;
+
+    auth.signInWithEmailAndPassword(email, password)
+      .catch(e => {
+        btn.textContent = 'Se connecter';
+        btn.disabled = false;
+        let msg = 'Identifiants incorrects.';
+        if (e.code === 'auth/user-not-found' || e.code === 'auth/wrong-password'
+            || e.code === 'auth/invalid-credential') msg = 'E-mail ou mot de passe incorrect.';
+        else if (e.code === 'auth/too-many-requests') msg = 'Trop de tentatives. Réessaie plus tard.';
+        else if (e.code === 'auth/invalid-email')     msg = 'Adresse e-mail invalide.';
+        errEl.textContent = msg;
+        errEl.style.display = 'block';
+      });
+  }
+
+  /* ── Création de compte (premier accès) ── */
+  function doSetup() {
+    const email    = (document.getElementById('setup-email').value || '').trim();
+    const password = document.getElementById('setup-password').value || '';
+    const errEl    = document.getElementById('setup-error');
+    const btn      = document.querySelector('#setup-block button');
+
+    errEl.style.display = 'none';
+    if (!email || !password) {
+      errEl.textContent = 'Remplis les deux champs.';
+      errEl.style.display = 'block';
+      return;
+    }
+    if (password.length < 6) {
+      errEl.textContent = 'Le mot de passe doit faire au moins 6 caractères.';
+      errEl.style.display = 'block';
+      return;
+    }
+
+    btn.textContent = 'Création…';
+    btn.disabled = true;
+
+    auth.createUserWithEmailAndPassword(email, password)
+      .then(() => {
+        // Marque le setup comme fait dans Firestore
+        return db.collection('_meta').doc('setup').set({ initialized: true, email });
+      })
+      .catch(e => {
+        btn.textContent = 'Créer mon compte';
+        btn.disabled = false;
+        let msg = e.message;
+        if (e.code === 'auth/email-already-in-use') msg = 'Un compte existe déjà avec cet e-mail.';
+        else if (e.code === 'auth/invalid-email')   msg = 'Adresse e-mail invalide.';
+        else if (e.code === 'auth/weak-password')   msg = 'Mot de passe trop faible (6 caractères minimum).';
+        errEl.textContent = msg;
+        errEl.style.display = 'block';
+      });
+  }
+
+  /* ── Changement de mot de passe ── */
+  function doChangePassword() {
+    const email      = (document.getElementById('cpw-email').value    || '').trim();
+    const currentPw  = document.getElementById('cpw-current').value   || '';
+    const newPw      = document.getElementById('cpw-new').value       || '';
+    const errEl      = document.getElementById('cpw-error');
+
+    errEl.style.display = 'none';
+    if (!email || !currentPw || !newPw) {
+      errEl.textContent = 'Remplis tous les champs.';
+      errEl.style.display = 'block';
+      return;
+    }
+    if (newPw.length < 6) {
+      errEl.textContent = 'Le nouveau mot de passe doit faire au moins 6 caractères.';
+      errEl.style.display = 'block';
+      return;
+    }
+
+    // Ré-authentification puis mise à jour
+    const credential = firebase.auth.EmailAuthProvider.credential(email, currentPw);
+    auth.signInWithEmailAndPassword(email, currentPw)
+      .then(uc => uc.user.updatePassword(newPw))
+      .then(() => {
+        errEl.style.color = '#4ADE80';
+        errEl.textContent = 'Mot de passe changé ! Tu peux te connecter.';
+        errEl.style.display = 'block';
+        setTimeout(() => {
+          errEl.style.color = '#F87171';
+          showLoginForm();
+        }, 2000);
+      })
+      .catch(e => {
+        let msg = e.message;
+        if (e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential')
+          msg = 'Mot de passe actuel incorrect.';
+        else if (e.code === 'auth/user-not-found') msg = 'Aucun compte trouvé pour cet e-mail.';
+        else if (e.code === 'auth/weak-password')  msg = 'Nouveau mot de passe trop faible.';
+        errEl.textContent = msg;
+        errEl.style.display = 'block';
+      });
+  }
+
+  /* ── Déconnexion ── */
+  function doLogout() {
+    if (!confirm('Se déconnecter ?')) return;
+    auth.signOut();
+  }
+
+  /* ── Navigation entre les blocs de l'écran de connexion ── */
+  function showLoginForm() {
+    document.getElementById('login-form-block').style.display  = '';
+    document.getElementById('change-pw-block').style.display   = 'none';
+    document.getElementById('setup-block').style.display       = 'none';
+    document.getElementById('login-error').style.display       = 'none';
+    const btn = document.getElementById('login-btn');
+    if (btn) { btn.textContent = 'Se connecter'; btn.disabled = false; }
+  }
+
+  function showChangePassword() {
+    document.getElementById('login-form-block').style.display  = 'none';
+    document.getElementById('change-pw-block').style.display   = '';
+    document.getElementById('setup-block').style.display       = 'none';
+    document.getElementById('cpw-error').style.display         = 'none';
+    // Pré-rempli l'e-mail si déjà saisi
+    const loginEmail = document.getElementById('login-email').value.trim();
+    if (loginEmail) document.getElementById('cpw-email').value = loginEmail;
+  }
+
+  function showSetupForm() {
+    document.getElementById('login-form-block').style.display  = 'none';
+    document.getElementById('change-pw-block').style.display   = 'none';
+    document.getElementById('setup-block').style.display       = '';
+    document.getElementById('setup-error').style.display       = 'none';
+  }
+
+  console.log('Firebase Auth prêt — haras-du-forest');
 </script>
 </body>
 </html>
