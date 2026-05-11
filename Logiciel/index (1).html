@@ -1675,21 +1675,8 @@
   }
 
   /* ── DONNÉES RÉSERVATIONS ── */
-  let reservations = [
-    { id: 1,  client: 'Marie Lefebvre',   initials: 'ML', type: 'Particulier', date: '2026-05-09', heure: '09h00', monitor: 'Sophie',  status: 'Confirmé'   },
-    { id: 2,  client: 'Lucas Martin',     initials: 'LM', type: 'Particulier', date: '2026-05-09', heure: '10h00', monitor: 'Thomas',  status: 'Confirmé'   },
-    { id: 3,  client: 'Isabelle Morel',   initials: 'IM', type: 'Particulier', date: '2026-05-09', heure: '15h00', monitor: 'Camille', status: 'En attente' },
-    { id: 4,  client: 'Nathan Dupuis',    initials: 'ND', type: 'Particulier', date: '2026-05-09', heure: '17h00', monitor: 'Thomas',  status: 'Confirmé'   },
-    { id: 5,  client: 'Clara Petit',      initials: 'CP', type: 'Particulier', date: '2026-05-09', heure: '18h00', monitor: 'Sophie',  status: 'Annulé'     },
-    { id: 6,  client: 'Cours collectif',  initials: 'CC', type: 'Collectif',   date: '2026-05-09', heure: '09h00', monitor: 'Thomas',  status: 'Confirmé'   },
-    { id: 7,  client: 'Cours enfants',    initials: 'CE', type: 'Enfants',     date: '2026-05-09', heure: '14h00', monitor: 'Camille', status: 'Confirmé'   },
-    { id: 8,  client: 'Cours collectif',  initials: 'CC', type: 'Collectif',   date: '2026-05-13', heure: '17h30', monitor: 'Thomas',  status: 'Confirmé'   },
-    { id: 9,  client: 'Marie Lefebvre',   initials: 'ML', type: 'Particulier', date: '2026-05-14', heure: '09h00', monitor: 'Sophie',  status: 'Confirmé'   },
-    { id: 10, client: 'Nathan Dupuis',    initials: 'ND', type: 'Stage',       date: '2026-07-07', heure: '09h00', monitor: 'Thomas',  status: 'En attente' },
-    { id: 11, client: 'Cours enfants',    initials: 'CE', type: 'Enfants',     date: '2026-05-17', heure: '10h00', monitor: 'Camille', status: 'Confirmé'   },
-    { id: 12, client: 'Lucas Martin',     initials: 'LM', type: 'Collectif',   date: '2026-05-15', heure: '18h00', monitor: 'Sophie',  status: 'Confirmé'   },
-  ];
-  let nextId = 13;
+  let reservations = [];
+  let nextId = 1;
   let openDetailId = null;
 
   const statusBadge = {
@@ -1804,6 +1791,7 @@
     }
 
     // 3. Re-render tous les plannings
+    fbSaveCours();
     renderCoursMoniteur();
     renderMoniCoursView(activePresenceMon);
     renderMonthCalendar();
@@ -1994,16 +1982,7 @@
   }
 
   /* ── CLIENTS ── */
-  const clients = [
-    { id:1, nom:'Marie Lefebvre',   initials:'ML', email:'marie.lefebvre@email.com',    tel:'06 12 34 56 78', galop:'5+',  formule:'Confort',    points:240, reservations:8  },
-    { id:2, nom:'Lucas Martin',     initials:'LM', email:'lucas.martin@email.com',      tel:'06 23 45 67 89', galop:'3-4', formule:'Essentielle',points:80,  reservations:4  },
-    { id:3, nom:'Isabelle Morel',   initials:'IM', email:'isabelle.morel@email.com',    tel:'06 34 56 78 90', galop:'3-4', formule:'Premium',    points:450, reservations:15 },
-    { id:4, nom:'Nathan Dupuis',    initials:'ND', email:'nathan.dupuis@email.com',     tel:'06 45 67 89 01', galop:'1-2', formule:'Essentielle',points:40,  reservations:3  },
-    { id:5, nom:'Clara Petit',      initials:'CP', email:'clara.petit@email.com',       tel:'06 56 78 90 12', galop:'5+',  formule:'Premium',    points:620, reservations:22 },
-    { id:6, nom:'Antoine Bernard',  initials:'AB', email:'antoine.bernard@email.com',   tel:'06 67 89 01 23', galop:'3-4', formule:'Confort',    points:160, reservations:9  },
-    { id:7, nom:'Sophie Rousseau',  initials:'SR', email:'sophie.rousseau@email.com',   tel:'06 78 90 12 34', galop:'1-2', formule:'Essentielle',points:20,  reservations:2  },
-    { id:8, nom:'Pierre Garnier',   initials:'PG', email:'pierre.garnier@email.com',    tel:'06 89 01 23 45', galop:'5+',  formule:'Premium',    points:380, reservations:17 },
-  ];
+  const clients = [];
   const formuleBadge = { Essentielle:'badge-gray', Confort:'badge-gold', Premium:'badge-blue' };
 
   function showToast(msg) {
@@ -2366,9 +2345,9 @@
 
   /* ── PRÉSENCES & ABSENCES ── */
   const presenceData = {
-    sophie:  { '2026-05-13':'absent', '2026-05-16':'conge', '2026-05-19':'absent', '2026-05-20':'absent', '2026-05-26':'conge' },
-    thomas:  { '2026-05-14':'conge',  '2026-05-15':'conge', '2026-05-21':'absent' },
-    camille: { '2026-05-12':'absent', '2026-05-22':'conge', '2026-05-23':'conge'  },
+    sophie:  {},
+    thomas:  {},
+    camille: {},
   };
   const presStatus = {
     present:      { label:'Présent',      color:'var(--green)', icon:'✓' },
@@ -2400,6 +2379,7 @@
     if (!presenceData[monId]) presenceData[monId] = {};
     if (statut === 'present') delete presenceData[monId][iso];
     else presenceData[monId][iso] = statut;
+    fbSavePresences();
     modal.classList.remove('open');
     renderPresenceWeek(monId);
     renderAbsCalendar();
@@ -2536,60 +2516,9 @@
   ];
 
   const coursParMoniteur = {
-    sophie: {
-      '2026-05-11': {
-        '09h00': { type:'particulier', client:'Marie Lefebvre', status:'reserve' },
-        '10h00': { type:'collectif', label:'Collectif débutants', maxPlaces:6, inscrits:['Lucas Martin','Clara Petit','Antoine Bernard','Sophie Rousseau'] },
-        '15h00': { type:'particulier', client:'Clara Petit', status:'reserve' },
-      },
-      '2026-05-13': {
-        '09h00': { type:'collectif', label:'Collectif débutants', maxPlaces:6, inscrits:['Pierre Garnier','Nathan Dupuis'] },
-      },
-      '2026-05-15': {
-        '10h00': { type:'collectif', label:'Collectif confirmés', maxPlaces:6, inscrits:['Marie Lefebvre','Lucas Martin','Clara Petit','Antoine Bernard','Pierre Garnier'] },
-        '16h00': { type:'particulier', client:'Clara Petit', status:'reserve' },
-      },
-      '2026-05-16': {
-        '09h00': { type:'particulier', client:'Lucas Martin', status:'reserve' },
-        '14h00': { type:'collectif', label:'Collectif confirmés', maxPlaces:6, inscrits:['Marie Lefebvre','Pierre Garnier','Nathan Dupuis','Antoine Bernard'] },
-        '16h00': { type:'particulier', client:'Marie Lefebvre', status:'reserve' },
-      },
-    },
-    thomas: {
-      '2026-05-11': {
-        '09h00': { type:'collectif', label:'Collectif avancés', maxPlaces:6, inscrits:['Lucas Martin','Pierre Garnier','Marie Lefebvre','Isabelle Morel'] },
-        '10h00': { type:'particulier', client:'Lucas Martin', status:'reserve' },
-      },
-      '2026-05-12': {
-        '17h00': { type:'particulier', client:'Nathan Dupuis', status:'reserve' },
-      },
-      '2026-05-13': {
-        '14h00': { type:'collectif', label:'Collectif avancés', maxPlaces:6, inscrits:['Lucas Martin','Clara Petit'] },
-      },
-      '2026-05-14': {
-        '09h00': { type:'particulier', client:'Nathan Dupuis', status:'reserve' },
-        '17h00': { type:'particulier', client:'Pierre Garnier', status:'reserve' },
-      },
-      '2026-05-16': {
-        '10h00': { type:'collectif', label:'Collectif confirmés', maxPlaces:6, inscrits:['Marie Lefebvre','Lucas Martin','Clara Petit','Antoine Bernard','Pierre Garnier'] },
-        '11h00': { type:'particulier', client:'Pierre Garnier', status:'reserve' },
-      },
-    },
-    camille: {
-      '2026-05-12': {
-        '14h00': { type:'enfants', label:'Galop 1-2', maxPlaces:6, inscrits:['Léa Bernard','Tom Rousseau','Emma Garnier'] },
-        '16h00': { type:'particulier', client:'Isabelle Morel', status:'reserve' },
-      },
-      '2026-05-13': {
-        '10h00': { type:'enfants', label:'Galop 1-3', maxPlaces:6, inscrits:['Léa Bernard','Tom Rousseau','Emma Garnier','Jules Martin','Chloé Petit'] },
-      },
-      '2026-05-15': {
-        '15h00': { type:'enfants', label:'Galop 1-2', maxPlaces:6, inscrits:['Léa Bernard','Tom Rousseau','Emma Garnier'] },
-      },
-      '2026-05-16': {
-        '14h00': { type:'enfants', label:'Galop 2-3', maxPlaces:6, inscrits:['Léa Bernard','Tom Rousseau','Emma Garnier','Jules Martin','Chloé Petit','Noa Dupuis'] },
-      },
-    },
+    sophie:  {},
+    thomas:  {},
+    camille: {},
   };
 
   let activeCoursMoniteur = 'sophie';
@@ -2780,16 +2709,17 @@
       const clientsLies = slot.type === 'particulier' ? [slot.client] : (slot.inscrits || []);
       clientsLies.forEach(nom => {
         const r = reservations.find(r => r.client === nom && r.date === date && r.heure === heure);
-        if (r) r.status = 'Annulé';
+        if (r) { r.status = 'Annulé'; fbUpdateResaStatus(r.id, 'Annulé'); }
       });
       if (!clientsLies.length) {
         const r = reservations.find(r => r.date === date && r.heure === heure);
-        if (r) r.status = 'Annulé';
+        if (r) { r.status = 'Annulé'; fbUpdateResaStatus(r.id, 'Annulé'); }
       }
     }
 
     const day = (coursParMoniteur[monit]||{})[date];
     if (day) { delete day[heure]; if (!Object.keys(day).length) delete coursParMoniteur[monit][date]; }
+    fbSaveCours();
 
     document.getElementById('modal-delete-slot').classList.remove('open');
     _deleteSlotDate = null; _deleteSlotHeure = null;
@@ -2911,18 +2841,24 @@
       const clientName = document.getElementById('ns-client').value.trim() || 'À définir';
       slotData = { type, client: clientName, status: 'reserve' };
       const ini = clientName.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
-      reservations.unshift({ id: nextId++, client: clientName, initials: ini, type: 'Particulier', date, heure, monitor: monKey, status: 'Confirmé' });
+      const newResa1 = { id: nextId++, client: clientName, initials: ini, type: 'Particulier', date, heure, monitor: monKey, status: 'Confirmé' };
+      reservations.unshift(newResa1);
+      fbSaveResa(newResa1);
     } else {
       const initInscrits = prefillInscrit ? [prefillInscrit] : [];
       const label     = document.getElementById('ns-label').value.trim() || (type==='collectif'?'Collectif':type==='stage'?'Stage':'Enfants');
       const maxPlaces = parseInt(document.getElementById('ns-max').value) || 6;
       slotData = { type, label, maxPlaces, inscrits: initInscrits };
       if (initInscrits.length === 0) {
-        reservations.unshift({ id: nextId++, client: label, initials: typeCapital.slice(0,2).toUpperCase(), type: typeCapital, date, heure, monitor: monKey, status: 'Confirmé' });
+        const newResa2 = { id: nextId++, client: label, initials: typeCapital.slice(0,2).toUpperCase(), type: typeCapital, date, heure, monitor: monKey, status: 'Confirmé' };
+        reservations.unshift(newResa2);
+        fbSaveResa(newResa2);
       } else {
         initInscrits.forEach(name => {
           const ini = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
-          reservations.unshift({ id: nextId++, client: name, initials: ini, type: typeCapital, date, heure, monitor: monKey, status: 'En attente' });
+          const newResa3 = { id: nextId++, client: name, initials: ini, type: typeCapital, date, heure, monitor: monKey, status: 'En attente' };
+          reservations.unshift(newResa3);
+          fbSaveResa(newResa3);
         });
       }
     }
@@ -2932,6 +2868,7 @@
 
     // Re-render tous les plannings
     addLog('cours', `Nouveau créneau créé — ${monit} · ${typeCapital} · ${date} à ${heure}`);
+    fbSaveCours();
     closeDetail();
     renderCoursMoniteur();
     if (monit !== activePresenceMon) renderMoniCoursView(monit);
@@ -2943,16 +2880,7 @@
   }
 
   /* ── PAIEMENTS ── */
-  const paiements = [
-    { id:1, client:'Marie Lefebvre',  initials:'ML', type:'Formule Confort',    montant:400, date:'2026-05-01', statut:'Payé',       methode:'Carte'    },
-    { id:2, client:'Isabelle Morel',  initials:'IM', type:'Formule Premium',    montant:600, date:'2026-05-03', statut:'En attente', methode:'—'        },
-    { id:3, client:'Nathan Dupuis',   initials:'ND', type:'Stage juillet',      montant:350, date:'2026-05-05', statut:'En attente', methode:'—'        },
-    { id:4, client:'Clara Petit',     initials:'CP', type:'Pack 20 points',     montant:200, date:'2026-04-28', statut:'Payé',       methode:'Virement' },
-    { id:5, client:'Lucas Martin',    initials:'LM', type:'Formule Essentielle',montant:300, date:'2026-04-25', statut:'Payé',       methode:'Carte'    },
-    { id:6, client:'Antoine Bernard', initials:'AB', type:'Pack 10 points',     montant:120, date:'2026-04-20', statut:'Payé',       methode:'Carte'    },
-    { id:7, client:'Pierre Garnier',  initials:'PG', type:'Formule Premium',    montant:600, date:'2026-04-15', statut:'Payé',       methode:'Virement' },
-    { id:8, client:'Sophie Rousseau', initials:'SR', type:'Formule Essentielle',montant:300, date:'2026-04-10', statut:'En retard',  methode:'—'        },
-  ];
+  const paiements = [];
   const payStatutBadge = { 'Payé':'badge-green', 'En attente':'badge-orange', 'En retard':'badge-red' };
 
   function renderPaiements(list) {
@@ -3205,34 +3133,7 @@
 
   const MONTH_NAMES = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
 
-  const monthSlots = {
-    '2026-05-01': [{label:'14h · Collectif (4/6)',cls:'wg-coll'},{label:'16h · Nathan — Particulier',cls:'wg-part'}],
-    '2026-05-02': [{label:'09h · Lucas — Particulier',cls:'wg-part'},{label:'10h · Collectif (5/6)',cls:'wg-coll'},{label:'14h · Enfants (3/6)',cls:'wg-enf'}],
-    '2026-05-04': [{label:'09h · Marie — Particulier',cls:'wg-part'},{label:'10h · Collectif (4/6)',cls:'wg-coll'},{label:'15h · Clara — Particulier',cls:'wg-part'}],
-    '2026-05-05': [{label:'14h · Enfants (4/6)',cls:'wg-enf'},{label:'17h · Nathan — Particulier',cls:'wg-part'}],
-    '2026-05-06': [{label:'09h · Collectif (3/6)',cls:'wg-coll'},{label:'10h · Enfants (5/6)',cls:'wg-enf'},{label:'14h · Collectif (2/6)',cls:'wg-coll'}],
-    '2026-05-07': [{label:'09h · Nathan — Particulier',cls:'wg-part'},{label:'17h · Lucas — Particulier',cls:'wg-part'}],
-    '2026-05-08': [{label:'09h · Marie — Particulier',cls:'wg-part'},{label:'10h · Collectif (5/6)',cls:'wg-coll'},{label:'14h · Enfants (3/6)',cls:'wg-enf'}],
-    '2026-05-09': [{label:'09h · Collectif (4/6)',cls:'wg-coll'},{label:'10h · Lucas — Particulier',cls:'wg-part'},{label:'14h · Enfants (3/6)',cls:'wg-enf'},{label:'17h · Nathan — Particulier',cls:'wg-part'}],
-    '2026-05-11': [{label:'09h · Marie — Particulier',cls:'wg-part'},{label:'10h · Collectif (4/6)',cls:'wg-coll'},{label:'14h · Antoine — Particulier',cls:'wg-part'}],
-    '2026-05-12': [{label:'14h · Enfants (3/6)',cls:'wg-enf'},{label:'16h · Isabelle — Particulier',cls:'wg-part'},{label:'17h · Nathan — Particulier',cls:'wg-part'}],
-    '2026-05-13': [{label:'09h · Collectif (3/6)',cls:'wg-coll'},{label:'10h · Enfants (5/6)',cls:'wg-enf'},{label:'14h · Collectif (2/6)',cls:'wg-coll'}],
-    '2026-05-14': [{label:'09h · Nathan — Particulier',cls:'wg-part'},{label:'15h · Pierre — Particulier',cls:'wg-part'}],
-    '2026-05-15': [{label:'10h · Collectif (5/6)',cls:'wg-coll'},{label:'14h · Marie — Particulier',cls:'wg-part'},{label:'15h · Enfants (3/6)',cls:'wg-enf'}],
-    '2026-05-16': [{label:'09h · Lucas — Particulier',cls:'wg-part'},{label:'10h · Collectif (5/6)',cls:'wg-coll'},{label:'11h · Nathan — Particulier',cls:'wg-part'},{label:'14h · Enfants (6/6)',cls:'wg-enf'}],
-    '2026-05-18': [{label:'09h · Clara — Particulier',cls:'wg-part'},{label:'10h · Collectif (4/6)',cls:'wg-coll'},{label:'16h · Marie — Particulier',cls:'wg-part'}],
-    '2026-05-19': [{label:'14h · Enfants (4/6)',cls:'wg-enf'},{label:'17h · Pierre — Particulier',cls:'wg-part'}],
-    '2026-05-20': [{label:'09h · Collectif (3/6)',cls:'wg-coll'},{label:'10h · Enfants (4/6)',cls:'wg-enf'},{label:'14h · Collectif (4/6)',cls:'wg-coll'}],
-    '2026-05-21': [{label:'09h · Antoine — Particulier',cls:'wg-part'},{label:'15h · Lucas — Particulier',cls:'wg-part'}],
-    '2026-05-22': [{label:'09h · Collectif (5/6)',cls:'wg-coll'},{label:'14h · Nathan — Particulier',cls:'wg-part'},{label:'15h · Enfants (3/6)',cls:'wg-enf'}],
-    '2026-05-23': [{label:'09h · Marie — Particulier',cls:'wg-part'},{label:'10h · Collectif (4/6)',cls:'wg-coll'},{label:'14h · Enfants (5/6)',cls:'wg-enf'},{label:'16h · Clara — Particulier',cls:'wg-part'}],
-    '2026-05-25': [{label:'09h · Isabelle — Particulier',cls:'wg-part'},{label:'10h · Collectif (3/6)',cls:'wg-coll'},{label:'14h · Antoine — Particulier',cls:'wg-part'}],
-    '2026-05-26': [{label:'14h · Enfants (4/6)',cls:'wg-enf'},{label:'17h · Lucas — Particulier',cls:'wg-part'}],
-    '2026-05-27': [{label:'09h · Collectif (4/6)',cls:'wg-coll'},{label:'10h · Enfants (3/6)',cls:'wg-enf'},{label:'14h · Collectif (5/6)',cls:'wg-coll'}],
-    '2026-05-28': [{label:'09h · Nathan — Particulier',cls:'wg-part'},{label:'17h · Marie — Particulier',cls:'wg-part'}],
-    '2026-05-29': [{label:'09h · Collectif (5/6)',cls:'wg-coll'},{label:'14h · Clara — Particulier',cls:'wg-part'},{label:'15h · Enfants (4/6)',cls:'wg-enf'}],
-    '2026-05-30': [{label:'09h · Pierre — Particulier',cls:'wg-part'},{label:'10h · Collectif (6/6)',cls:'wg-coll'},{label:'14h · Enfants (4/6)',cls:'wg-enf'},{label:'16h · Marie — Particulier',cls:'wg-part'}],
-  };
+  const monthSlots = {};
 
   // Appels différés après monthSlots
   renderDashboardWeek();
@@ -3430,38 +3331,10 @@
     renderMonthCalendar();
   }
 
-  /* ── STATS MONITEUR ── */
   const monitorStats = {
-    sophie: {
-      coursMois: 24, heuresMois: 21, noteGlobale: 4.8, tauxSatisfaction: 96,
-      activite: [6, 7, 5, 6],
-      avis: [
-        { client:'Marie Lefebvre', note:5, date:'2026-05-07', texte:"Sophie est une excellente monitrice, très pédagogue et à l'écoute. Ma fille adore ses cours !" },
-        { client:'Clara Petit',    note:5, date:'2026-05-03', texte:"Toujours bienveillante et professionnelle. Je recommande vivement." },
-        { client:'Antoine Bernard',note:4, date:'2026-04-28', texte:"Très bon suivi, on progresse à chaque cours. Ambiance super agréable." },
-        { client:'Sophie Rousseau',note:5, date:'2026-04-20', texte:"Patiente et encourageante, idéale pour les débutants !" },
-      ]
-    },
-    thomas: {
-      coursMois: 28, heuresMois: 26, noteGlobale: 4.9, tauxSatisfaction: 98,
-      activite: [7, 8, 6, 7],
-      avis: [
-        { client:'Lucas Martin', note:5, date:'2026-05-06', texte:"Thomas pousse vraiment à se dépasser, super pour la compétition. Technique irréprochable." },
-        { client:'Pierre Garnier',note:5, date:'2026-05-02', texte:"Excellent moniteur, exercices très précis. Parfait pour les galops avancés." },
-        { client:'Nathan Dupuis', note:5, date:'2026-04-25', texte:"Cours dynamiques et exigeants. On progresse vite, je recommande à 100% !" },
-        { client:'Isabelle Morel',note:4, date:'2026-04-18', texte:"Très compétent, parfois un peu exigeant mais les résultats sont là." },
-      ]
-    },
-    camille: {
-      coursMois: 21, heuresMois: 18, noteGlobale: 4.7, tauxSatisfaction: 94,
-      activite: [5, 6, 5, 5],
-      avis: [
-        { client:'Isabelle Morel',  note:5, date:'2026-05-05', texte:"Camille s'adapte parfaitement à tous les niveaux. Très patiente avec les débutants." },
-        { client:'Sophie Rousseau', note:4, date:'2026-04-30', texte:"Super ambiance pendant les cours. On apprend en s'amusant !" },
-        { client:'Marie Lefebvre',  note:5, date:'2026-04-22', texte:"Toujours disponible et de bon conseil. Mes enfants l'adorent." },
-        { client:'Nathan Dupuis',   note:4, date:'2026-04-15', texte:"Bonne monitrice, très à l'écoute. Quelques exercices très originaux." },
-      ]
-    }
+    sophie:  { coursMois:0, heuresMois:0, noteGlobale:0, tauxSatisfaction:0, activite:[0,0,0,0], avis:[] },
+    thomas:  { coursMois:0, heuresMois:0, noteGlobale:0, tauxSatisfaction:0, activite:[0,0,0,0], avis:[] },
+    camille: { coursMois:0, heuresMois:0, noteGlobale:0, tauxSatisfaction:0, activite:[0,0,0,0], avis:[] },
   };
 
   function renderStars(note) {
@@ -3605,6 +3478,30 @@
       .catch(e => console.warn('Firebase update paiement:', e));
   }
 
+  // Sauvegarde tous les cours (coursParMoniteur) dans Firebase
+  function fbSaveCours() {
+    db.collection('cours').doc('planning').set(coursParMoniteur)
+      .catch(e => console.warn('Firebase cours:', e));
+  }
+
+  // Sauvegarde les infos d'un moniteur dans Firebase
+  function fbSaveMoniteur(m) {
+    db.collection('moniteurs').doc(String(m.id)).set(m)
+      .catch(e => console.warn('Firebase moniteur:', e));
+  }
+
+  // Sauvegarde toutes les présences dans Firebase
+  function fbSavePresences() {
+    db.collection('moniteurs').doc('presences').set(presenceData)
+      .catch(e => console.warn('Firebase presences:', e));
+  }
+
+  // Sauvegarde les stats d'un moniteur dans Firebase
+  function fbSaveMonitorStats() {
+    db.collection('moniteurs').doc('stats').set(monitorStats)
+      .catch(e => console.warn('Firebase stats:', e));
+  }
+
   /* ── CHARGEMENT DES DONNÉES DEPUIS FIREBASE ── */
   async function loadFromFirebase() {
     try {
@@ -3654,6 +3551,45 @@
         paiements.forEach(p => batch.set(db.collection('paiements').doc(String(p.id)), p));
         await batch.commit();
         console.log('Firebase seedé avec les paiements initiaux');
+      }
+
+      // --- Cours ---
+      const coursSnap = await db.collection('cours').doc('planning').get();
+      if (coursSnap.exists) {
+        const data = coursSnap.data();
+        Object.keys(data).forEach(monId => {
+          coursParMoniteur[monId] = data[monId];
+        });
+        console.log('Cours chargés depuis Firebase');
+      } else {
+        await db.collection('cours').doc('planning').set(coursParMoniteur);
+        console.log('Firebase seedé avec les cours initiaux');
+      }
+
+      // --- Moniteurs ---
+      const monitSnap = await db.collection('moniteurs').get();
+      if (!monitSnap.empty) {
+        monitSnap.forEach(doc => {
+          if (doc.id === 'presences') {
+            const data = doc.data();
+            Object.keys(data).forEach(monId => { presenceData[monId] = data[monId]; });
+          } else if (doc.id === 'stats') {
+            const data = doc.data();
+            Object.keys(data).forEach(monId => { monitorStats[monId] = data[monId]; });
+          } else {
+            const idx = moniteurs.findIndex(m => m.id === doc.id);
+            if (idx !== -1) moniteurs[idx] = { ...moniteurs[idx], ...doc.data() };
+          }
+        });
+        console.log('Moniteurs chargés depuis Firebase');
+      } else {
+        // Seed initial
+        const batch = db.batch();
+        moniteurs.forEach(m => batch.set(db.collection('moniteurs').doc(String(m.id)), m));
+        batch.set(db.collection('moniteurs').doc('presences'), presenceData);
+        batch.set(db.collection('moniteurs').doc('stats'), monitorStats);
+        await batch.commit();
+        console.log('Firebase seedé avec les moniteurs initiaux');
       }
 
       console.log(`Données chargées — ${reservations.length} réservations, ${clients.length} clients, ${paiements.length} paiements`);
@@ -3715,6 +3651,24 @@
       });
       if (changed) { filterPaiements(); renderBadges(); renderDashboardStats(); }
     }, e => console.warn('Listener paiements:', e));
+
+    // Écoute les changements sur les moniteurs / présences / stats
+    db.collection('moniteurs').onSnapshot(snapshot => {
+      snapshot.docChanges().forEach(change => {
+        const data = change.doc.data();
+        if (change.doc.id === 'presences') {
+          Object.keys(data).forEach(monId => { presenceData[monId] = data[monId]; });
+          renderPresenceWeek(activePresenceMon);
+          renderAbsCalendar();
+          renderMoniteurCards();
+        } else if (change.doc.id === 'stats') {
+          Object.keys(data).forEach(monId => { monitorStats[monId] = data[monId]; });
+        } else {
+          const idx = moniteurs.findIndex(m => m.id === change.doc.id);
+          if (idx !== -1) { moniteurs[idx] = { ...moniteurs[idx], ...data }; renderMoniteurCards(); }
+        }
+      });
+    }, e => console.warn('Listener moniteurs:', e));
   }
 
   // Supprime le document de test s'il existe

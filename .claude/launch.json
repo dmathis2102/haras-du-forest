@@ -4,7 +4,7 @@
     {
       "name": "admin",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["serve", "-p", "5500", "."],
+      "runtimeArgs": ["serve", "-p", "5500", "./Logiciel"],
       "port": 5500
     }
   ]
