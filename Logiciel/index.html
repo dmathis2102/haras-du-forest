@@ -3157,7 +3157,7 @@
       showToast('Réinitialisation en cours...');
 
       // Supprime tout dans Firebase — toutes les collections
-      const collections = ['reservations', 'clients', 'paiements', 'cours', 'moniteurs', '_meta'];
+      const collections = ['reservations', 'clients', 'paiements', 'cours', 'moniteurs'];
       for (const col of collections) {
         const snap = await db.collection(col).get();
         if (snap.empty) continue;
