@@ -3481,6 +3481,7 @@
   firebase.initializeApp(firebaseConfig);
   const auth = firebase.auth();
   const db   = firebase.firestore();
+  auth.languageCode = 'fr'; // emails Firebase en français
 
   /* ── Observer Auth — gère l'affichage au chargement ── */
   auth.onAuthStateChanged(async user => {
