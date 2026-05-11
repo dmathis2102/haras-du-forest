@@ -2255,7 +2255,7 @@
       reservations: 0,
     };
     if (_editClientId) {
-      const existing = clients.find(c => c.id === _editClientId);
+      const existing = clients.find(c => c._key === _editClientId);
       if (existing) {
         existing.nom     = nomComplet;
         existing.initials = initials;
@@ -2263,6 +2263,7 @@
         existing.tel     = document.getElementById('nc-tel').value.trim()   || '—';
         existing.galop   = document.getElementById('nc-galop').value;
         existing.formule = document.getElementById('nc-formule').value;
+        fbSaveClient(existing);
       }
       renderClients(clients);
       closeNouveauClient();
