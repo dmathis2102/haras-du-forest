@@ -711,6 +711,97 @@
 </head>
 <body>
 
+<!-- ══ ÉCRAN DE CONNEXION ══ -->
+<div id="login-screen" style="
+  position:fixed;inset:0;z-index:9999;
+  background:var(--navy);
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:0;
+">
+  <div style="width:100%;max-width:400px;padding:24px">
+
+    <!-- Logo -->
+    <div style="text-align:center;margin-bottom:40px">
+      <div style="color:var(--gold);font-size:22px;font-weight:800;letter-spacing:0.5px">Haras du Forest</div>
+      <div style="color:rgba(255,255,255,0.4);font-size:12px;margin-top:4px">Espace de gestion</div>
+    </div>
+
+    <!-- Formulaire connexion -->
+    <div id="login-form-block">
+      <div style="margin-bottom:16px">
+        <label style="display:block;color:rgba(255,255,255,0.6);font-size:12px;font-weight:600;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px">Adresse e-mail</label>
+        <input id="login-email" type="email" placeholder="votre@email.com"
+          style="width:100%;padding:12px 14px;border-radius:8px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.07);color:#fff;font-size:14px;outline:none;box-sizing:border-box"
+          onkeydown="if(event.key==='Enter')document.getElementById('login-password').focus()">
+      </div>
+      <div style="margin-bottom:24px">
+        <label style="display:block;color:rgba(255,255,255,0.6);font-size:12px;font-weight:600;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px">Mot de passe</label>
+        <input id="login-password" type="password" placeholder="••••••••"
+          style="width:100%;padding:12px 14px;border-radius:8px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.07);color:#fff;font-size:14px;outline:none;box-sizing:border-box"
+          onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+      <div id="login-error" style="color:#F87171;font-size:13px;margin-bottom:16px;display:none;text-align:center"></div>
+      <button onclick="doLogin()" id="login-btn"
+        style="width:100%;padding:13px;background:var(--gold);color:var(--navy);border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;letter-spacing:0.3px">
+        Se connecter
+      </button>
+      <div style="text-align:center;margin-top:16px">
+        <span onclick="showChangePassword()" style="color:rgba(255,255,255,0.35);font-size:12px;cursor:pointer;text-decoration:underline">Modifier le mot de passe</span>
+      </div>
+    </div>
+
+    <!-- Formulaire changement mot de passe -->
+    <div id="change-pw-block" style="display:none">
+      <div style="color:rgba(255,255,255,0.6);font-size:13px;text-align:center;margin-bottom:20px">Connecte-toi d'abord, puis change ton mot de passe.</div>
+      <div style="margin-bottom:14px">
+        <label style="display:block;color:rgba(255,255,255,0.6);font-size:12px;font-weight:600;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px">E-mail</label>
+        <input id="cpw-email" type="email" placeholder="votre@email.com"
+          style="width:100%;padding:12px 14px;border-radius:8px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.07);color:#fff;font-size:14px;outline:none;box-sizing:border-box">
+      </div>
+      <div style="margin-bottom:14px">
+        <label style="display:block;color:rgba(255,255,255,0.6);font-size:12px;font-weight:600;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px">Mot de passe actuel</label>
+        <input id="cpw-current" type="password" placeholder="••••••••"
+          style="width:100%;padding:12px 14px;border-radius:8px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.07);color:#fff;font-size:14px;outline:none;box-sizing:border-box">
+      </div>
+      <div style="margin-bottom:20px">
+        <label style="display:block;color:rgba(255,255,255,0.6);font-size:12px;font-weight:600;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px">Nouveau mot de passe</label>
+        <input id="cpw-new" type="password" placeholder="••••••••"
+          style="width:100%;padding:12px 14px;border-radius:8px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.07);color:#fff;font-size:14px;outline:none;box-sizing:border-box">
+      </div>
+      <div id="cpw-error" style="color:#F87171;font-size:13px;margin-bottom:12px;display:none;text-align:center"></div>
+      <button onclick="doChangePassword()"
+        style="width:100%;padding:13px;background:var(--gold);color:var(--navy);border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:10px">
+        Changer le mot de passe
+      </button>
+      <button onclick="showLoginForm()"
+        style="width:100%;padding:11px;background:transparent;color:rgba(255,255,255,0.4);border:1px solid rgba(255,255,255,0.15);border-radius:8px;font-size:13px;cursor:pointer">
+        Retour
+      </button>
+    </div>
+
+    <!-- Formulaire premier accès (création de compte) -->
+    <div id="setup-block" style="display:none">
+      <div style="color:var(--gold);font-size:13px;text-align:center;margin-bottom:20px;font-weight:600">Premier accès — Créez votre compte administrateur</div>
+      <div style="margin-bottom:14px">
+        <label style="display:block;color:rgba(255,255,255,0.6);font-size:12px;font-weight:600;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px">Votre e-mail</label>
+        <input id="setup-email" type="email" placeholder="votre@email.com"
+          style="width:100%;padding:12px 14px;border-radius:8px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.07);color:#fff;font-size:14px;outline:none;box-sizing:border-box">
+      </div>
+      <div style="margin-bottom:20px">
+        <label style="display:block;color:rgba(255,255,255,0.6);font-size:12px;font-weight:600;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px">Choisissez un mot de passe</label>
+        <input id="setup-password" type="password" placeholder="Minimum 6 caractères"
+          style="width:100%;padding:12px 14px;border-radius:8px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.07);color:#fff;font-size:14px;outline:none;box-sizing:border-box">
+      </div>
+      <div id="setup-error" style="color:#F87171;font-size:13px;margin-bottom:12px;display:none;text-align:center"></div>
+      <button onclick="doSetup()"
+        style="width:100%;padding:13px;background:var(--gold);color:var(--navy);border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer">
+        Créer mon compte
+      </button>
+    </div>
+
+  </div>
+</div>
+
 <!-- ══ SIDEBAR ══ -->
 <nav class="sidebar">
   <div class="sb-logo">
