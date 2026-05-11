@@ -1884,7 +1884,7 @@
     const newResa = { id: nextId++, client, initials, type: typeKey, date, heure, monitor: monKey, status };
     reservations.unshift(newResa);
     fbSaveResa(newResa);
-    addLog('resa', `Nouvelle réservation créée — ${client} · ${type} · ${date} à ${heure} (${monitorFull[monKey]||monKey})`);
+    
     renderBadges();
 
     // 2. Cours & Créneaux (coursParMoniteur)
@@ -1960,14 +1960,13 @@
 
   function confirmResa(id) {
     const r = reservations.find(r => r.id === id);
-    if (r) { r.status = 'Confirmé'; fbUpdateResaStatus(r.id, 'Confirmé'); addLog('resa', `Réservation confirmée — ${r.client} · ${r.date} à ${r.heure}`); filterResas(); openDetail(id); }
+    if (r) { r.status = 'Confirmé'; fbUpdateResaStatus(r.id, 'Confirmé');  filterResas(); openDetail(id); }
   }
 
   function traiterStage(id, statut) {
     const r = reservations.find(r => r.id === id);
     if (!r) return;
     r.status = statut;
-    addLog(statut === 'Annulé' ? 'annulation' : 'resa', `Demande de stage ${statut === 'Confirmé' ? 'acceptée' : 'refusée'} — ${r.client} · ${r.date}`);
     filterResas();
     openDetail(id);
   }
@@ -2055,7 +2054,7 @@
       r.status = 'Annulé';
       fbUpdateResaStatus(r.id, 'Annulé');
       const motif = document.getElementById('cancel-motif')?.value.trim();
-      addLog('annulation', `Réservation annulée — ${r.client} · ${r.date} à ${r.heure}${motif ? ' · Motif : ' + motif : ''}`);
+      
       filterResas();
     }
     closeModalCancel();
@@ -2168,7 +2167,7 @@
       methode: document.getElementById('np-methode').value,
     });
     fbSavePaiement(paiements[0]);
-    addLog('paiement', `Nouveau paiement — ${client} · ${montant}€ · ${document.getElementById('np-type').value} · ${document.getElementById('np-statut').value}`);
+    
     filterPaiements();
     renderDashboardStats();
     closeNouveauPaiement();
@@ -2264,7 +2263,7 @@
     closeModalPoints();
     renderClients(clients);
     openClientDetail(c.id);
-    addLog('client', `Points ajoutés — ${c.nom} · +${nb} pts (nouveau solde : ${c.points} pts)`);
+    
     showToast(`${nb} points ajoutés à ${c.nom} (solde : ${c.points} pts)`);
   }
 
@@ -2302,7 +2301,7 @@
       renderClients(clients);
       closeNouveauClient();
       openClientDetail(_editClientId);
-      addLog('client', `Profil modifié — ${nomComplet}`);
+      
       showToast(`Profil de ${nomComplet} mis à jour`);
     } else {
       clients.unshift(newClient);
@@ -2317,7 +2316,7 @@
 
       fbSaveClient(newClient);
       fbSavePaiement(paiements[0]);
-      addLog('client', `Nouveau client créé — ${nomComplet} · Formule ${newClient.formule}`);
+      
       closeNouveauClient();
       showToast(`Lien de paiement envoyé à ${newClient.email !== '—' ? newClient.email : nomComplet}`);
     }
@@ -2773,7 +2772,7 @@
     }
     renderCoursMoniteur();
     renderMoniCoursView(monId);
-    addLog('cours', `Créneau modifié — ${monId} · ${date} à ${heure}`);
+    
     showToast('Créneau mis à jour');
     openSlotDetail(date, heure);
   }
@@ -2979,7 +2978,7 @@
     }
 
     // Re-render tous les plannings
-    addLog('cours', `Nouveau créneau créé — ${monit} · ${typeCapital} · ${date} à ${heure}`);
+    
     fbSaveCours();
     closeDetail();
     renderCoursMoniteur();
@@ -3053,7 +3052,7 @@
 
   function marquerPaye(id) {
     const p = paiements.find(p => p.id === id);
-    if (p) { p.statut = 'Payé'; p.methode = 'Espèces'; fbUpdatePaiementStatus(p.id, 'Payé', 'Espèces'); addLog('paiement', `Paiement encaissé — ${p.client} · ${p.montant}€ · ${p.type}`); filterPaiements(); renderDashboardStats(); }
+    if (p) { p.statut = 'Payé'; p.methode = 'Espèces'; fbUpdatePaiementStatus(p.id, 'Payé', 'Espèces');  filterPaiements(); renderDashboardStats(); }
   }
 
   /* ── PLANNING SEMAINE DASHBOARD ── */
@@ -3187,7 +3186,7 @@
       renderMoniteurCards();
       renderDashboardStats();
       renderBadges();
-      addLog('systeme', 'Réinitialisation complète — toutes les données ont été supprimées');
+      
 
       showToast('✓ Réinitialisation terminée — vous repartez de zéro');
     } catch(e) {
