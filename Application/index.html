@@ -3554,7 +3554,7 @@
     const user = auth.currentUser;
     if (!user) return;
     try {
-      await user.sendEmailVerification();
+      await user.sendEmailVerification({ url: window.location.origin + '/haras-du-forest/action.html' });
       alert('Email renvoyé à ' + user.email);
     } catch(e) {
       alert('Erreur : ' + e.message);
