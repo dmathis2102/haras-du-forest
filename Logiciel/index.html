@@ -3782,15 +3782,15 @@
     db.collection('clients').onSnapshot(snapshot => {
       let changed = false;
       snapshot.docChanges().forEach(change => {
-        const data = change.doc.data();
+        const data = normalizeClient(change.doc.id, change.doc.data());
         if (change.type === 'modified') {
-          const idx = clients.findIndex(c => c.id === data.id);
+          const idx = clients.findIndex(c => c._key === data._key);
           if (idx !== -1) { clients[idx] = data; changed = true; }
         } else if (change.type === 'added') {
-          const exists = clients.find(c => c.id === data.id);
+          const exists = clients.find(c => c._key === data._key);
           if (!exists) { clients.unshift(data); changed = true; }
         } else if (change.type === 'removed') {
-          const idx = clients.findIndex(c => c.id === data.id);
+          const idx = clients.findIndex(c => c._key === data._key);
           if (idx !== -1) { clients.splice(idx, 1); changed = true; }
         }
       });
