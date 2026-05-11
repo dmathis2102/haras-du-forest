@@ -4,7 +4,7 @@
     {
       "name": "admin",
       "runtimeExecutable": "python",
-      "runtimeArgs": ["-m", "http.server", "5500", "--directory", "./Logiciel"],
+      "runtimeArgs": ["-m", "http.server", "5500"],
       "port": 5500
     }
   ]
