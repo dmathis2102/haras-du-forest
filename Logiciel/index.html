@@ -2199,10 +2199,10 @@
 
   let _pointsClientId = null;
 
-  function ajouterPoints(id) {
-    const c = clients.find(c => c.id === id);
+  function ajouterPoints(key) {
+    const c = clients.find(c => c._key === key);
     if (!c) return;
-    _pointsClientId = id;
+    _pointsClientId = key;
     document.getElementById('points-client-info').textContent = `${c.nom} — Solde actuel : ${c.points} pts`;
     document.getElementById('points-choix').value = '20';
     majNouveauSolde();
@@ -2210,7 +2210,7 @@
   }
 
   function majNouveauSolde() {
-    const c = clients.find(c => c.id === _pointsClientId);
+    const c = clients.find(c => c._key === _pointsClientId);
     if (!c) return;
     const nb = parseInt(document.getElementById('points-choix').value);
     document.getElementById('points-nouveau-solde').textContent = c.points + nb;
@@ -2222,14 +2222,14 @@
   }
 
   function confirmerAjoutPoints() {
-    const c = clients.find(c => c.id === _pointsClientId);
+    const c = clients.find(c => c._key === _pointsClientId);
     if (!c) return;
     const nb = parseInt(document.getElementById('points-choix').value);
     c.points += nb;
     closeModalPoints();
     renderClients(clients);
-    openClientDetail(c.id);
-    
+    openClientDetail(c._key);
+    fbSaveClient(c);
     showToast(`${nb} points ajoutés à ${c.nom} (solde : ${c.points} pts)`);
   }
 
