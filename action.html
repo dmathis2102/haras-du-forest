@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Haras du Forest</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@400;500;600;700&display=swap');
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #152240;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 48px 40px;
+    max-width: 420px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.25);
+  }
+  .brand {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 20px;
+    color: #0E1C35;
+    margin-bottom: 4px;
+  }
+  .brand-sub {
+    font-size: 11px;
+    color: #8A96A8;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+  }
+  .divider {
+    width: 40px; height: 2px;
+    background: #C4A97E;
+    margin: 12px auto 28px;
+    border-radius: 2px;
+  }
+  .icon-wrap {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    margin: 0 auto 24px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 32px;
+  }
+  .icon-success { background: #E6F4F0; }
+  .icon-error   { background: #FDECEA; }
+  .icon-loading { background: #EEF2FB; animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+  h1 { font-size: 20px; font-weight: 700; color: #0E1C35; margin-bottom: 10px; }
+  p  { font-size: 14px; color: #4A5568; line-height: 1.6; margin-bottom: 28px; }
+  .btn {
+    display: inline-block;
+    padding: 13px 32px;
+    background: #152240;
+    color: #C4A97E;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    letter-spacing: 0.3px;
+    font-family: 'Inter', sans-serif;
+    transition: background 0.15s;
+  }
+  .btn:hover { background: #1E3260; }
+  .spinner {
+    width: 32px; height: 32px;
+    border: 3px solid rgba(196,169,126,0.25);
+    border-top-color: #C4A97E;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="brand">Haras du Forest</div>
+  <div class="brand-sub">Bondues · Nord</div>
+  <div class="divider"></div>
+
+  <!-- État : chargement -->
+  <div id="state-loading">
+    <div class="icon-wrap icon-loading">
+      <div class="spinner"></div>
+    </div>
+    <h1>Vérification en cours…</h1>
+    <p>Merci de patienter quelques secondes.</p>
+  </div>
+
+  <!-- État : succès -->
+  <div id="state-success" style="display:none">
+    <div class="icon-wrap icon-success">✓</div>
+    <h1>Email vérifié !</h1>
+    <p>Ton adresse email a bien été confirmée.<br>Tu peux maintenant accéder à ton espace.</p>
+    <a class="btn" href="Application/index.html">Accéder à l'application</a>
+  </div>
+
+  <!-- État : erreur -->
+  <div id="state-error" style="display:none">
+    <div class="icon-wrap icon-error">✕</div>
+    <h1>Lien invalide</h1>
+    <p id="error-msg">Ce lien de vérification a expiré ou a déjà été utilisé.</p>
+    <a class="btn" href="Application/index.html">Retour à l'application</a>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script>
+  firebase.initializeApp({
+    apiKey:            "AIzaSyAwspb2AUT9JvV4x3hn362ttKtHmfEc6Fc",
+    authDomain:        "haras-du-forest.firebaseapp.com",
+    projectId:         "haras-du-forest",
+    storageBucket:     "haras-du-forest.firebasestorage.app",
+    messagingSenderId: "661096788450",
+    appId:             "1:661096788450:web:49783a922deb41fa01c9bb"
+  });
+  const auth = firebase.auth();
+
+  function show(id) {
+    ['state-loading','state-success','state-error'].forEach(s =>
+      document.getElementById(s).style.display = s === id ? '' : 'none'
+    );
+  }
+
+  // Lit les paramètres de l'URL envoyés par Firebase
+  const params  = new URLSearchParams(window.location.search);
+  const mode    = params.get('mode');
+  const oobCode = params.get('oobCode');
+
+  if (mode === 'verifyEmail' && oobCode) {
+    auth.applyActionCode(oobCode)
+      .then(() => show('state-success'))
+      .catch(e => {
+        document.getElementById('error-msg').textContent =
+          e.code === 'auth/invalid-action-code'
+            ? 'Ce lien a déjà été utilisé ou a expiré. Connecte-toi et demande un nouvel email.'
+            : e.message;
+        show('state-error');
+      });
+  } else if (mode === 'resetPassword' && oobCode) {
+    // Redirige vers l'app qui gère le reset
+    window.location.href = 'Application/index.html?mode=resetPassword&oobCode=' + oobCode;
+  } else {
+    show('state-error');
+    document.getElementById('error-msg').textContent = 'Lien non reconnu.';
+  }
+</script>
+</body>
+</html>
