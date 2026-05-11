@@ -2157,10 +2157,10 @@
     document.getElementById('modal-nouveau-client').classList.add('open');
   }
 
-  function openModifierClient(id) {
-    const c = clients.find(c => c.id === id);
+  function openModifierClient(key) {
+    const c = clients.find(c => c._key === key);
     if (!c) return;
-    _editClientId = id;
+    _editClientId = key;
     const parts = c.nom.split(' ');
     document.getElementById('nc-prenom').value  = parts[0] || '';
     document.getElementById('nc-nom').value     = parts.slice(1).join(' ') || '';
