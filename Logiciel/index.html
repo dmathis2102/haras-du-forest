@@ -3627,8 +3627,27 @@
 
   // Sauvegarde un client dans Firebase
   function fbSaveClient(c) {
-    db.collection('clients').doc(String(c.id)).set(c)
+    db.collection('clients').doc(c._key || String(c.id)).set(c)
       .catch(e => console.warn('Firebase client:', e));
+  }
+
+  // Supprime un client
+  function deleteClient(key) {
+    const c = clients.find(c => c._key === key);
+    if (!c) return;
+    showModal({
+      title: 'Supprimer le client',
+      message: `Confirmes-tu la suppression de ${c.nom} ? Cette action est irréversible.`,
+      btnConfirm: 'Supprimer',
+      btnConfirmClass: 'cp-btn-danger',
+      onConfirm: () => {
+        const idx = clients.findIndex(c => c._key === key);
+        if (idx !== -1) { clients.splice(idx, 1); renderClients(clients); renderDashboardStats(); }
+        db.collection('clients').doc(key).delete()
+          .then(() => showToast(`Client supprimé`))
+          .catch(e => console.warn('Delete client:', e));
+      }
+    });
   }
 
   // Sauvegarde un paiement dans Firebase
