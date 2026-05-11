@@ -3220,7 +3220,7 @@
       message: 'Cette action va <strong>supprimer définitivement</strong> tous les clients, réservations, paiements, cours et moniteurs.<br><br>Cette action est <strong>irréversible</strong>.',
       btnCancel: 'Annuler',
       btnConfirm: 'Continuer →',
-      btnConfirmClass: 'modal-btn-danger',
+      btnConfirmClass: 'cp-btn-danger',
       onConfirm: () => {
         // Étape 2 — saisie du mot de confirmation
         showModal({
@@ -3232,7 +3232,7 @@
           inputExpected: 'REINITIALISER',
           btnCancel: 'Annuler',
           btnConfirm: 'Tout supprimer',
-          btnConfirmClass: 'modal-btn-danger',
+          btnConfirmClass: 'cp-btn-danger',
           onConfirm: () => _executerReinitialisation()
         });
       }
@@ -3285,7 +3285,7 @@
         message: 'La réinitialisation a échoué :<br><code>' + e.message + '</code>',
         btnCancel: '',
         btnConfirm: 'OK',
-        btnConfirmClass: 'modal-btn-danger'
+        btnConfirmClass: 'cp-btn-danger'
       });
     }
   }
