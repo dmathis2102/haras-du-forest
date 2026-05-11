@@ -3958,10 +3958,72 @@
       });
   }
 
+  /* ══ SYSTÈME DE MODALE CUSTOM ══ */
+  function showModal({ icon='', title='', message='', inputLabel='', inputPlaceholder='', inputExpected='',
+                       btnCancel='Annuler', btnConfirm='Confirmer', btnConfirmClass='modal-btn-danger',
+                       onConfirm=()=>{}, onCancel=()=>{} }) {
+    // Supprime une éventuelle modale déjà ouverte
+    document.getElementById('__modal__')?.remove();
+
+    const needsInput = !!inputExpected;
+    const overlay = document.createElement('div');
+    overlay.id = '__modal__';
+    overlay.className = 'modal-overlay';
+    overlay.innerHTML = `
+      <div class="modal-box" onclick="event.stopPropagation()">
+        ${icon ? `<div class="modal-icon">${icon}</div>` : ''}
+        <div class="modal-title">${title}</div>
+        <div class="modal-msg">${message}</div>
+        ${needsInput ? `<input id="__modal_input__" class="modal-input" type="text" placeholder="${inputPlaceholder}" autocomplete="off">` : ''}
+        <div class="modal-btns">
+          <button class="modal-btn-cancel" id="__modal_cancel__">${btnCancel}</button>
+          <button class="${btnConfirmClass}" id="__modal_confirm__">${btnConfirm}</button>
+        </div>
+      </div>`;
+    document.body.appendChild(overlay);
+
+    // Focus sur le champ si besoin
+    if (needsInput) setTimeout(() => document.getElementById('__modal_input__')?.focus(), 50);
+
+    // Fermeture sur clic overlay
+    overlay.addEventListener('click', () => { overlay.remove(); onCancel(); });
+
+    document.getElementById('__modal_cancel__').onclick = () => { overlay.remove(); onCancel(); };
+    document.getElementById('__modal_confirm__').onclick = () => {
+      if (needsInput) {
+        const val = (document.getElementById('__modal_input__')?.value || '').trim();
+        if (val !== inputExpected) {
+          const inp = document.getElementById('__modal_input__');
+          inp.classList.remove('shake');
+          void inp.offsetWidth; // force reflow
+          inp.classList.add('shake');
+          inp.value = '';
+          inp.placeholder = `Tape exactement : ${inputExpected}`;
+          return;
+        }
+      }
+      overlay.remove();
+      onConfirm();
+    };
+
+    // Enter valide, Escape annule
+    overlay.addEventListener('keydown', e => {
+      if (e.key === 'Escape') { overlay.remove(); onCancel(); }
+      if (e.key === 'Enter' && needsInput) document.getElementById('__modal_confirm__').click();
+    });
+  }
+
   /* ── Déconnexion ── */
   function doLogout() {
-    if (!confirm('Se déconnecter ?')) return;
-    auth.signOut();
+    showModal({
+      icon: '👋',
+      title: 'Se déconnecter ?',
+      message: 'Tu vas être redirigé vers l\'écran de connexion.',
+      btnCancel: 'Rester',
+      btnConfirm: 'Déconnexion',
+      btnConfirmClass: 'modal-btn-gold',
+      onConfirm: () => auth.signOut()
+    });
   }
 
   /* ── Navigation entre les blocs de l'écran de connexion ── */
