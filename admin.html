@@ -3783,6 +3783,10 @@
 
   // Observer — déclenche l'app uniquement si l'utilisateur est connecté
   auth.onAuthStateChanged(user => {
+    // Masque le loader dans tous les cas
+    const loader = document.getElementById('auth-loader');
+    if (loader) loader.style.display = 'none';
+
     if (user) {
       // Mise à jour de l'affichage dans la sidebar
       const email = user.email || '';
@@ -3792,8 +3796,10 @@
       if (elEmail)    elEmail.textContent    = email;
       if (elInitials) elInitials.textContent = initials;
 
-      // Cache l'écran de connexion + charge les données
-      document.getElementById('login-screen').style.display = 'none';
+      // Révèle l'app, cache l'écran de connexion
+      document.getElementById('login-screen').style.display   = 'none';
+      document.getElementById('app-sidebar').style.visibility = 'visible';
+      document.getElementById('app-main').style.visibility    = 'visible';
       loadFromFirebase();
     } else {
       // Pas connecté — affiche l'écran de connexion
