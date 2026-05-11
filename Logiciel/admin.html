@@ -3125,64 +3125,6 @@
     }).join('');
   }
 
-  /* ── LOGS ── */
-  const activityLogs = [];
-
-  const logMeta = {
-    resa:       { color: '#3B82F6', bg: '#EFF6FF', label: 'Réservation' },
-    client:     { color: '#8B5CF6', bg: '#F5F3FF', label: 'Client'      },
-    paiement:   { color: '#10B981', bg: '#ECFDF5', label: 'Paiement'    },
-    cours:      { color: '#F59E0B', bg: '#FFFBEB', label: 'Cours'       },
-    annulation: { color: '#EF4444', bg: '#FEF2F2', label: 'Annulation'  },
-  };
-
-  function addLog(type, message) {
-    const now = new Date();
-    const pad = n => String(n).padStart(2,'0');
-    const dateStr = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}`;
-    const timeStr = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
-    activityLogs.unshift({ type, message, date: dateStr, time: timeStr });
-    if (activityLogs.length > 500) activityLogs.pop();
-    // Met à jour la liste si la page logs est visible
-    const page = document.getElementById('page-logs');
-    if (page && page.classList.contains('active')) renderLogs();
-  }
-
-  function renderLogs() {
-    const filterType = document.getElementById('log-filter-type')?.value || '';
-    const list = filterType ? activityLogs.filter(l => l.type === filterType) : activityLogs;
-    const el = document.getElementById('logs-list');
-    if (!el) return;
-    if (list.length === 0) {
-      el.innerHTML = `<div style="padding:40px;text-align:center;color:var(--t3);font-size:13px">Aucune activité enregistrée</div>`;
-      return;
-    }
-    // Groupe par date
-    const byDate = {};
-    list.forEach(l => { if (!byDate[l.date]) byDate[l.date] = []; byDate[l.date].push(l); });
-    el.innerHTML = Object.entries(byDate).map(([date, entries]) => {
-      const d = new Date(date);
-      const label = d.toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
-      const rows = entries.map(l => {
-        const m = logMeta[l.type] || { color:'#6B7280', bg:'#F9FAFB', label: l.type };
-        return `<div style="display:flex;align-items:flex-start;gap:12px;padding:12px 20px;border-bottom:1px solid var(--border)">
-          <span style="font-size:11px;color:var(--t3);white-space:nowrap;padding-top:2px;min-width:40px">${l.time}</span>
-          <span style="display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;background:${m.bg};color:${m.color};white-space:nowrap;flex-shrink:0">${m.label}</span>
-          <span style="font-size:13px;color:var(--t1);line-height:1.4">${l.message}</span>
-        </div>`;
-      }).join('');
-      return `<div style="padding:8px 20px;background:var(--bg);border-bottom:1px solid var(--border)">
-        <span style="font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:0.5px">${label}</span>
-      </div>${rows}`;
-    }).join('');
-  }
-
-  function clearLogs() {
-    if (!confirm('Effacer tous les logs ? Cette action est irréversible.')) return;
-    activityLogs.length = 0;
-    renderLogs();
-  }
-
   function reinitialiserDonnees() {
     // Étape 1 — confirmation initiale
     showModal({
