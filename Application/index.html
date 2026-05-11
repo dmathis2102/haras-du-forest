@@ -1576,42 +1576,48 @@
     <div class="auth-form active" id="form-login">
       <div class="form-group">
         <label>Adresse email</label>
-        <input type="email" placeholder="marie@email.com" />
+        <input id="login-email" type="email" placeholder="marie@email.com" onkeydown="if(event.key==='Enter')doLogin()" />
       </div>
       <div class="form-group">
         <label>Mot de passe</label>
-        <input type="text" placeholder="Mot de passe" />
+        <input id="login-password" type="password" placeholder="Mot de passe" onkeydown="if(event.key==='Enter')doLogin()" />
       </div>
+      <div id="login-error" style="color:#C0392B;font-size:13px;margin-bottom:8px;display:none;text-align:center"></div>
       <br/>
-      <button class="btn btn-dark" onclick="enterApp()">Se connecter</button>
-      <div class="auth-footer">Mot de passe oublié ?</div>
+      <button class="btn btn-dark" id="login-btn" onclick="doLogin()">Se connecter</button>
+      <div class="auth-footer" onclick="doForgotPassword()" style="cursor:pointer">Mot de passe oublié ?</div>
     </div>
 
     <!-- Formulaire inscription -->
     <div class="auth-form" id="form-register">
       <div class="form-group">
-        <label>Prénom &amp; Nom</label>
-        <input type="text" placeholder="Marie Dupont" />
+        <label>Prénom</label>
+        <input id="reg-prenom" type="text" placeholder="Marie" />
+      </div>
+      <div class="form-group">
+        <label>Nom</label>
+        <input id="reg-nom" type="text" placeholder="Dupont" />
       </div>
       <div class="form-group">
         <label>Adresse email</label>
-        <input type="email" placeholder="marie@email.com" />
+        <input id="reg-email" type="email" placeholder="marie@email.com" />
       </div>
       <div class="form-group">
         <label>Mot de passe</label>
-        <input type="text" placeholder="Mot de passe" />
+        <input id="reg-password" type="password" placeholder="Minimum 6 caractères" />
       </div>
       <div class="form-group">
         <label>Niveau équestre</label>
-        <select>
+        <select id="reg-niveau">
           <option>Débutant</option>
           <option>Galop 1–2</option>
           <option>Galop 3–5</option>
           <option>Galop 6+</option>
         </select>
       </div>
+      <div id="reg-error" style="color:#C0392B;font-size:13px;margin-bottom:8px;display:none;text-align:center"></div>
       <br/>
-      <button class="btn btn-dark" onclick="enterApp()">Créer mon compte</button>
+      <button class="btn btn-dark" id="reg-btn" onclick="doRegister()">Créer mon compte</button>
     </div>
 
   </div>
