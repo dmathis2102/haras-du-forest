@@ -3664,7 +3664,6 @@
   /* ── Déconnexion ── */
   function deconnexion() {
     auth.signOut().then(() => {
-      document.getElementById('auth-screen').classList.remove('hidden');
       closeSidebar();
       showPage('presentation');
       document.getElementById('login-email').value = '';
