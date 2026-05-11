@@ -2316,8 +2316,8 @@
     ));
   }
 
-  function openClientDetail(id) {
-    const c = clients.find(c => c.id === id);
+  function openClientDetail(key) {
+    const c = clients.find(c => c._key === key);
     if (!c) return;
     openDetailId = null;
     document.getElementById('dp-title').textContent = c.nom;
@@ -2337,9 +2337,9 @@
       <div class="dp-section">
         <div class="dp-section-title">Actions</div>
         <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px">
-          <button class="btn btn-outline" style="width:100%" onclick="openModifierClient(${c.id})">Modifier le profil</button>
-          <button class="btn btn-outline" style="width:100%" onclick="afficherHistorique(${c.id})">Historique complet</button>
-          <button class="btn btn-outline" style="width:100%" onclick="ajouterPoints(${c.id})">Ajouter des points</button>
+          <button class="btn btn-outline" style="width:100%" onclick="openModifierClient('${c._key}')">Modifier le profil</button>
+          <button class="btn btn-outline" style="width:100%" onclick="afficherHistorique('${c._key}')">Historique complet</button>
+          <button class="btn btn-outline" style="width:100%" onclick="ajouterPoints('${c._key}')">Ajouter des points</button>
         </div>
       </div>`;
     document.getElementById('detail-panel').classList.add('open');
