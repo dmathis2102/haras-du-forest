@@ -2173,8 +2173,8 @@
     document.getElementById('modal-nouveau-client').classList.add('open');
   }
 
-  function afficherHistorique(id) {
-    const c = clients.find(c => c.id === id);
+  function afficherHistorique(key) {
+    const c = clients.find(c => c._key === key);
     if (!c) return;
     const histo = reservations.filter(r => r.client === c.nom);
     const statusBadge = { 'Confirmé':'badge-green', 'En attente':'badge-orange', 'Annulé':'badge-red' };
@@ -2191,7 +2191,7 @@
       <div class="dp-section">
         <div class="dp-section-title" style="display:flex;align-items:center;justify-content:space-between">
           Historique — ${c.nom}
-          <button class="btn btn-outline btn-sm" onclick="openClientDetail(${id})">Retour</button>
+          <button class="btn btn-outline btn-sm" onclick="openClientDetail('${key}')">Retour</button>
         </div>
         ${rows}
       </div>`;
