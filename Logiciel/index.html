@@ -3868,18 +3868,42 @@
   const auth = firebase.auth();
 
   // Observer — déclenche l'app uniquement si l'utilisateur est connecté
-  auth.onAuthStateChanged(user => {
+  auth.onAuthStateChanged(async user => {
     // Masque le loader dans tous les cas
     const loader = document.getElementById('auth-loader');
     if (loader) loader.style.display = 'none';
 
     if (user) {
-      // Mise à jour de l'affichage dans la sidebar
+      // Vérifie que l'utilisateur est bien admin dans Firestore
+      try {
+        const snap = await db.collection('users').doc(user.uid).get();
+        const role = snap.exists ? snap.data().role : null;
+        if (role !== 'admin') {
+          await auth.signOut();
+          const errEl = document.getElementById('login-error');
+          if (errEl) { errEl.textContent = 'Accès réservé aux administrateurs.'; errEl.style.display = 'block'; }
+          document.getElementById('login-screen').style.display = 'flex';
+          showLoginForm();
+          return;
+        }
+      } catch(e) {
+        await auth.signOut();
+        document.getElementById('login-screen').style.display = 'flex';
+        showLoginForm();
+        return;
+      }
+
+      // Admin confirmé — mise à jour sidebar
       const email = user.email || '';
-      const initials = email.slice(0, 2).toUpperCase();
+      const snap2 = await db.collection('users').doc(user.uid).get().catch(() => null);
+      const userData = snap2 && snap2.exists ? snap2.data() : {};
+      const prenom = userData.prenom || '';
+      const nom    = userData.nom    || '';
+      const displayName = prenom && nom ? `${prenom} ${nom}` : email;
+      const initials = prenom && nom ? (prenom[0] + nom[0]).toUpperCase() : email.slice(0, 2).toUpperCase();
       const elEmail    = document.getElementById('sb-user-email');
       const elInitials = document.getElementById('sb-avatar-initials');
-      if (elEmail)    elEmail.textContent    = email;
+      if (elEmail)    elEmail.textContent    = displayName;
       if (elInitials) elInitials.textContent = initials;
 
       // Révèle l'app, cache l'écran de connexion
