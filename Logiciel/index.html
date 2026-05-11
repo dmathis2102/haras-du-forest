@@ -2298,7 +2298,10 @@
         <td><span class="tl-badge ${formuleBadge[c.formule]||'badge-gray'}">${c.formule}</span></td>
         <td><strong>${c.points}</strong> pts</td>
         <td>${c.reservations} cours</td>
-        <td><div class="td-actions"><button class="btn btn-outline btn-sm" onclick="openClientDetail(${c.id})">Fiche</button></div></td>
+        <td><div class="td-actions">
+          <button class="btn btn-outline btn-sm" onclick="openClientDetail('${c._key}')">Fiche</button>
+          <button class="btn btn-sm" style="background:var(--red-l);color:var(--red);border:1px solid rgba(192,57,43,0.15);margin-left:4px" onclick="deleteClient('${c._key}')">Suppr.</button>
+        </div></td>
       </tr>`).join('');
   }
 
