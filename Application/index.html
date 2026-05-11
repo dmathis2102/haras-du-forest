@@ -3444,5 +3444,174 @@
     renderParticulierSlots();
   });
 </script>
+
+<!-- ══ FIREBASE ══ -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey:            "AIzaSyAwspb2AUT9JvV4x3hn362ttKtHmfEc6Fc",
+    authDomain:        "haras-du-forest.firebaseapp.com",
+    projectId:         "haras-du-forest",
+    storageBucket:     "haras-du-forest.firebasestorage.app",
+    messagingSenderId: "661096788450",
+    appId:             "1:661096788450:web:49783a922deb41fa01c9bb"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db   = firebase.firestore();
+
+  /* ── Observer Auth — gère l'affichage au chargement ── */
+  auth.onAuthStateChanged(async user => {
+    if (user) {
+      await handleUserLogin(user);
+    } else {
+      document.getElementById('auth-screen').classList.remove('hidden');
+    }
+  });
+
+  /* ── Après connexion : lit le rôle et redirige ── */
+  async function handleUserLogin(user) {
+    try {
+      const snap = await db.collection('users').doc(user.uid).get();
+      const role = snap.exists ? snap.data().role : 'client';
+
+      if (role === 'moniteur') {
+        // Redirige vers l'interface moniteur
+        window.location.href = '../Moniteur/index.html';
+        return;
+      }
+      if (role === 'admin') {
+        window.location.href = '../Logiciel/index.html';
+        return;
+      }
+
+      // Client → affiche l'app
+      const data = snap.data() || {};
+      const prenom = data.prenom || user.email.split('@')[0];
+      // Met à jour le nom affiché dans la sidebar si l'élément existe
+      const nameEl = document.getElementById('user-display-name');
+      if (nameEl) nameEl.textContent = prenom;
+      document.getElementById('auth-screen').classList.add('hidden');
+    } catch(e) {
+      console.warn('Erreur lecture rôle :', e.message);
+      document.getElementById('auth-screen').classList.add('hidden');
+    }
+  }
+
+  /* ── Connexion ── */
+  function doLogin() {
+    const email    = (document.getElementById('login-email').value || '').trim();
+    const password = document.getElementById('login-password').value || '';
+    const errEl    = document.getElementById('login-error');
+    const btn      = document.getElementById('login-btn');
+
+    errEl.style.display = 'none';
+    if (!email || !password) {
+      errEl.textContent = 'Remplis les deux champs.';
+      errEl.style.display = 'block'; return;
+    }
+    btn.textContent = 'Connexion…'; btn.disabled = true;
+
+    auth.signInWithEmailAndPassword(email, password)
+      .catch(e => {
+        btn.textContent = 'Se connecter'; btn.disabled = false;
+        errEl.textContent = (e.code === 'auth/wrong-password' || e.code === 'auth/user-not-found' || e.code === 'auth/invalid-credential')
+          ? 'Email ou mot de passe incorrect.'
+          : e.code === 'auth/too-many-requests' ? 'Trop de tentatives. Réessaie plus tard.' : 'Erreur de connexion.';
+        errEl.style.display = 'block';
+      });
+  }
+
+  /* ── Inscription (clients uniquement) ── */
+  async function doRegister() {
+    const prenom   = (document.getElementById('reg-prenom').value || '').trim();
+    const nom      = (document.getElementById('reg-nom').value || '').trim();
+    const email    = (document.getElementById('reg-email').value || '').trim();
+    const password = document.getElementById('reg-password').value || '';
+    const niveau   = document.getElementById('reg-niveau').value;
+    const errEl    = document.getElementById('reg-error');
+    const btn      = document.getElementById('reg-btn');
+
+    errEl.style.display = 'none';
+    if (!prenom || !nom || !email || !password) {
+      errEl.textContent = 'Remplis tous les champs.'; errEl.style.display = 'block'; return;
+    }
+    if (password.length < 6) {
+      errEl.textContent = 'Le mot de passe doit faire au moins 6 caractères.'; errEl.style.display = 'block'; return;
+    }
+    btn.textContent = 'Création…'; btn.disabled = true;
+
+    try {
+      const cred = await auth.createUserWithEmailAndPassword(email, password);
+      // Enregistre le profil dans Firestore
+      await db.collection('users').doc(cred.user.uid).set({
+        uid:    cred.user.uid,
+        email,
+        prenom,
+        nom,
+        niveau,
+        role:   'client',
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      // Crée aussi une entrée dans la collection clients du backoffice
+      const clientRef = db.collection('clients').doc(cred.user.uid);
+      await clientRef.set({
+        id:       cred.user.uid,
+        nom,
+        prenom,
+        email,
+        formule:  'Aucune',
+        niveau,
+        points:   0,
+        initials: (prenom[0] + nom[0]).toUpperCase(),
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      // onAuthStateChanged prend le relais et affiche l'app
+    } catch(e) {
+      btn.textContent = 'Créer mon compte'; btn.disabled = false;
+      errEl.textContent = e.code === 'auth/email-already-in-use' ? 'Un compte existe déjà avec cet email.'
+        : e.code === 'auth/invalid-email' ? 'Email invalide.'
+        : e.code === 'auth/weak-password' ? 'Mot de passe trop faible.'
+        : 'Erreur lors de la création du compte.';
+      errEl.style.display = 'block';
+    }
+  }
+
+  /* ── Mot de passe oublié ── */
+  function doForgotPassword() {
+    const email = (document.getElementById('login-email').value || '').trim();
+    if (!email) {
+      const errEl = document.getElementById('login-error');
+      errEl.textContent = 'Entre ton email ci-dessus puis clique sur "Mot de passe oublié".';
+      errEl.style.display = 'block'; return;
+    }
+    auth.sendPasswordResetEmail(email)
+      .then(() => {
+        const errEl = document.getElementById('login-error');
+        errEl.style.color = '#2B6657';
+        errEl.textContent = 'Email de réinitialisation envoyé !';
+        errEl.style.display = 'block';
+        setTimeout(() => { errEl.style.color = '#C0392B'; errEl.style.display = 'none'; }, 4000);
+      })
+      .catch(() => {
+        const errEl = document.getElementById('login-error');
+        errEl.textContent = 'Email introuvable.'; errEl.style.display = 'block';
+      });
+  }
+
+  /* ── Déconnexion ── */
+  function deconnexion() {
+    auth.signOut().then(() => {
+      document.getElementById('auth-screen').classList.remove('hidden');
+      closeSidebar();
+      showPage('presentation');
+      document.getElementById('login-email').value = '';
+      document.getElementById('login-password').value = '';
+      document.getElementById('login-error').style.display = 'none';
+    });
+  }
+</script>
 </body>
 </html>
