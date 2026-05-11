@@ -3852,10 +3852,6 @@
     btn.disabled = true;
 
     auth.createUserWithEmailAndPassword(email, password)
-      .then(() => {
-        // Marque le setup comme fait dans Firestore
-        return db.collection('_meta').doc('setup').set({ initialized: true, email });
-      })
       .catch(e => {
         btn.textContent = 'Créer mon compte';
         btn.disabled = false;
