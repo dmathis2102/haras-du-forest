@@ -2241,6 +2241,10 @@
     const prenom  = document.getElementById('nc-prenom').value.trim();
     const nom     = document.getElementById('nc-nom').value.trim();
     if (!prenom || !nom) { alert('Veuillez renseigner le prénom et le nom.'); return; }
+    const emailSaisi = document.getElementById('nc-email').value.trim();
+    if (emailSaisi && clients.find(c => c.email === emailSaisi && c._key !== _editClientId)) {
+      showToast('Un client avec cette adresse email existe déjà.'); return;
+    }
     const nomComplet = `${prenom} ${nom}`;
     const initials   = (prenom[0] + nom[0]).toUpperCase();
     const newClient  = {
