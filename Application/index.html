@@ -1567,6 +1567,24 @@
       <div class="auth-divider"></div>
     </div>
 
+    <!-- Écran vérification email -->
+    <div id="verify-block" style="display:none;text-align:center">
+      <div style="font-size:40px;margin-bottom:16px">📬</div>
+      <div style="font-size:17px;font-weight:700;color:#0E1C35;margin-bottom:10px">Vérifiez votre email</div>
+      <div style="font-size:13px;color:#4A5568;line-height:1.6;margin-bottom:24px">
+        Un email de confirmation a été envoyé à<br>
+        <strong id="verify-email-display"></strong><br><br>
+        Cliquez sur le lien dans l'email puis revenez ici.
+      </div>
+      <button class="btn btn-dark" onclick="checkVerification()" style="margin-bottom:10px">J'ai vérifié mon email</button>
+      <div style="margin-top:12px">
+        <span onclick="resendVerification()" style="font-size:12px;color:#8A96A8;cursor:pointer;text-decoration:underline">Renvoyer l'email</span>
+        &nbsp;·&nbsp;
+        <span onclick="doLogoutApp()" style="font-size:12px;color:#8A96A8;cursor:pointer;text-decoration:underline">Se déconnecter</span>
+      </div>
+    </div>
+
+    <div id="auth-forms-block">
     <div class="auth-tabs">
       <button class="auth-tab active" onclick="switchAuthTab('login')">Connexion</button>
       <button class="auth-tab" onclick="switchAuthTab('register')">Nouveau cavalier</button>
