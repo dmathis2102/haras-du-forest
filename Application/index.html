@@ -3620,19 +3620,15 @@
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
       // Crée aussi une entrée dans la collection clients du backoffice
-      const clientRef = db.collection('clients').doc(cred.user.uid);
-      await clientRef.set({
+      await db.collection('clients').doc(cred.user.uid).set({
         id:       cred.user.uid,
-        nom,
-        prenom,
-        email,
-        formule:  'Aucune',
-        niveau,
-        points:   0,
+        nom, prenom, email, formule: 'Aucune', niveau, points: 0,
         initials: (prenom[0] + nom[0]).toUpperCase(),
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
-      // onAuthStateChanged prend le relais et affiche l'app
+      // Envoie l'email de vérification
+      await cred.user.sendEmailVerification();
+      // onAuthStateChanged prend le relais → showVerifyScreen()
     } catch(e) {
       btn.textContent = 'Créer mon compte'; btn.disabled = false;
       errEl.textContent = e.code === 'auth/email-already-in-use' ? 'Un compte existe déjà avec cet email.'
