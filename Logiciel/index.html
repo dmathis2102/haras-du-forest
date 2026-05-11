@@ -2346,6 +2346,7 @@
           <button class="btn btn-outline" style="width:100%" onclick="openModifierClient('${c._key}')">Modifier le profil</button>
           <button class="btn btn-outline" style="width:100%" onclick="afficherHistorique('${c._key}')">Historique complet</button>
           <button class="btn btn-outline" style="width:100%" onclick="ajouterPoints('${c._key}')">Ajouter des points</button>
+          <button class="btn" style="width:100%;background:var(--red-l);color:var(--red);border:1px solid rgba(192,57,43,0.15);font-weight:600" onclick="deleteClient('${c._key}')">Supprimer le client</button>
         </div>
       </div>`;
     document.getElementById('detail-panel').classList.add('open');
