@@ -2038,6 +2038,30 @@
   const clients = [];
   const formuleBadge = { Essentielle:'badge-gray', Confort:'badge-gold', Premium:'badge-blue' };
 
+  // Normalise un document Firestore en client standard (gère les clients créés via l'app)
+  function normalizeClient(docId, data) {
+    if (!data.initials) {
+      // Client créé via l'Application (a uid/prenom/nom mais pas d'initials ni d'id numérique)
+      const prenom = data.prenom || '';
+      const nom    = data.nom    || '';
+      const fullNom = [prenom, nom].filter(Boolean).join(' ') || data.email || '—';
+      const initials = ((prenom[0]||'') + (nom[0]||'')).toUpperCase() || '?';
+      const galop = (data.niveau || '').replace(/galop\s*/i, '').trim() || '—';
+      return {
+        _key: docId, id: docId,
+        nom: fullNom, initials,
+        email:   data.email   || '—',
+        tel:     data.tel     || '—',
+        galop,
+        formule: data.formule || 'Non définie',
+        points:  data.points  || 0,
+        reservations: data.reservations || 0,
+        _fromApp: true
+      };
+    }
+    return { _key: docId, ...data };
+  }
+
   function showToast(msg) {
     const t = document.getElementById('toast');
     t.textContent = msg;
