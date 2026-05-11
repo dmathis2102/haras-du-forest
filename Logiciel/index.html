@@ -2981,6 +2981,9 @@
     document.getElementById('kpi-attente-delta').innerHTML  = attente === 0
       ? `<span class="up">Tout est à jour</span>`
       : `<span class="down">À traiter</span>`;
+
+    // Planning du jour + Alertes + Moniteurs aujourd'hui
+    renderDashboardToday();
   }
 
   function renderDashboardToday() {
