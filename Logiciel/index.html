@@ -3129,7 +3129,7 @@
   function reinitialiserDonnees() {
     // Étape 1 — confirmation initiale
     showModal({
-      icon: '⚠️',
+      icon: '',
       title: 'Réinitialiser toutes les données ?',
       message: 'Cette action va <strong>supprimer définitivement</strong> tous les clients, réservations, paiements, cours et moniteurs.<br><br>Cette action est <strong>irréversible</strong>.',
       btnCancel: 'Annuler',
@@ -3138,7 +3138,7 @@
       onConfirm: () => {
         // Étape 2 — saisie du mot de confirmation
         showModal({
-          icon: '🔐',
+          icon: '',
           title: 'Dernière confirmation',
           message: 'Pour confirmer la suppression définitive, tape exactement le mot ci-dessous dans le champ :',
           inputPlaceholder: 'REINITIALISER',
