@@ -1886,7 +1886,6 @@
         </div>
       </div>` : ''}`;
     document.getElementById('dp-footer').innerHTML = `
-      ${r.status !== 'Annulé' && !isStage ? `<button class="btn btn-outline" style="flex:1;color:var(--red);border-color:#F5C6C2" onclick="cancelResaFromDetail()">Annuler le cours</button>` : ''}
       <button class="btn btn-primary" style="flex:1" onclick="closeDetail()">Fermer</button>`;
     document.getElementById('detail-panel').classList.add('open');
     document.getElementById('dp-overlay').classList.add('open');
