@@ -3805,16 +3805,7 @@
     } else {
       // Pas connecté — affiche l'écran de connexion
       document.getElementById('login-screen').style.display = 'flex';
-      // Vérifie s'il existe déjà des utilisateurs (premier accès)
-      // Firebase ne permet pas de lister les users côté client, donc on
-      // utilise un document sentinelle dans Firestore pour détecter le premier accès
-      db.collection('_meta').doc('setup').get().then(snap => {
-        if (snap.exists && snap.data().initialized) {
-          showLoginForm();
-        } else {
-          showSetupForm();
-        }
-      }).catch(() => showLoginForm());
+      showLoginForm();
     }
   });
 
