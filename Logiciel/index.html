@@ -3692,7 +3692,7 @@
       const clientSnap = await db.collection('clients').get();
       if (!clientSnap.empty) {
         clients.length = 0;
-        clientSnap.forEach(doc => clients.push(doc.data()));
+        clientSnap.forEach(doc => clients.push(normalizeClient(doc.id, doc.data())));
         clients.sort((a, b) => a.nom?.localeCompare(b.nom));
       } else {
         const batch = db.batch();
