@@ -840,12 +840,17 @@
 
   <div class="sb-footer">
     <div class="sb-user">
-      <div class="sb-avatar">AD</div>
-      <div>
-        <div class="sb-user-name">Admin</div>
+      <div class="sb-avatar" id="sb-avatar-initials">AD</div>
+      <div style="flex:1;min-width:0">
+        <div class="sb-user-name" id="sb-user-email" style="font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Admin</div>
         <div class="sb-user-role">Gérant</div>
       </div>
     </div>
+    <button onclick="doLogout()" title="Se déconnecter"
+      style="margin-top:8px;width:100%;padding:8px;background:rgba(239,68,68,0.12);color:#F87171;border:1px solid rgba(239,68,68,0.2);border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;letter-spacing:0.3px;transition:background 0.15s"
+      onmouseover="this.style.background='rgba(239,68,68,0.22)'" onmouseout="this.style.background='rgba(239,68,68,0.12)'">
+      Déconnexion
+    </button>
   </div>
 </nav>
 
