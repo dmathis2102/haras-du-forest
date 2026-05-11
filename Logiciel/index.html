@@ -2983,6 +2983,105 @@
       : `<span class="down">À traiter</span>`;
   }
 
+  function renderDashboardToday() {
+    const today    = new Date();
+    const pad      = n => String(n).padStart(2,'0');
+    const todayISO = `${today.getFullYear()}-${pad(today.getMonth()+1)}-${pad(today.getDate())}`;
+
+    // ── Titre avec date du jour ──
+    const label = today.toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'long' });
+    const labelCap = label.charAt(0).toUpperCase() + label.slice(1);
+    const titleEl = document.getElementById('dash-today-title');
+    if (titleEl) titleEl.textContent = `Planning du jour — ${labelCap}`;
+
+    // ── Réservations du jour ──
+    const todayResas = reservations
+      .filter(r => r.date === todayISO && r.status !== 'Annulé')
+      .sort((a, b) => a.heure.localeCompare(b.heure));
+
+    const countEl = document.getElementById('dash-today-count');
+    if (countEl) {
+      countEl.textContent = `${todayResas.length} créneau${todayResas.length !== 1 ? 'x' : ''}`;
+      countEl.style.display = todayResas.length ? '' : 'none';
+    }
+
+    const monFull = { sophie:'Sophie L.', thomas:'Thomas D.', camille:'Camille R.' };
+    const typeDot = { Particulier:'dot-blue', Collectif:'dot-green', Enfants:'dot-gold', Stage:'dot-gold' };
+
+    const listEl = document.getElementById('dash-today-list');
+    if (listEl) {
+      if (todayResas.length === 0) {
+        listEl.innerHTML = `<div style="padding:40px;text-align:center;color:var(--t3);font-size:13px">Aucun cours prévu aujourd'hui</div>`;
+      } else {
+        listEl.innerHTML = todayResas.map(r => {
+          const badge = r.status === 'Confirmé' ? 'badge-green' : 'badge-orange';
+          const dot   = typeDot[r.type] || 'dot-blue';
+          return `<div class="tl-item">
+            <div class="tl-time">${r.heure}</div>
+            <div class="tl-dot ${dot}"></div>
+            <div class="tl-info">
+              <div class="tl-name">${r.client}</div>
+              <div class="tl-sub">${r.type} · ${monFull[r.moniteur] || r.moniteur || '—'}</div>
+            </div>
+            <span class="tl-badge ${badge}">${r.status}</span>
+          </div>`;
+        }).join('');
+      }
+    }
+
+    // ── Alertes dynamiques ──
+    const alertes = [];
+    paiements.filter(p => p.statut === 'En retard').forEach(p =>
+      alertes.push({ icon:'⚠', cls:'si-red', title:'Paiement en retard', sub:`${p.client} · ${p.montant}€`, nav:`navigateTo('paiements', () => openPaiementDetail(${p.id}))` }));
+    paiements.filter(p => p.statut === 'En attente').slice(0, 3).forEach(p =>
+      alertes.push({ icon:'💳', cls:'si-orange', title:'Paiement en attente', sub:`${p.client} · ${p.montant}€`, nav:`navigateTo('paiements', () => openPaiementDetail(${p.id}))` }));
+    reservations.filter(r => r.type === 'Stage' && r.status === 'En attente').slice(0, 2).forEach(r =>
+      alertes.push({ icon:'💬', cls:'si-blue', title:'Demande de stage', sub:`${r.client} · ${r.date}`, nav:`navigateTo('reservations')` }));
+
+    const alertBadge = document.getElementById('dash-alerts-badge');
+    const alertList  = document.getElementById('dash-alerts-list');
+    if (alertBadge) { alertBadge.textContent = alertes.length; alertBadge.style.display = alertes.length ? '' : 'none'; }
+    if (alertList) {
+      alertList.innerHTML = alertes.length === 0
+        ? `<div style="padding:24px;text-align:center;color:var(--t3);font-size:13px">Aucune alerte — tout est à jour</div>`
+        : alertes.slice(0, 5).map(a => `
+            <div class="alert-item" onclick="${a.nav}" style="cursor:pointer">
+              <div class="alert-icon ${a.cls}" style="border-radius:8px">${a.icon}</div>
+              <div class="alert-txt">
+                <div class="alert-title">${a.title}</div>
+                <div class="alert-sub">${a.sub}</div>
+              </div>
+              <span style="color:var(--t3);font-size:18px;align-self:center">›</span>
+            </div>`).join('');
+    }
+
+    // ── Moniteurs aujourd'hui ──
+    const parMon = {};
+    todayResas.forEach(r => {
+      if (!r.moniteur) return;
+      if (!parMon[r.moniteur]) parMon[r.moniteur] = [];
+      parMon[r.moniteur].push(r.heure);
+    });
+
+    const monEl = document.getElementById('dash-moniteurs-list');
+    if (monEl) {
+      if (Object.keys(parMon).length === 0) {
+        monEl.innerHTML = `<div style="padding:20px;text-align:center;color:var(--t3);font-size:13px">Aucun moniteur planifié aujourd'hui</div>`;
+      } else {
+        monEl.innerHTML = Object.entries(parMon).map(([key, heures]) => `
+          <div class="tl-item" style="cursor:pointer" onclick="navigateTo('moniteurs', () => switchToMonitor('${key}'))">
+            <div class="tl-dot dot-green"></div>
+            <div class="tl-info">
+              <div class="tl-name">${monFull[key] || key}</div>
+              <div class="tl-sub">${heures.length} cours · ${heures.sort().join(', ')}</div>
+            </div>
+            <span class="tl-badge badge-green">Disponible</span>
+            <span style="color:var(--t3);font-size:16px;margin-left:4px">›</span>
+          </div>`).join('');
+      }
+    }
+  }
+
   function renderDashboardWeek() {
     document.getElementById('dash-week-grid').innerHTML = DASH_WEEK.map(j => {
       const slots = getSlotsByDate(j.date);
