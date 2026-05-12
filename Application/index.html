@@ -3647,9 +3647,13 @@
         initials: (prenom[0] + nom[0]).toUpperCase(),
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
-      // Envoie l'email de vérification
-      await cred.user.sendEmailVerification();
-      // onAuthStateChanged prend le relais → showVerifyScreen()
+      // Envoie l'email de vérification avec redirection vers action.html
+      await cred.user.sendEmailVerification({
+        url: window.location.origin + '/action.html'
+      });
+      // Affiche l'écran de vérification et réinitialise le bouton
+      showVerifyScreen(cred.user.email);
+      btn.textContent = 'Créer mon compte'; btn.disabled = false;
     } catch(e) {
       btn.textContent = 'Créer mon compte'; btn.disabled = false;
       errEl.textContent = e.code === 'auth/email-already-in-use' ? 'Un compte existe déjà avec cet email.'
