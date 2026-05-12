@@ -3499,21 +3499,25 @@
   auth.languageCode = 'fr'; // emails Firebase en français
 
   /* ── Observer Auth — gère l'affichage au chargement ── */
+  let _verifyMode = false; // empêche showAuthForms() de fermer l'écran de vérif pendant l'inscription
+
   auth.onAuthStateChanged(async user => {
     if (user) {
       await handleUserLogin(user);
-    } else {
+    } else if (!_verifyMode) {
       showAuthForms();
     }
   });
 
   function showAuthForms() {
+    _verifyMode = false;
     document.getElementById('auth-screen').classList.remove('hidden');
     document.getElementById('verify-block').style.display = 'none';
     document.getElementById('auth-forms-block').style.display = '';
   }
 
   function showVerifyScreen(email) {
+    _verifyMode = true;
     document.getElementById('auth-screen').classList.remove('hidden');
     document.getElementById('auth-forms-block').style.display = 'none';
     document.getElementById('verify-block').style.display = '';
