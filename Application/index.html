@@ -3624,7 +3624,7 @@
     const link = document.querySelector('[onclick="resendVerification()"]');
     if (link) link.textContent = 'Envoi…';
     try {
-      await user.sendEmailVerification({ url: window.location.origin + '/action.html' });
+      await user.sendEmailVerification();
       const msg = document.getElementById('verify-msg');
       if (msg) { msg.textContent = 'Email renvoyé ! Vérifie ta boîte (et les spams).'; msg.style.color = '#2B6657'; msg.style.display = 'block'; }
     } catch(e) {
