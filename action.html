@@ -134,6 +134,13 @@
     );
   }
 
+  function goToApp() {
+    // Calcule le chemin vers Application/ depuis l'emplacement de action.html
+    const base = window.location.href.split('action.html')[0];
+    console.log('[HDF] Redirection vers :', base + 'Application/index.html');
+    window.location.href = base + 'Application/index.html';
+  }
+
   // Lit les paramètres de l'URL envoyés par Firebase
   const params  = new URLSearchParams(window.location.search);
   const mode    = params.get('mode');
