@@ -3226,12 +3226,12 @@
   }
 
   async function _executerReinitialisation() {
-    try {
-      showToast('Réinitialisation en cours...');
+    showToast('Réinitialisation en cours...');
 
-      // Supprime tout dans Firebase — toutes les collections
-      const collections = ['reservations', 'clients', 'paiements', 'cours', 'moniteurs'];
-      for (const col of collections) {
+    // Supprime tout dans Firebase — chaque collection indépendamment
+    const collections = ['reservations', 'clients', 'paiements', 'cours', 'moniteurs'];
+    for (const col of collections) {
+      try {
         const snap = await db.collection(col).get();
         if (snap.empty) continue;
         // Firestore limite les batchs à 500 ops
@@ -3244,37 +3244,29 @@
         });
         chunks.push(batch);
         for (const b of chunks) await b.commit();
+      } catch(e) {
+        console.warn(`Réinitialisation — collection "${col}" ignorée :`, e.message);
       }
-
-      // Vide les tableaux et objets locaux
-      reservations.length = 0;
-      clients.length = 0;
-      paiements.length = 0;
-      moniteurs.length = 0;
-      Object.keys(coursParMoniteur).forEach(k => delete coursParMoniteur[k]);
-      nextId = 1;
-
-      // Rafraîchit tout l'affichage
-      filterResas();
-      renderClients(clients);
-      filterPaiements();
-      renderMoniteurCards();
-      renderDashboardStats(); // appelle renderDashboardToday() en interne
-      renderDashboardWeek();
-      renderBadges();
-      
-
-      showToast('✓ Réinitialisation terminée — vous repartez de zéro');
-    } catch(e) {
-      showModal({
-        icon: '',
-        title: 'Erreur',
-        message: 'La réinitialisation a échoué :<br><code>' + e.message + '</code>',
-        btnCancel: '',
-        btnConfirm: 'OK',
-        btnConfirmClass: 'cp-btn-danger'
-      });
     }
+
+    // Vide les tableaux et objets locaux dans tous les cas
+    reservations.length = 0;
+    clients.length = 0;
+    paiements.length = 0;
+    moniteurs.length = 0;
+    Object.keys(coursParMoniteur).forEach(k => delete coursParMoniteur[k]);
+    nextId = 1;
+
+    // Rafraîchit tout l'affichage
+    filterResas();
+    renderClients(clients);
+    filterPaiements();
+    renderMoniteurCards();
+    renderDashboardStats();
+    renderDashboardWeek();
+    renderBadges();
+
+    showToast('✓ Réinitialisation terminée — vous repartez de zéro');
   }
 
   /* ── INIT ── */
