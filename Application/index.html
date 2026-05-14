@@ -3500,9 +3500,11 @@
 
   /* ── Observer Auth — gère l'affichage au chargement ── */
   let _verifyMode = false; // empêche showAuthForms() de fermer l'écran de vérif pendant l'inscription
+  let _verifyUser = null;  // stocke le user même si auth.currentUser devient null
 
   auth.onAuthStateChanged(async user => {
     if (user) {
+      _verifyUser = user;
       await handleUserLogin(user);
     } else if (!_verifyMode) {
       showAuthForms();
@@ -3511,13 +3513,16 @@
 
   function showAuthForms() {
     _verifyMode = false;
+    _verifyUser = null;
     document.getElementById('auth-screen').classList.remove('hidden');
     document.getElementById('verify-block').style.display = 'none';
     document.getElementById('auth-forms-block').style.display = '';
   }
 
-  function showVerifyScreen(email) {
+  function showVerifyScreen(user) {
     _verifyMode = true;
+    if (user && typeof user === 'object') _verifyUser = user;
+    const email = (user && user.email) ? user.email : (typeof user === 'string' ? user : '');
     document.getElementById('auth-screen').classList.remove('hidden');
     document.getElementById('auth-forms-block').style.display = 'none';
     document.getElementById('verify-block').style.display = '';
