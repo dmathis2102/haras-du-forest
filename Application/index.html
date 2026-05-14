@@ -3594,10 +3594,15 @@
     }
   }
 
+  function showVerifyMsg(text, color) {
+    const msg = document.getElementById('verify-msg');
+    if (msg) { msg.textContent = text; msg.style.color = color || '#C0392B'; msg.style.display = 'block'; }
+  }
+
   /* ── Vérifie si l'email a été confirmé (bouton "J'ai vérifié") ── */
   async function checkVerification() {
     const user = _verifyUser || auth.currentUser;
-    if (!user) { showAuthForms(); return; }
+    if (!user) { showVerifyMsg('Session expirée — utilise "Se déconnecter" puis reconnecte-toi.'); return; }
     const btn = document.querySelector('[onclick="checkVerification()"]');
     if (btn) { btn.textContent = 'Vérification…'; btn.disabled = true; }
     try {
