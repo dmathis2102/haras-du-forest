@@ -2016,19 +2016,43 @@
       <div class="tarif-card">
         <div class="tarif-label">${k}</div>
         <div class="tarif-input-row">
-          <input class="tarif-input" type="number" min="0" value="${tarifs[k]}" onchange="saveTarif('${k}', this.value)" onblur="saveTarif('${k}', this.value)">
+          <input class="tarif-input" type="number" min="0" value="${tarifs[k]}"
+            data-original="${tarifs[k]}"
+            onblur="confirmTarif('${k}', this)"
+            onkeydown="if(event.key==='Enter'){this.blur()}if(event.key==='Escape'){this.value=this.dataset.original;this.blur()}">
           <span class="tarif-euro">€</span>
         </div>
       </div>
     `).join('');
   }
 
-  function saveTarif(key, val) {
-    const n = parseInt(val);
-    if (!isNaN(n) && n >= 0) {
-      tarifs[key] = n;
-      showToast('Tarif mis à jour');
+  function confirmTarif(key, input) {
+    const n = parseInt(input.value);
+    const ancien = parseInt(input.dataset.original);
+    // Aucun changement → on ne fait rien
+    if (isNaN(n) || n < 0 || n === ancien) {
+      input.value = ancien;
+      return;
     }
+    showModal({
+      icon: '',
+      title: 'Modifier le tarif',
+      message: `Confirmes-tu le nouveau tarif pour <strong>${key}</strong> ?<br><br>
+        <span style="color:var(--t3);text-decoration:line-through">${ancien} €</span>
+        &nbsp;→&nbsp;
+        <strong style="color:var(--navy);font-size:16px">${n} €</strong>`,
+      btnCancel: 'Annuler',
+      btnConfirm: 'Confirmer',
+      btnConfirmClass: 'cp-btn-navy',
+      onConfirm: () => {
+        tarifs[key] = n;
+        input.dataset.original = n;
+        showToast(`Tarif "${key}" mis à jour : ${n} €`);
+      },
+      onCancel: () => {
+        input.value = ancien;
+      }
+    });
   }
 
   /* ── CLIENTS ── */
