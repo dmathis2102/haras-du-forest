@@ -3564,25 +3564,42 @@
 
   /* ── Vérifie si l'email a été confirmé (bouton "J'ai vérifié") ── */
   async function checkVerification() {
-    const user = auth.currentUser;
-    if (!user) return;
-    await user.reload(); // recharge les infos depuis Firebase
-    if (user.emailVerified) {
-      await handleUserLogin(user);
-    } else {
-      alert('Email pas encore vérifié. Vérifie ta boîte mail et clique sur le lien.');
+    const user = _verifyUser || auth.currentUser;
+    if (!user) { showAuthForms(); return; }
+    const btn = document.querySelector('[onclick="checkVerification()"]');
+    if (btn) { btn.textContent = 'Vérification…'; btn.disabled = true; }
+    try {
+      await user.reload();
+      if (user.emailVerified) {
+        _verifyMode = false;
+        await handleUserLogin(user);
+      } else {
+        const msg = document.getElementById('verify-msg');
+        if (msg) { msg.textContent = 'Email pas encore confirmé. Clique sur le lien reçu par mail.'; msg.style.color = '#C0392B'; msg.style.display = 'block'; }
+      }
+    } catch(e) {
+      const msg = document.getElementById('verify-msg');
+      if (msg) { msg.textContent = 'Erreur, réessaie dans un instant.'; msg.style.color = '#C0392B'; msg.style.display = 'block'; }
+    } finally {
+      if (btn) { btn.textContent = "J'ai vérifié mon email"; btn.disabled = false; }
     }
   }
 
   /* ── Renvoie l'email de vérification ── */
   async function resendVerification() {
-    const user = auth.currentUser;
-    if (!user) return;
+    const user = _verifyUser || auth.currentUser;
+    if (!user) { showAuthForms(); return; }
+    const link = document.querySelector('[onclick="resendVerification()"]');
+    if (link) link.textContent = 'Envoi…';
     try {
-      await user.sendEmailVerification({ url: window.location.origin + '/haras-du-forest/action.html' });
-      alert('Email renvoyé à ' + user.email);
+      await user.sendEmailVerification({ url: window.location.origin + '/action.html' });
+      const msg = document.getElementById('verify-msg');
+      if (msg) { msg.textContent = 'Email renvoyé ! Vérifie ta boîte (et les spams).'; msg.style.color = '#2B6657'; msg.style.display = 'block'; }
     } catch(e) {
-      alert('Erreur : ' + e.message);
+      const msg = document.getElementById('verify-msg');
+      if (msg) { msg.textContent = 'Erreur lors de l\'envoi : ' + e.message; msg.style.color = '#C0392B'; msg.style.display = 'block'; }
+    } finally {
+      if (link) link.textContent = 'Renvoyer l\'email';
     }
   }
 
