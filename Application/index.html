@@ -3545,11 +3545,15 @@
   });
 
   function showAuthForms() {
-    _verifyMode = false;
-    _verifyUser = null;
+    _verifyMode    = false;
+    _verifyUser    = null;
+    _sessionActive = false;
     document.getElementById('auth-screen').classList.remove('hidden');
     document.getElementById('verify-block').style.display = 'none';
     document.getElementById('auth-forms-block').style.display = '';
+    // Remet le bouton connexion dans son état initial (au cas où un refresh token l'aurait laissé bloqué)
+    const loginBtn = document.querySelector('[onclick="doLogin()"]');
+    if (loginBtn) { loginBtn.textContent = 'Se connecter'; loginBtn.disabled = false; }
   }
 
   function showVerifyScreen(user) {
