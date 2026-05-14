@@ -3657,7 +3657,7 @@
         url: window.location.origin + '/action.html'
       });
       // Affiche l'écran de vérification et réinitialise le bouton
-      showVerifyScreen(cred.user.email);
+      showVerifyScreen(cred.user);
       btn.textContent = 'Créer mon compte'; btn.disabled = false;
     } catch(e) {
       btn.textContent = 'Créer mon compte'; btn.disabled = false;
