@@ -3568,22 +3568,23 @@
 
   /* ── Après connexion : vérifie email + rôle + redirige ── */
   async function handleUserLogin(user) {
-    // Email non vérifié → écran de vérification
-    if (!user.emailVerified) {
-      showVerifyScreen(user);
-      return;
-    }
-
     try {
       const snap = await db.collection('users').doc(user.uid).get();
       const role = snap.exists ? snap.data().role : 'client';
 
+      // Moniteurs et admins : créés par l'admin → pas de vérif email
       if (role === 'moniteur') {
         window.location.href = '../Moniteur/index.html';
         return;
       }
       if (role === 'admin') {
         window.location.href = '../Logiciel/index.html';
+        return;
+      }
+
+      // Cavaliers : vérification email obligatoire
+      if (!user.emailVerified) {
+        showVerifyScreen(user);
         return;
       }
 
