@@ -4,7 +4,7 @@
     {
       "name": "logiciel",
       "runtimeExecutable": "python",
-      "runtimeArgs": ["-m", "http.server", "5500"],
+      "runtimeArgs": ["-m", "http.server", "5500", "--directory", "C:\\Users\\dmath\\Desktop\\Maptitecouture\\haras-du-forest"],
       "port": 5500
     }
   ]
