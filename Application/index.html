@@ -3644,8 +3644,9 @@
   }
 
   function doLogoutApp() {
-    _verifyMode = false;
-    _verifyUser = null;
+    _verifyMode    = false;
+    _verifyUser    = null;
+    _sessionActive = false;
     auth.signOut().then(() => showAuthForms());
   }
 
