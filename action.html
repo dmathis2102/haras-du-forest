@@ -102,16 +102,19 @@
   <div id="state-success" style="display:none">
     <div class="icon-wrap icon-success">✓</div>
     <h1>Email vérifié !</h1>
-    <p>Ton adresse email a bien été confirmée.<br>Tu peux maintenant accéder à ton espace.</p>
-    <button class="btn" onclick="goToApp()">Accéder à l'application</button>
+    <p>Ton adresse email a bien été confirmée.<br><br>
+      Retourne sur l'application et clique sur<br>
+      <strong>« J'ai vérifié mon email »</strong><br>
+      pour accéder à ton espace.</p>
   </div>
 
   <!-- État : erreur -->
   <div id="state-error" style="display:none">
     <div class="icon-wrap icon-error">✕</div>
     <h1>Lien invalide</h1>
-    <p id="error-msg">Ce lien de vérification a expiré ou a déjà été utilisé.</p>
-    <button class="btn" onclick="goToApp()">Retour à l'application</button>
+    <p id="error-msg">Ce lien de vérification a expiré ou a déjà été utilisé.<br><br>
+      Retourne sur l'application et clique sur<br>
+      <strong>« Renvoyer l'email »</strong> pour en obtenir un nouveau.</p>
   </div>
 </div>
 
