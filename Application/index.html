@@ -227,7 +227,7 @@
 
     .sidebar-bottom {
       border-top: 1px solid var(--sidebar-border);
-      padding: 10px 8px 14px;
+      padding: 10px 8px max(14px, env(safe-area-inset-bottom));
       flex-shrink: 0;
     }
 
