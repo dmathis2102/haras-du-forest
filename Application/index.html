@@ -3719,12 +3719,10 @@
       showVerifyScreen(cred.user);
       btn.textContent = 'Créer mon compte'; btn.disabled = false;
 
-      // Envoie l'email de vérification avec redirection vers action.html
+      // Envoie l'email de vérification (l'URL d'action est déjà configurée dans Firebase Console)
       try {
-        await cred.user.sendEmailVerification({
-          url: window.location.origin + '/action.html'
-        });
-        console.log('[HDF] Email de vérification envoyé à', cred.user.email, '— URL:', window.location.origin + '/action.html');
+        await cred.user.sendEmailVerification();
+        console.log('[HDF] Email de vérification envoyé à', cred.user.email);
       } catch(mailErr) {
         console.error('[HDF] Erreur sendEmailVerification:', mailErr.code, mailErr.message);
         const msg = document.getElementById('verify-msg');
