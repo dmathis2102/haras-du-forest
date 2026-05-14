@@ -3611,12 +3611,10 @@
         _verifyMode = false;
         await handleUserLogin(user);
       } else {
-        const msg = document.getElementById('verify-msg');
-        if (msg) { msg.textContent = 'Email pas encore confirmé. Clique sur le lien reçu par mail.'; msg.style.color = '#C0392B'; msg.style.display = 'block'; }
+        showVerifyMsg('Email pas encore confirmé. Clique sur le lien reçu par mail.');
       }
     } catch(e) {
-      const msg = document.getElementById('verify-msg');
-      if (msg) { msg.textContent = 'Erreur, réessaie dans un instant.'; msg.style.color = '#C0392B'; msg.style.display = 'block'; }
+      showVerifyMsg('Erreur, réessaie dans un instant.');
     } finally {
       if (btn) { btn.textContent = "J'ai vérifié mon email"; btn.disabled = false; }
     }
@@ -3625,16 +3623,14 @@
   /* ── Renvoie l'email de vérification ── */
   async function resendVerification() {
     const user = _verifyUser || auth.currentUser;
-    if (!user) { showAuthForms(); return; }
+    if (!user) { showVerifyMsg('Session expirée — clique sur "Se déconnecter" puis reconnecte-toi.'); return; }
     const link = document.querySelector('[onclick="resendVerification()"]');
     if (link) link.textContent = 'Envoi…';
     try {
       await user.sendEmailVerification();
-      const msg = document.getElementById('verify-msg');
-      if (msg) { msg.textContent = 'Email renvoyé ! Vérifie ta boîte (et les spams).'; msg.style.color = '#2B6657'; msg.style.display = 'block'; }
+      showVerifyMsg('Email renvoyé ! Vérifie ta boîte (et les spams).', '#2B6657');
     } catch(e) {
-      const msg = document.getElementById('verify-msg');
-      if (msg) { msg.textContent = 'Erreur lors de l\'envoi : ' + e.message; msg.style.color = '#C0392B'; msg.style.display = 'block'; }
+      showVerifyMsg('Erreur : ' + e.message);
     } finally {
       if (link) link.textContent = 'Renvoyer l\'email';
     }
