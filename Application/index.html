@@ -3621,6 +3621,10 @@
       if (elPPoints)  elPPoints.textContent  = `${points} point${points > 1 ? 's' : ''}`;
       if (elPNiveau)  elPNiveau.textContent  = niveau !== '—' ? niveau : 'Niveau non renseigné';
 
+      // Onglet Crédits — même valeur de points
+      const elCredits = document.getElementById('credits-points');
+      if (elCredits) elCredits.textContent = points;
+
       _sessionActive = true;
       document.getElementById('auth-screen').classList.add('hidden');
     } catch(e) {
