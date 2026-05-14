@@ -3636,7 +3636,9 @@
   }
 
   function doLogoutApp() {
-    auth.signOut();
+    _verifyMode = false;
+    _verifyUser = null;
+    auth.signOut().then(() => showAuthForms());
   }
 
   /* ── Afficher/masquer mot de passe ── */
