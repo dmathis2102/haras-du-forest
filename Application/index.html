@@ -3531,14 +3531,15 @@
   auth.languageCode = 'fr'; // emails Firebase en français
 
   /* ── Observer Auth — gère l'affichage au chargement ── */
-  let _verifyMode = false; // empêche showAuthForms() de fermer l'écran de vérif pendant l'inscription
-  let _verifyUser = null;  // stocke le user même si auth.currentUser devient null
+  let _verifyMode    = false; // empêche showAuthForms() pendant l'inscription
+  let _verifyUser    = null;  // stocke le user si auth.currentUser devient null
+  let _sessionActive = false; // empêche showAuthForms() lors d'un refresh de token Firebase
 
   auth.onAuthStateChanged(async user => {
     if (user) {
       _verifyUser = user;
       await handleUserLogin(user);
-    } else if (!_verifyMode) {
+    } else if (!_verifyMode && !_sessionActive) {
       showAuthForms();
     }
   });
