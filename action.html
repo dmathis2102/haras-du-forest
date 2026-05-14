@@ -135,10 +135,9 @@
   }
 
   function goToApp() {
-    // Calcule le chemin vers Application/ depuis l'emplacement de action.html
-    const base = window.location.href.split('action.html')[0];
-    console.log('[HDF] Redirection vers :', base + 'Application/index.html');
-    window.location.href = base + 'Application/index.html';
+    // URL de l'application principale — à mettre à jour si le domaine change
+    const APP_URL = 'REMPLACER_PAR_URL_APP';
+    window.location.href = APP_URL;
   }
 
   // Lit les paramètres de l'URL envoyés par Firebase
