@@ -3715,13 +3715,25 @@
         initials: (prenom[0] + nom[0]).toUpperCase(),
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
-      // Envoie l'email de vérification avec redirection vers action.html
-      await cred.user.sendEmailVerification({
-        url: window.location.origin + '/action.html'
-      });
-      // Affiche l'écran de vérification et réinitialise le bouton
+      // Affiche l'écran de vérification avant d'envoyer l'email
       showVerifyScreen(cred.user);
       btn.textContent = 'Créer mon compte'; btn.disabled = false;
+
+      // Envoie l'email de vérification avec redirection vers action.html
+      try {
+        await cred.user.sendEmailVerification({
+          url: window.location.origin + '/action.html'
+        });
+        console.log('[HDF] Email de vérification envoyé à', cred.user.email, '— URL:', window.location.origin + '/action.html');
+      } catch(mailErr) {
+        console.error('[HDF] Erreur sendEmailVerification:', mailErr.code, mailErr.message);
+        const msg = document.getElementById('verify-msg');
+        if (msg) {
+          msg.textContent = 'Erreur lors de l\'envoi de l\'email (' + mailErr.code + '). Utilise "Renvoyer l\'email".';
+          msg.style.color = '#C0392B';
+          msg.style.display = 'block';
+        }
+      }
     } catch(e) {
       btn.textContent = 'Créer mon compte'; btn.disabled = false;
       errEl.textContent = e.code === 'auth/email-already-in-use' ? 'Un compte existe déjà avec cet email.'
