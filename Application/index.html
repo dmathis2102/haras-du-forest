@@ -3592,9 +3592,11 @@
       const prenom = data.prenom || user.email.split('@')[0];
       const nameEl = document.getElementById('user-display-name');
       if (nameEl) nameEl.textContent = prenom;
+      _sessionActive = true;
       document.getElementById('auth-screen').classList.add('hidden');
     } catch(e) {
       console.warn('Erreur lecture rôle :', e.message);
+      _sessionActive = true;
       document.getElementById('auth-screen').classList.add('hidden');
     }
   }
