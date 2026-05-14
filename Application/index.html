@@ -3533,7 +3533,7 @@
   async function handleUserLogin(user) {
     // Email non vérifié → écran de vérification
     if (!user.emailVerified) {
-      showVerifyScreen(user.email);
+      showVerifyScreen(user);
       return;
     }
 
