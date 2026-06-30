@@ -199,7 +199,7 @@
     const card   = document.getElementById('main-card');
 
     if (!user) {
-      window.location.href = '../Application/index.html';
+      window.location.href = '../index.html';
       return;
     }
 
@@ -211,7 +211,7 @@
       // Sécurité : seul un moniteur peut accéder à cette page
       if (role !== 'moniteur') {
         await auth.signOut();
-        window.location.href = '../Application/index.html';
+        window.location.href = '../index.html';
         return;
       }
 
@@ -236,7 +236,7 @@
   });
 
   function doLogout() {
-    auth.signOut().then(() => window.location.href = '../Application/index.html');
+    auth.signOut().then(() => window.location.href = '../index.html');
   }
 </script>
 </body>

@@ -51,9 +51,9 @@
     display: flex; align-items: center; justify-content: center;
     font-size: 32px;
   }
-  .icon-success { background: #E6F4F0; }
-  .icon-error   { background: #FDECEA; }
-  .icon-loading { background: #EEF2FB; animation: pulse 1.5s infinite; }
+  .icon-success { background: #E6F4F0; color: #2B6657; }
+  .icon-error   { background: #FDECEA; color: #C0392B; }
+  .icon-loading { background: #EEF2FB; }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
   h1 { font-size: 20px; font-weight: 700; color: #0E1C35; margin-bottom: 10px; }
   p  { font-size: 14px; color: #4A5568; line-height: 1.6; margin-bottom: 28px; }
@@ -81,6 +81,11 @@
     animation: spin 0.8s linear infinite;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
+  .redirect-note {
+    font-size: 12px;
+    color: #8A96A8;
+    margin-top: -16px;
+  }
 </style>
 </head>
 <body>
@@ -89,7 +94,7 @@
   <div class="brand-sub">Bondues · Nord</div>
   <div class="divider"></div>
 
-  <!-- État : chargement -->
+  <!-- Chargement -->
   <div id="state-loading">
     <div class="icon-wrap icon-loading">
       <div class="spinner"></div>
@@ -98,67 +103,61 @@
     <p>Merci de patienter quelques secondes.</p>
   </div>
 
-  <!-- État : succès -->
+  <!-- Succès -->
   <div id="state-success" style="display:none">
     <div class="icon-wrap icon-success">✓</div>
     <h1>Email vérifié !</h1>
-    <p>Ton adresse email a bien été confirmée.<br><br>
-      Retourne sur l'application et clique sur<br>
-      <strong>« J'ai vérifié mon email »</strong><br>
-      pour accéder à ton espace.</p>
+    <p>Ton adresse email a bien été confirmée.<br>Tu vas être redirigé vers l'application…</p>
+    <a href="index.html" class="btn">Accéder à l'application</a>
+    <p class="redirect-note" style="margin-top:16px">Redirection automatique dans <span id="countdown">3</span>s</p>
   </div>
 
-  <!-- État : erreur -->
+  <!-- Erreur -->
   <div id="state-error" style="display:none">
     <div class="icon-wrap icon-error">✕</div>
     <h1>Lien invalide</h1>
     <p id="error-msg">Ce lien de vérification a expiré ou a déjà été utilisé.<br><br>
       Retourne sur l'application et clique sur<br>
       <strong>« Renvoyer l'email »</strong> pour en obtenir un nouveau.</p>
+    <a href="index.html" class="btn">Retour à l'application</a>
   </div>
 </div>
 
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-<script>
-  firebase.initializeApp({
-    apiKey:            "AIzaSyAwspb2AUT9JvV4x3hn362ttKtHmfEc6Fc",
-    authDomain:        "haras-du-forest.firebaseapp.com",
-    projectId:         "haras-du-forest",
-    storageBucket:     "haras-du-forest.firebasestorage.app",
-    messagingSenderId: "661096788450",
-    appId:             "1:661096788450:web:49783a922deb41fa01c9bb"
-  });
-  const auth = firebase.auth();
+<script type="module">
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+  const supabase = createClient(
+    'https://ovcpbwatjdmalxjpakkd.supabase.co',
+    'sb_publishable_UX9xIXn6h8yxgZFB3xQcDg_GoXpvC6_'
+  );
 
   function show(id) {
-    ['state-loading','state-success','state-error'].forEach(s =>
+    ['state-loading', 'state-success', 'state-error'].forEach(s =>
       document.getElementById(s).style.display = s === id ? '' : 'none'
     );
   }
 
-  // Lit les paramètres de l'URL envoyés par Firebase
-  const params  = new URLSearchParams(window.location.search);
-  const mode    = params.get('mode');
-  const oobCode = params.get('oobCode');
-
-  if (mode === 'verifyEmail' && oobCode) {
-    auth.applyActionCode(oobCode)
-      .then(() => show('state-success'))
-      .catch(e => {
-        document.getElementById('error-msg').textContent =
-          e.code === 'auth/invalid-action-code'
-            ? 'Ce lien a déjà été utilisé ou a expiré. Connecte-toi et demande un nouvel email.'
-            : e.message;
-        show('state-error');
-      });
-  } else if (mode === 'resetPassword' && oobCode) {
-    // Redirige vers l'app qui gère le reset
-    window.location.href = 'Application/index.html?mode=resetPassword&oobCode=' + oobCode;
-  } else {
-    show('state-error');
-    document.getElementById('error-msg').textContent = 'Lien non reconnu.';
-  }
+  // Supabase gère automatiquement le token dans l'URL (#access_token=...)
+  // On écoute l'événement pour savoir quand c'est confirmé
+  supabase.auth.onAuthStateChange((event, session) => {
+    if (event === 'SIGNED_IN' || event === 'USER_UPDATED') {
+      show('state-success');
+      // Compte à rebours puis redirige
+      let n = 3;
+      const el = document.getElementById('countdown');
+      const iv = setInterval(() => {
+        n--;
+        if (el) el.textContent = n;
+        if (n <= 0) {
+          clearInterval(iv);
+          window.location.href = 'index.html';
+        }
+      }, 1000);
+    } else if (event === 'INITIAL_SESSION' && !session) {
+      // Pas de token dans l'URL → lien invalide
+      show('state-error');
+    }
+  });
 </script>
 </body>
 </html>

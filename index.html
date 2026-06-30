@@ -1587,9 +1587,13 @@
       <div style="font-size:13px;color:#4A5568;line-height:1.6;margin-bottom:24px">
         Un email de confirmation a été envoyé à<br>
         <strong id="verify-email-display"></strong><br><br>
-        Cliquez sur le lien dans l'email puis revenez ici.
+        Clique sur le lien dans l'email pour confirmer ton adresse.<br>
+        Tu seras automatiquement redirigé vers l'application.
       </div>
-      <button class="btn btn-dark" onclick="checkVerification()" style="margin-bottom:10px;width:100%">J'ai vérifié mon email</button>
+      <div style="background:#F0F3F9;border-radius:10px;padding:14px 16px;margin-bottom:20px;font-size:12.5px;color:#4A5568;line-height:1.6;text-align:left">
+        💡 <strong>Tu ne trouves pas l'email ?</strong><br>
+        Vérifie ton dossier <strong>Spams</strong> ou clique sur "Renvoyer l'email" ci-dessous.
+      </div>
       <div id="verify-msg" style="display:none;font-size:13px;margin:8px 0 4px;padding:10px;border-radius:8px;background:#F0F2F7"></div>
       <div style="margin-top:12px">
         <span onclick="resendVerification()" style="font-size:12px;color:#8A96A8;cursor:pointer;text-decoration:underline">Renvoyer l'email</span>
@@ -3512,35 +3516,36 @@
   });
 </script>
 
-<!-- ══ FIREBASE ══ -->
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-<script>
-  const firebaseConfig = {
-    apiKey:            "AIzaSyAwspb2AUT9JvV4x3hn362ttKtHmfEc6Fc",
-    authDomain:        "haras-du-forest.firebaseapp.com",
-    projectId:         "haras-du-forest",
-    storageBucket:     "haras-du-forest.firebasestorage.app",
-    messagingSenderId: "661096788450",
-    appId:             "1:661096788450:web:49783a922deb41fa01c9bb"
-  };
-  firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-  const db   = firebase.firestore();
-  auth.languageCode = 'fr'; // emails Firebase en français
+<script type="module">
+  /* ── Init Supabase ── */
+  const { createClient } = await import('https://esm.sh/@supabase/supabase-js@2');
+  const supabase = createClient(
+    'https://ovcpbwatjdmalxjpakkd.supabase.co',
+    'sb_publishable_UX9xIXn6h8yxgZFB3xQcDg_GoXpvC6_'
+  );
 
   /* ── Observer Auth — gère l'affichage au chargement ── */
-  let _verifyMode    = false; // empêche showAuthForms() pendant l'inscription
-  let _verifyUser    = null;  // stocke le user si auth.currentUser devient null
-  let _sessionActive = false; // empêche showAuthForms() lors d'un refresh de token Firebase
+  let _verifyMode    = false;
+  let _verifyUser    = null;
+  let _sessionActive = false;
 
-  auth.onAuthStateChanged(async user => {
-    if (user) {
-      _verifyUser = user;
-      await handleUserLogin(user);
+  supabase.auth.onAuthStateChange(async (event, session) => {
+    if (session?.user) {
+      _verifyUser = session.user;
+      await handleUserLogin(session.user);
     } else if (!_verifyMode && !_sessionActive) {
       showAuthForms();
+    }
+  });
+
+  // Quand l'utilisateur revient sur l'onglet après avoir confirmé son email dans un autre onglet
+  document.addEventListener('visibilitychange', async () => {
+    if (document.visibilityState === 'visible' && _verifyMode) {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user?.email_confirmed_at) {
+        _verifyMode = false;
+        await handleUserLogin(user);
+      }
     }
   });
 
@@ -3569,27 +3574,26 @@
   /* ── Après connexion : vérifie email + rôle + redirige ── */
   async function handleUserLogin(user) {
     try {
-      const snap = await db.collection('users').doc(user.uid).get();
-      const role = snap.exists ? snap.data().role : 'client';
+      const { data: snap } = await supabase.from('profiles').select('*').eq('id', user.id).single();
+      const role = snap?.role || 'client';
 
-      // Moniteurs et admins : créés par l'admin → pas de vérif email
       if (role === 'moniteur') {
-        window.location.href = '../Moniteur/index.html';
+        window.location.href = 'Moniteur/index.html';
         return;
       }
       if (role === 'admin') {
-        window.location.href = '../Logiciel/index.html';
+        window.location.href = 'Logiciel/index.html';
         return;
       }
 
       // Cavaliers : vérification email obligatoire
-      if (!user.emailVerified) {
+      if (!user.email_confirmed_at) {
         showVerifyScreen(user);
         return;
       }
 
       // Client → affiche l'app
-      const data = snap.data() || {};
+      const data = snap || {};
       const prenom  = data.prenom || user.email.split('@')[0];
       const nom     = data.nom    || '';
       const nomComplet = nom ? `${prenom} ${nom}` : prenom;
@@ -3642,13 +3646,12 @@
 
   /* ── Vérifie si l'email a été confirmé (bouton "J'ai vérifié") ── */
   async function checkVerification() {
-    const user = _verifyUser || auth.currentUser;
-    if (!user) { showVerifyMsg('Session expirée — utilise "Se déconnecter" puis reconnecte-toi.'); return; }
     const btn = document.querySelector('[onclick="checkVerification()"]');
     if (btn) { btn.textContent = 'Vérification…'; btn.disabled = true; }
     try {
-      await user.reload();
-      if (user.emailVerified) {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) { showVerifyMsg('Session expirée — utilise "Se déconnecter" puis reconnecte-toi.'); return; }
+      if (user.email_confirmed_at) {
         _verifyMode = false;
         await handleUserLogin(user);
       } else {
@@ -3663,12 +3666,13 @@
 
   /* ── Renvoie l'email de vérification ── */
   async function resendVerification() {
-    const user = _verifyUser || auth.currentUser;
-    if (!user) { showVerifyMsg('Session expirée — clique sur "Se déconnecter" puis reconnecte-toi.'); return; }
+    const email = _verifyUser?.email;
+    if (!email) { showVerifyMsg('Session expirée — clique sur "Se déconnecter" puis reconnecte-toi.'); return; }
     const link = document.querySelector('[onclick="resendVerification()"]');
     if (link) link.textContent = 'Envoi…';
     try {
-      await user.sendEmailVerification();
+      const { error } = await supabase.auth.resend({ type: 'signup', email });
+      if (error) throw error;
       showVerifyMsg('Email renvoyé ! Vérifie ta boîte (et les spams).', '#2B6657');
     } catch(e) {
       showVerifyMsg('Erreur : ' + e.message);
@@ -3677,11 +3681,12 @@
     }
   }
 
-  function doLogoutApp() {
+  async function doLogoutApp() {
     _verifyMode    = false;
     _verifyUser    = null;
     _sessionActive = false;
-    auth.signOut().then(() => showAuthForms());
+    await supabase.auth.signOut();
+    showAuthForms();
   }
 
   /* ── Afficher/masquer mot de passe ── */
@@ -3695,7 +3700,7 @@
   }
 
   /* ── Connexion ── */
-  function doLogin() {
+  async function doLogin() {
     const email    = (document.getElementById('login-email').value || '').trim();
     const password = document.getElementById('login-password').value || '';
     const errEl    = document.getElementById('login-error');
@@ -3708,14 +3713,16 @@
     }
     btn.textContent = 'Connexion…'; btn.disabled = true;
 
-    auth.signInWithEmailAndPassword(email, password)
-      .catch(e => {
-        btn.textContent = 'Se connecter'; btn.disabled = false;
-        errEl.textContent = (e.code === 'auth/wrong-password' || e.code === 'auth/user-not-found' || e.code === 'auth/invalid-credential')
-          ? 'Email ou mot de passe incorrect.'
-          : e.code === 'auth/too-many-requests' ? 'Trop de tentatives. Réessaie plus tard.' : 'Erreur de connexion.';
-        errEl.style.display = 'block';
-      });
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) {
+      btn.textContent = 'Se connecter'; btn.disabled = false;
+      errEl.textContent = error.message.includes('Invalid login credentials')
+        ? 'Email ou mot de passe incorrect.'
+        : error.message.includes('too many requests')
+        ? 'Trop de tentatives. Réessaie plus tard.'
+        : 'Erreur de connexion.';
+      errEl.style.display = 'block';
+    }
   }
 
   /* ── Inscription (clients uniquement) ── */
@@ -3741,84 +3748,68 @@
     }
     btn.textContent = 'Création…'; btn.disabled = true;
 
-    try {
-      const cred = await auth.createUserWithEmailAndPassword(email, password);
-      // Enregistre le profil dans Firestore
-      await db.collection('users').doc(cred.user.uid).set({
-        uid:    cred.user.uid,
-        email,
-        prenom,
-        nom,
-        niveau,
-        role:   'client',
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      });
-      // Crée aussi une entrée dans la collection clients du backoffice
-      await db.collection('clients').doc(cred.user.uid).set({
-        id:       cred.user.uid,
-        nom, prenom, email, formule: 'Aucune', niveau, points: 0,
-        initials: (prenom[0] + nom[0]).toUpperCase(),
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      });
-      // Affiche l'écran de vérification avant d'envoyer l'email
-      showVerifyScreen(cred.user);
-      btn.textContent = 'Créer mon compte'; btn.disabled = false;
+    const { data, error } = await supabase.auth.signUp({
+      email, password,
+      options: { data: { prenom, nom, niveau } }
+    });
 
-      // Envoie l'email de vérification (l'URL d'action est déjà configurée dans Firebase Console)
-      try {
-        await cred.user.sendEmailVerification();
-        console.log('[HDF] Email de vérification envoyé à', cred.user.email);
-      } catch(mailErr) {
-        console.error('[HDF] Erreur sendEmailVerification:', mailErr.code, mailErr.message);
-        const msg = document.getElementById('verify-msg');
-        if (msg) {
-          msg.textContent = 'Erreur lors de l\'envoi de l\'email (' + mailErr.code + '). Utilise "Renvoyer l\'email".';
-          msg.style.color = '#C0392B';
-          msg.style.display = 'block';
-        }
-      }
-    } catch(e) {
-      btn.textContent = 'Créer mon compte'; btn.disabled = false;
-      errEl.textContent = e.code === 'auth/email-already-in-use' ? 'Un compte existe déjà avec cet email.'
-        : e.code === 'auth/invalid-email' ? 'Email invalide.'
-        : e.code === 'auth/weak-password' ? 'Mot de passe trop faible.'
+    btn.textContent = 'Créer mon compte'; btn.disabled = false;
+
+    if (error) {
+      errEl.textContent = error.message.includes('already registered')
+        ? 'Un compte existe déjà avec cet email.'
+        : error.message.includes('weak')
+        ? 'Mot de passe trop faible.'
         : 'Erreur lors de la création du compte.';
       errEl.style.display = 'block';
+      return;
     }
+
+    showVerifyScreen(data.user);
   }
 
   /* ── Mot de passe oublié ── */
-  function doForgotPassword() {
+  async function doForgotPassword() {
     const email = (document.getElementById('login-email').value || '').trim();
     if (!email) {
       const errEl = document.getElementById('login-error');
       errEl.textContent = 'Entre ton email ci-dessus puis clique sur "Mot de passe oublié".';
       errEl.style.display = 'block'; return;
     }
-    auth.sendPasswordResetEmail(email)
-      .then(() => {
-        const errEl = document.getElementById('login-error');
-        errEl.style.color = '#2B6657';
-        errEl.textContent = 'Email de réinitialisation envoyé !';
-        errEl.style.display = 'block';
-        setTimeout(() => { errEl.style.color = '#C0392B'; errEl.style.display = 'none'; }, 4000);
-      })
-      .catch(() => {
-        const errEl = document.getElementById('login-error');
-        errEl.textContent = 'Email introuvable.'; errEl.style.display = 'block';
-      });
+    const { error } = await supabase.auth.resetPasswordForEmail(email);
+    const errEl = document.getElementById('login-error');
+    if (error) {
+      errEl.textContent = 'Email introuvable.'; errEl.style.display = 'block';
+    } else {
+      errEl.style.color = '#2B6657';
+      errEl.textContent = 'Email de réinitialisation envoyé !';
+      errEl.style.display = 'block';
+      setTimeout(() => { errEl.style.color = '#C0392B'; errEl.style.display = 'none'; }, 4000);
+    }
   }
 
   /* ── Déconnexion ── */
-  function deconnexion() {
-    auth.signOut().then(() => {
-      closeSidebar();
-      showPage('presentation');
-      document.getElementById('login-email').value = '';
-      document.getElementById('login-password').value = '';
-      document.getElementById('login-error').style.display = 'none';
-    });
+  async function deconnexion() {
+    await supabase.auth.signOut();
+    closeSidebar();
+    showPage('presentation');
+    document.getElementById('login-email').value = '';
+    document.getElementById('login-password').value = '';
+    document.getElementById('login-error').style.display = 'none';
   }
+
+  /* ── Exposition globale (requis par type="module") ── */
+  Object.assign(window, {
+    doLogin, doRegister, doForgotPassword, doLogoutApp,
+    checkVerification, resendVerification,
+    deconnexion, switchAuthTab, togglePw,
+    openPage, showPage, showInner,
+    toggleSidebar, closeSidebar,
+    selectSlot, selectPack,
+    changeWeek, onMonitorChange,
+    openConfirm, closeConfirm,
+    openPaiement, openPaiementPack, doPaiement,
+  });
 </script>
 </body>
 </html>
